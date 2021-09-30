@@ -1,0 +1,31 @@
+{
+  "name": "squar-action",
+  "version": "1.0.0",
+  "description": "## Existing workflow",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "nodemon",
+    "build": "rimraf ./build && tsc -p .",
+    "start": "npm run build && node build/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ponicode/squar-action.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ponicode/squar-action/issues"
+  },
+  "homepage": "https://github.com/ponicode/squar-action#readme",
+  "devDependencies": {
+    "@types/node": "^15.6.1",
+    "nodemon": "^2.0.13",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.2.1",
+    "tslint": "^5.12.1",
+    "typescript": "^4.2.4"
+  }
+}
