@@ -1,0 +1,39 @@
+name: 'Ponicode Squar'
+description: 'Check if the files updated in the PR are well tested'
+branding:
+  icon: 'align-justify'  
+  color: 'orange'
+inputs: 
+  repoUrl:
+    description: 'String: URL of the repo to be processed'
+    required: true
+  ponicodeSquarToken:
+    description: 'String: Ponicode SQUAR user token from Github Secrets'
+    required: true
+  ponicodeUtToken:
+    description: 'String: Ponicode UT user token from Github Secrets'
+    required: true
+  githubToken:
+    description: 'GitHub token to generate some comments into the PR'
+    required: true
+  impactedFiles:
+    description: 'String[]: List of the files updated in the PR'
+    required: true
+  branch:
+    description: 'String: branch on which the PR applies'
+    required: true
+    default: 'master'
+  bootstrapUT:
+    description: 'Generate unit-Tests bootstrap on files of the PR that have an alert'
+    required: true
+    default: 'true'
+  displayFullReport:
+    description: 'Display Poincode SQUAR report of the full repository in PR (in addition to the report on impacted files only)'
+    required: true
+    default: 'true'
+outputs:
+    impacted_files:
+      description: 'list of files where there is an alert'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

@@ -5,9 +5,9 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "nodemon",
-    "build": "rimraf ./build && tsc -p .",
-    "start": "npm run build && node build/index.js"
+    "start:dev": "nodemon -r dotenv/config src/index.ts",
+    "build": "rimraf ./dist && tsc -p . && cp ./src/markdown/*.md ./dist/markdown/",
+    "start": "node -r dotenv/config dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -21,11 +21,36 @@
   },
   "homepage": "https://github.com/ponicode/squar-action#readme",
   "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "@types/jest": "^27.0.2",
     "@types/node": "^15.6.1",
+    "@types/rewire": "^2.5.28",
+    "dotenv": "^10.0.0",
     "nodemon": "^2.0.13",
+    "rewire": "^5.0.0",
     "rimraf": "^3.0.2",
     "ts-node": "^10.2.1",
     "tslint": "^5.12.1",
     "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "@actions/core": "^1.6.0",
+    "@actions/github": "^5.0.0",
+    "@folder/xdg": "^3.1.2",
+    "@octokit/core": "^3.5.1",
+    "@octokit/openapi-types": "^10.6.4",
+    "@octokit/rest": "^18.12.0",
+    "@octokit/types": "^6.31.3",
+    "@ts-stack/markdown": "^1.4.0",
+    "@types/axios": "^0.14.0",
+    "@types/line-reader": "^0.0.34",
+    "axios": "^0.22.0",
+    "fs-extra": "^10.0.0",
+    "globby": "^12.0.2",
+    "line-reader": "^0.4.0",
+    "octokit-plugin-create-pull-request": "^3.9.3",
+    "ponicode": "^0.52.2",
+    "replace-in-file": "^6.2.0",
+    "tslog": "^3.2.2"
   }
 }

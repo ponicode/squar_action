@@ -1,0 +1,48 @@
+name: "build-test"
+on:
+  pull_request:
+    types: [ edited, synchronize ]  # rebuild any PRs and main branch changes
+
+jobs:
+  # make sure build/ci work properly
+  build_and_test:
+    runs-on: ubuntu-latest
+    env:
+      SQUAR_API_URL: "http://dd7c-93-2-157-33.ngrok.io"
+      FETCH_REPORT_RETRY_MILLISEC: 5000
+    steps:
+    - uses: actions/checkout@v1
+    - run: |
+        npm ci
+        npm run build
+        npm install -g ponicode
+    #- uses: ./
+    #  with:
+    #    repoURL: "bbouffaut/lumber"
+    #    impactedFiles: "[\"services/key-generator.js\",\"services/event-sender.js\",\"services/spinners.js\",\"services/analyzer/database-analyzer.js\"]"
+    #    branch: "ponicode/test-quality-gate"
+    #    ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
+    #    githubToken: ${{ secrets.GITHUB_TOKEN }}
+    #- id: get_changed_paths_simple
+    #  run: |
+    #    git show --pretty="" --name-only ${{ github.sha }}
+    - id: get_changed_files
+      uses: jitterbit/get-changed-files@v1
+      continue-on-error: true
+      with:
+        format: 'json'
+    - id: extract_branch
+      if: github.event_name == 'pull_request'
+      run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
+    - id: ponicode_squar
+      uses: ./
+      with:
+        repoURL: ${{github.repository}}
+        impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }}
+        branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }}
+        ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
+        ponicodeUtToken: ${{ secrets.PONICODE_TOKEN }}
+        githubToken: ${{ secrets.GITHUB_TOKEN }}
+        bootstrapUT: 'true'
+        displayFullReport: 'true'
+
