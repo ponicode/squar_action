@@ -5,9 +5,9 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "nodemon",
+    "start:dev": "nodemon -r dotenv/config",
     "build": "rimraf ./build && tsc -p .",
-    "start": "npm run build && node build/index.js"
+    "start": "node -r dotenv/config dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   "homepage": "https://github.com/ponicode/squar-action#readme",
   "devDependencies": {
     "@types/node": "^15.6.1",
+    "dotenv": "^10.0.0",
     "nodemon": "^2.0.13",
     "rimraf": "^3.0.2",
     "ts-node": "^10.2.1",
