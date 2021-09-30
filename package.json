@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "nodemon -r dotenv/config",
+    "start:dev": "nodemon -r dotenv/config src/index.ts",
     "build": "rimraf ./build && tsc -p .",
     "start": "node -r dotenv/config dist/index.js"
   },
