@@ -1,12 +1,9 @@
+import * as dotenv from "dotenv";
 import { Logger } from "tslog";
+import { triggerSquarEvaluate } from "./squar_client";
+import { EvaluateReturn, Inputs } from "./types";
 
-// Action Inputs Type definiction
-interface Inputs {
-    RepoUrl: string;
-    UserToken: string;
-    ImpactedFiles: string[];
-    Branch: string;
-}
+dotenv.config({ path: __dirname + "/.env" });
 
 const log: Logger = new Logger();
 
@@ -29,20 +26,18 @@ function check_args(args: string[]): boolean {
 * @return {void} 
 */
 function main(args: string[]): void {
-    if (check_args(args)) {
 
-        const inputs = {
-            RepoUrl: args[0],
-            UserToken: args[1],
-            // tslint:disable-next-line: object-literal-sort-keys
-            ImpactedFiles: args[2] as unknown as string[],
-            Branch: args[3],
-        } as Inputs;
+    const inputs: Inputs = JSON.parse(args[0]);
 
-        log.debug(inputs);
-    } else {
-        log.error("Missing Parameters");
-    }
+    log.debug(inputs);
+
+    // Trigger SQUAR evaluate_pr endpoint
+    triggerSquarEvaluate(inputs).then((result: EvaluateReturn) => {
+        log.debug(result);
+    }).catch((result: EvaluateReturn) => {
+        log.debug(result);
+    });
+
 }
 
 main(process.argv.slice(2));
