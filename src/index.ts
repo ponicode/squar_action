@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 import { Logger } from "tslog";
-import { triggerSquarEvaluate } from "./squar_client";
-import { EvaluateReturn, Inputs } from "./types";
+import { triggerSquarEvaluate, triggerSquarReport } from "./squar_client";
+import { EvaluateReturn, FetchReportInput, Inputs, Report } from "./types";
 
 dotenv.config({ path: __dirname + "/.env" });
 
@@ -31,12 +31,27 @@ function main(args: string[]): void {
 
     log.debug(inputs);
 
-    // Trigger SQUAR evaluate_pr endpoint
-    triggerSquarEvaluate(inputs).then((result: EvaluateReturn) => {
-        log.debug(result);
-    }).catch((result: EvaluateReturn) => {
-        log.debug(result);
-    });
+    if (process.env.FETCH_REPORT_RETRY_MILLISEC !== undefined) {
+        // Trigger SQUAR evaluate_pr endpoint
+        triggerSquarEvaluate(inputs).then((result: EvaluateReturn) => {
+            log.debug(result);
+            const reportInputs: FetchReportInput = {
+                userToken: inputs.userToken,
+            };
+
+            // If repository_id is defined then retry fetchReport until we get it
+            if ((result.repositoryId !== undefined) && (process.env.FETCH_REPORT_RETRY_MILLISEC !== undefined)) {
+                // tslint:disable-next-line: max-line-length
+                triggerSquarReport(reportInputs, result.repositoryId, parseInt(process.env.FETCH_REPORT_RETRY_MILLISEC, 10)).then((reportResult: Report) => {
+                    log.debug(reportResult);
+                });
+            } else {
+                log.error("No Repository Id");
+            }
+        }).catch((result: EvaluateReturn) => {
+            log.debug(result);
+        });
+    }
 
 }
 
