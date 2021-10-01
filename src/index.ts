@@ -22,6 +22,7 @@ function check_args(args: string[]): boolean {
     }
     return result;
 }
+
 /** 
 * Main entry point.
 * @param {string[]} args - arguments received from the command-line
@@ -38,10 +39,8 @@ function main(args: string[]): void {
             Branch: args[3],
         } as Inputs;
 
-        // tslint:disable-next-line: no-console
         log.debug(inputs);
     } else {
-        // tslint:disable-next-line: no-console
         log.error("Missing Parameters");
     }
 }

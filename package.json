@@ -22,8 +22,10 @@
   "homepage": "https://github.com/ponicode/squar-action#readme",
   "devDependencies": {
     "@types/node": "^15.6.1",
+    "@types/rewire": "^2.5.28",
     "dotenv": "^10.0.0",
     "nodemon": "^2.0.13",
+    "rewire": "^5.0.0",
     "rimraf": "^3.0.2",
     "ts-node": "^10.2.1",
     "tslint": "^5.12.1",
