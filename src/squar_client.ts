@@ -4,7 +4,11 @@ import { Logger } from "tslog";
 import { EvaluateReturn, Inputs, FetchReportInput, Report } from "./types";
 
 const log: Logger = new Logger();
-
+/** 
+* Triggers SQUAR evaluate_pr endpoint
+* @param {Inputs} inputs - contains the inputs required for the endpoint
+* @return {Promise<EvaluateReturn>} returns a promise with the EvaluateReturn object
+*/
 function triggerSquarEvaluate(inputs: Inputs): Promise<EvaluateReturn> {
     return axios({
         method: 'POST',
@@ -26,26 +30,45 @@ function triggerSquarEvaluate(inputs: Inputs): Promise<EvaluateReturn> {
       });
 
 }
-
+// Define the Promise executor type for clarity purpose
 type PromiseExecutor = (resolve: (value: Report) => void, reject: (reason?: any) => void) => void;
-
-async function delay(timerMilliSec: number) {
-    // tslint:disable-next-line: max-line-length
-    await new Promise(() => setTimeout(() => { log.debug(`Wait for ${timerMilliSec}`); }, timerMilliSec));
-}
-
+/** 
+* Block the main thread to wait before moving on in the execution.
+* @param {number} ms - Number of msec to wait
+* @return {void} No return value
+*/
+function wait(ms: number): void {
+    const start = new Date().getTime();
+    let end = start;
+    while (end < start + ms) {
+      end = new Date().getTime();
+   }
+ }
+/** 
+* Function that triggers again a Promise execution while this is not successfull
+* @param {number} timerMilliSec - Timer in msec to wait before retrying
+* @param {PromiseExecutor} executor - Promise executor to be used in Promise execution retry
+* @return {Promise<Report>} returns a promise that executes the Promise Executor
+*/
 function retry(timerMilliSec: number, executor: PromiseExecutor): Promise<Report> {
 
     if (typeof timerMilliSec !== "number") {
         throw new TypeError("retries is not a number");
     }
 
-    delay(timerMilliSec);
+    wait(timerMilliSec);
 
     return new Promise<Report>(executor).catch((error) => retry(timerMilliSec, executor));
 
 }
-
+/** 
+* Trigger SQUAR report_pr endpoint
+* @summary The function retries every timer msec so that it periodically checks when the report is available (it takes couple of seconds to be processed by Havana)
+* @param {FetchReportInput} inputs - Inputs of the endpoint
+* @param {number} repositoryId - Repository Id of the repo to be processed
+* @param {number} timer - Numbmer of msec to wait beteween each retries
+* @return {Promise<Report>} Returns the Promise with the generated Report
+*/
 async function triggerSquarReport(inputs: FetchReportInput, repositoryId: number, timer: number): Promise<Report> {
 
     const executor: PromiseExecutor = ((resolve: (value: Report) => void, reject: (reason?: any) => void) => {
