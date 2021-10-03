@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { assert } from "console";
 import { Logger } from "tslog";
-import { EvaluateReturn, Inputs, FetchReportInput, Report } from "./types";
+import { EvaluateReturn, FetchReportInput, Inputs, Report } from "./types";
 
 const log: Logger = new Logger();
 /** 
