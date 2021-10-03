@@ -4,6 +4,7 @@ interface Inputs {
     userToken: string;
     impactedFiles: string[];
     branch: string;
+    githubToken: string;
 }
 
 // SQUAR evalutaPR endpoint Return type

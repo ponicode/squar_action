@@ -22,7 +22,7 @@ async function generatePR(message: string | undefined ): Promise<void> {
 
   // get the inputs of the action. The "token" input
   // is not defined so far - we will come to it later.
-  const githubToken = core.getInput("token");
+  const githubToken = core.getInput("githubToken");
 
   // the context does for example also include information
   // in the pull request or repository we are issued from

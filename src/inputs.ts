@@ -19,9 +19,10 @@ const parseJSON = <T>(getInput: GetInput, property: string): T | undefined => {
 
 const parseInputs = (getInput: GetInput): Inputs => {
   const repoURL = getInput("repoURL", {required: true});
-  const userToken = getInput("userToken", {required: true});
+  const userToken = getInput("ponicodeSquarToken", {required: true});
   let impactedFiles = parseJSON<string[]>(getInput, "impactedFiles");
   const branch = getInput("branch", { required: true});
+  const githubToken = getInput("githubToken", {required: true});
 
   if (!impactedFiles) {
     impactedFiles = [];
@@ -32,6 +33,7 @@ const parseInputs = (getInput: GetInput): Inputs => {
     userToken,
     impactedFiles,
     branch,
+    githubToken,
   };
 };
 
