@@ -63,6 +63,10 @@ async function generatePRComment(message: string | undefined ): Promise<void> {
 
         const comments = await getAllComments(repo, pullRequestNumber);
 
+        /* un comment this if you want to keep only one Ponicode SQUAR report in the 
+        * comments of the PR, and it is updated in case there is alreayd one
+        */
+       /*
         const comment = await checkIfCommentALreadyExists(comments, message);
 
         // If yes, update that
@@ -74,6 +78,9 @@ async function generatePRComment(message: string | undefined ): Promise<void> {
             core.debug("No comment matches, then create it.");
             await createComment(repo, pullRequestNumber, message);
         }
+        */
+
+        await createComment(repo, pullRequestNumber, message);
 
     } catch (e) {
         const error = e as Error;
