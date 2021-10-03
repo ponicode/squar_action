@@ -65,13 +65,13 @@ async function generatePRComment(message: string | undefined ): Promise<void> {
 
         const comment = await checkIfCommentALreadyExists(comments, message);
 
-        core.debug(JSON.stringify(comment));
-
         // If yes, update that
         if (comment) {
+            core.debug("There is already one comment that matches, then update it.");
             await updateComment(comment, message);
         // if not, create a new comment
         } else {
+            core.debug("No comment matches, then create it.");
             await createComment(repo, pullRequestNumber, message);
         }
 
