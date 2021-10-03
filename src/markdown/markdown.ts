@@ -65,7 +65,6 @@ async function createFullReportMessage(report: Report | undefined): Promise<stri
         await generateMessageFromMDFile(fileName, report?.fullReport);
 
         const message = readFileSync(fileName, "utf-8");
-        core.debug(message);
 
         return message;
 
