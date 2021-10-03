@@ -47,6 +47,10 @@ async function run(): Promise<void> {
                 core.error(errorMessage);
                 core.setFailed(errorMessage);
             }
+        } else {
+            const errorMessage = "Missing ENV variable: FETCH_REPORT_RETRY_MILLISEC";
+            core.error(errorMessage);
+            core.setFailed(errorMessage);
         }
 
     } catch (e) {
