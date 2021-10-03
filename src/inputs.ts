@@ -17,7 +17,7 @@ const parseJSON = <T>(getInput: GetInput, property: string): T | undefined => {
   }
 };
 
-export const parseInputs = (getInput: GetInput): Inputs => {
+const parseInputs = (getInput: GetInput): Inputs => {
   const repoURL = getInput("repoURL", {required: true});
   const userToken = getInput("userToken", {required: true});
   let impactedFiles = parseJSON<string[]>(getInput, "impactedFiles");
@@ -34,3 +34,5 @@ export const parseInputs = (getInput: GetInput): Inputs => {
     branch,
   };
 };
+
+export { Inputs, parseInputs };
