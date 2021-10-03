@@ -3,7 +3,7 @@ import * as github from "@actions/github";
 import * as dotenv from "dotenv";
 import { parseInputs } from "./inputs";
 import { createAlertsMessage, createFullReportMessage } from "./markdown/markdown";
-import { generatePR } from "./pull_request/squar_report";
+import { generatePRComment } from "./pull_request/squar_report";
 import { triggerSquarEvaluate, triggerSquarReport } from "./squar_client";
 import { EvaluateReturn, FetchReportInput, Inputs, Report } from "./types";
 
@@ -63,9 +63,9 @@ async function run(): Promise<void> {
 
         const report: Report | undefined = await fetchSQUARReport(triggerResult, inputs);
 
-        void generatePR(createAlertsMessage(report?.suggestionsOnImpactedFiles));
+        void generatePRComment(createAlertsMessage(report?.suggestionsOnImpactedFiles));
 
-        void generatePR(createFullReportMessage(report));
+        void generatePRComment(createFullReportMessage(report));
 
     } catch (e) {
         const error = e as Error;

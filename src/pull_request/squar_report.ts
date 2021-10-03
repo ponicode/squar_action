@@ -1,7 +1,39 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
+import { checkIfCommentALreadyExists, getAllComments } from "./utils";
 
-async function generatePR(message: string | undefined ): Promise<void> {
+// get the inputs of the action. The "token" input
+  // is not defined so far - we will come to it later.
+const githubToken = core.getInput("githubToken");
+
+// the context does for example also include information
+// in the pull request or repository we are issued from
+const context = github.context;
+const repo = context.repo;
+const pullRequestNumber = context.payload.pull_request?.number;
+
+const octokit = github.getOctokit(githubToken);
+
+async function createComment(repo: any, pullRequestNumber: number, message: string): Promise<void> {
+    await octokit.rest.issues.createComment({
+        owner: repo.owner,
+        repo: repo.repo,
+        issue_number: pullRequestNumber,
+        body: message,
+    });
+
+}
+
+async function updateComment(comment: any, message: string): Promise<void> {
+    await octokit.rest.issues.updateComment({
+        owner: repo.owner,
+        repo: repo.repo,
+        comment_id: comment.id,
+        body: message,
+    });
+}
+
+async function generatePRComment(message: string | undefined ): Promise<void> {
 
     // The github module has a member called "context",
   // which always includes information on the action workflow
@@ -20,16 +52,6 @@ async function generatePR(message: string | undefined ): Promise<void> {
     return;
   }
 
-  // get the inputs of the action. The "token" input
-  // is not defined so far - we will come to it later.
-  const githubToken = core.getInput("githubToken");
-
-  // the context does for example also include information
-  // in the pull request or repository we are issued from
-  const context = github.context;
-  const repo = context.repo;
-  const pullRequestNumber = context.payload.pull_request?.number;
-
   // The Octokit is a helper, to interact with
   // the github REST interface.
   // You can look up the REST interface
@@ -39,49 +61,21 @@ async function generatePR(message: string | undefined ): Promise<void> {
 
     try {
 
-        const octokit = github.getOctokit(githubToken);
+        const comments = await getAllComments(repo, pullRequestNumber);
 
-        // Get all comments we currently have...
-        // (this is an asynchronous function)
-        const { data: comments } = await octokit.rest.issues.listComments({
-            owner: repo.owner,
-            repo: repo.repo,
-            issue_number: pullRequestNumber,
-        });
-
-        // ... and check if there is already a comment by us
-        const comment = comments.find((comment) => {
-            if ((comment) && (comment.user) && (comment.body)) {
-                return (
-                    comment.user.login === "github-actions[bot]" &&
-                    comment.body.startsWith("## Result of Benchmark Tests\n")
-                );
-            }
-        });
+        const comment = await checkIfCommentALreadyExists(comments, message);
 
         core.debug(JSON.stringify(comment));
 
         // If yes, update that
         if (comment) {
-            await octokit.rest.issues.updateComment({
-                owner: repo.owner,
-                repo: repo.repo,
-                comment_id: comment.id,
-                body: message,
-            });
+            await updateComment(comment, message);
         // if not, create a new comment
         } else {
-
-            await octokit.rest.issues.createComment({
-                owner: repo.owner,
-                repo: repo.repo,
-                issue_number: pullRequestNumber,
-                body: message,
-            });
-
+            await createComment(repo, pullRequestNumber, message);
         }
 
-    } catch(e) {
+    } catch (e) {
         const error = e as Error;
         core.setFailed(error.message);
     }
@@ -89,4 +83,4 @@ async function generatePR(message: string | undefined ): Promise<void> {
 
 }
 
-export { generatePR };
+export { generatePRComment };
