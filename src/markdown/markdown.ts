@@ -42,11 +42,11 @@ function createAlertsMessage(suggestionsOnImpactedFiles: TestAlert[] | undefined
 
 function generateMessageFromMDFile(message: string, report: FullReport): string {
     const result: string = message;
-    result.replace("%{repo_name}%", report.repoName);
-    result.replace("%{grade}%", report.ponicodeScore);
-    result.replace("%{missing_test_suites}%", report.missingTestSuite ? `${report.missingTestSuite}` : "0");
-    result.replace("%{missing_test_cases}%", report.missingTestCases ? `${report.missingTestCases}` : "0");
-    result.replace("%{missing_edge_cases}%", report.missingEdgeCases ? `${report.missingEdgeCases}` : "0");
+    result.replace("\%\{repo_name\}\%", report.repoName);
+    result.replace("\%\{grade\}\%", report.ponicodeScore);
+    result.replace("\%\{missing_test_suites\}\%", report.missingTestSuite ? `${report.missingTestSuite}` : "0");
+    result.replace("\%\{missing_test_cases\}\%", report.missingTestCases ? `${report.missingTestCases}` : "0");
+    result.replace("\%\{missing_edge_cases\}\%", report.missingEdgeCases ? `${report.missingEdgeCases}` : "0");
 
     return result;
 }
