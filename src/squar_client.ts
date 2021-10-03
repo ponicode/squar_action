@@ -82,10 +82,8 @@ async function triggerSquarReport(inputs: FetchReportInput, repositoryId: number
         }).then((res: AxiosResponse) => {
             return res.data;
           }).then((report: Report) => {
-              log.debug(report);
-              return report;
+              resolve(report);
           }).catch((err: any) => {
-              log.debug("ERROR fetching report");
               reject(err);
           });
     });
