@@ -34,7 +34,7 @@ jobs:
     - uses: ./
       with:
         repoURL: ${{github.repository}}
-        impactedFiles: ${{ steps.get_changed_files_simple.outputs.added_modified }}
+        impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }}
         branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }}
         ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
         githubToken: ${{ secrets.GITHUB_TOKEN }}
