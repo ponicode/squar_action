@@ -3,18 +3,13 @@ on: [push] # rebuild any PRs and main branch changes
 
 jobs:
   # make sure build/ci work properly
-  build:
+  build_and_test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - run: |
         npm ci
         npm run build
-
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
     - uses: ./
       with:
         repoURL": "bbouffaut/lumber"
