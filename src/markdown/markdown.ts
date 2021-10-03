@@ -21,7 +21,7 @@ function appendMessageWithAlerts(suggestionsOnImpactedFiles: TestAlert[] | undef
         // 3rd column: the type of alert.
         message += `| ${translateAlertType(alert.alert_kind)}`;
         // 4th column: the criticity of the function.
-        message += `| ${translateCriticity(alert.criticity)}`;
+        message += `| <span style="color:${alert.criticity}">**${translateCriticity(alert.criticity)}**</span>`;
          // 5th column: the link to go directly to the file.
          message += `| [Bring me there](${GITHUB_URL}/${repoURL}/blob/${branch}/${alert.file_path}#L${alert.line}})`;
         message += "| \n";
