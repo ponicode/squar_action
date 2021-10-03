@@ -2,6 +2,7 @@ import * as core from "@actions/core";
 import * as github from "@actions/github";
 import * as dotenv from "dotenv";
 import { parseInputs } from "./inputs";
+import { createAlertsMessage } from "./markdown";
 import { triggerSquarEvaluate, triggerSquarReport } from "./squar_client";
 import { EvaluateReturn, FetchReportInput, Inputs, Report } from "./types";
 
@@ -37,7 +38,6 @@ async function fetchSQUARReport(triggerResult: EvaluateReturn, inputs: Inputs): 
         };
         // tslint:disable-next-line: max-line-length
         const reportResult: Report = await triggerSquarReport(reportInputs, triggerResult.repositoryId, parseInt(process.env.FETCH_REPORT_RETRY_MILLISEC, 10));
-        core.debug(JSON.stringify(reportResult));
         return reportResult;
     } else {
         const errorMessage: string = "No Repository Id";
@@ -61,6 +61,9 @@ async function run(): Promise<void> {
         const triggerResult: EvaluateReturn = await triggerSQUARANalysis(inputs);
 
         const report: Report | undefined = await fetchSQUARReport(triggerResult, inputs);
+
+        const alertsMessage: string = createAlertsMessage(report?.suggestionsOnImpactedFiles);
+        core.debug(alertsMessage);
 
     } catch (e) {
         const error = e as Error;
