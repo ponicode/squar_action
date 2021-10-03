@@ -27,7 +27,6 @@ async function run(): Promise<void> {
             const result: EvaluateReturn = await triggerSquarEvaluate(inputs);
             if (!result.success) {
                 const errorMessage = result.message ? result.message : "Error Tgriggering SQUAR report";
-                core.error(errorMessage);
                 core.setFailed(errorMessage);
             }
             core.debug(JSON.stringify(result));
@@ -44,12 +43,10 @@ async function run(): Promise<void> {
                 core.debug(JSON.stringify(reportResult));
             } else {
                 const errorMessage: string = "No Repository Id";
-                core.error(errorMessage);
                 core.setFailed(errorMessage);
             }
         } else {
             const errorMessage = "Missing ENV variable: FETCH_REPORT_RETRY_MILLISEC";
-            core.error(errorMessage);
             core.setFailed(errorMessage);
         }
 

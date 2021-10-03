@@ -6,7 +6,7 @@ jobs:
   build_and_test:
     runs-on: ubuntu-latest
     env:
-      SQUAR_API_URL: "http://localhost:4000"
+      SQUAR_API_URL: "https://849a-93-2-157-33.ngrok.io"
       FETCH_REPORT_RETRY_MILLISEC: 5000
     steps:
     - uses: actions/checkout@v1
