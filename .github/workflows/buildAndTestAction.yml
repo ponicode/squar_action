@@ -20,6 +20,9 @@ jobs:
     #    branch: "ponicode/test-quality-gate"
     #    ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
     #    githubToken: ${{ secrets.GITHUB_TOKEN }}
+    #- id: get_changed_paths_simple
+    #  run: |
+    #    git show --pretty="" --name-only ${{ github.sha }}
     - id: get_changed_files
       uses: jitterbit/get-changed-files@v1
       with:
@@ -27,7 +30,7 @@ jobs:
     - uses: ./
       with:
         repoURL: ${{github.repository}}
-        impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }}
+        impactedFiles: ${{ steps.get_changed_files_simple.outputs.added_modified }}
         branch: ${GITHUB_REF##*/}
         ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
         githubToken: ${{ secrets.GITHUB_TOKEN }}
