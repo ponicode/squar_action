@@ -3,7 +3,7 @@ import { readFileSync } from 'fs';
 import { FullReport, Report, TestAlert } from "../types";
 
 const replace = require("replace-in-file");
-const GITHUB_URL = "https://github.com/";
+const GITHUB_URL = "https://github.com";
 
 function initMarkdownTable(): string {
     let message = "";
