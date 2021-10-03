@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
 import { readFileSync } from 'fs';
-import { FullReport, Report, TestAlert } from "../types";
+import { AlertKind, Criticity, FullReport, Report, TestAlert } from "../types";
 
 const replace = require("replace-in-file");
 const GITHUB_URL = "https://github.com";
@@ -8,11 +8,43 @@ const GITHUB_URL = "https://github.com";
 function initMarkdownTable(): string {
     let message = "";
     // Table Title
-    message += "| File | Line Number | Type of alert | Go to link |\n";
+    message += "| File | Line Number | Type of alert | Criticity of your function | Go to |\n";
     // Table Column Definitions
     message += "| :--- | :---: | :---: | :---: |\n";
 
     return message;
+}
+
+function translateAlertType(alertKind: AlertKind | undefined): string | undefined {
+
+    const alertTable: {[key: string]: string} = {
+        edge_case: "Missing Edge Cases",
+        test_case: "Missing Test cases",
+        test_suite: "Misssing Tests",
+    };
+
+    if (alertKind) {
+        return alertTable[alertKind.toString()];
+    } else {
+        return undefined;
+    }
+
+}
+
+function translateCriticity(criticity: Criticity | undefined): string | undefined {
+
+    const criticityTable: {[key: string]: string} = {
+        orange: "Critical",
+        green: "Not Critical",
+        red: "Highly Critical",
+    };
+
+    if (criticity) {
+        return criticityTable[criticity.toString()];
+    } else {
+        return undefined;
+    }
+
 }
 
 function appendMessageWithAlerts(suggestionsOnImpactedFiles: TestAlert[] | undefined, 
@@ -27,9 +59,11 @@ function appendMessageWithAlerts(suggestionsOnImpactedFiles: TestAlert[] | undef
         message += `| ${alert.file_path}`;
         // Second column: the line number
         message += `| ${alert.line}`;
-        // Third column: the criticity of the alert.
-        message += `| ${alert.criticity}`;
-         // 4th column: the link to go directly to the file.
+        // 3rd column: the type of alert.
+        message += `| ${translateAlertType(alert.alert_kind)}`;
+        // 4th column: the criticity of the function.
+        message += `| ${translateCriticity(alert.criticity)}`;
+         // 5th column: the link to go directly to the file.
          message += `| [Bring me there](${GITHUB_URL}/${repoURL}/blob/${branch}/${alert.file_path}#L${alert.line}})`;
         message += "| \n";
     });
