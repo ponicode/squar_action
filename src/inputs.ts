@@ -1,7 +1,10 @@
 import {InputOptions} from "@actions/core";
+import { Logger } from "tslog";
 import {Inputs} from "./types";
 
 type GetInput = (name: string, options?: InputOptions | undefined) => string;
+
+const log: Logger = new Logger();
 
 const parseJSON = <T>(getInput: GetInput, property: string): T | undefined => {
   const value = getInput(property);
@@ -25,6 +28,8 @@ export const parseInputs = (getInput: GetInput): Inputs => {
   if (!impactedFiles) {
     impactedFiles = [];
   }
+
+  log.debug(impactedFiles);
 
   return {
     repoURL,
