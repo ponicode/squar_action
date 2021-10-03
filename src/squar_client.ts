@@ -1,9 +1,6 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
-import { assert } from "console";
-import { Logger } from "tslog";
-import { EvaluateReturn, Inputs, FetchReportInput, Report } from "./types";
+import axios, { AxiosResponse } from "axios";
+import { EvaluateReturn, FetchReportInput, Inputs, Report } from "./types";
 
-const log: Logger = new Logger();
 /** 
 * Triggers SQUAR evaluate_pr endpoint
 * @param {Inputs} inputs - contains the inputs required for the endpoint
@@ -82,10 +79,8 @@ async function triggerSquarReport(inputs: FetchReportInput, repositoryId: number
         }).then((res: AxiosResponse) => {
             return res.data;
           }).then((report: Report) => {
-              log.debug(report);
-              return report;
+              resolve(report);
           }).catch((err: any) => {
-              log.debug("ERROR fetching report");
               reject(err);
           });
     });

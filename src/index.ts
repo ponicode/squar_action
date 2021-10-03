@@ -1,23 +1,51 @@
+import * as core from "@actions/core";
+import * as github from "@actions/github";
 import * as dotenv from "dotenv";
-import { Logger } from "tslog";
+import { parseInputs } from "./inputs";
+import { createAlertsMessage, createFullReportMessage } from "./markdown/markdown";
+import { generatePRComment } from "./pull_request/squar_report";
 import { triggerSquarEvaluate, triggerSquarReport } from "./squar_client";
 import { EvaluateReturn, FetchReportInput, Inputs, Report } from "./types";
 
 dotenv.config({ path: __dirname + "/.env" });
 
-const log: Logger = new Logger();
+function processInputs(): Inputs {
+    core.debug(`Parsing inputs`);
+    const inputs = parseInputs(core.getInput);
+    return inputs;
+}
 
-/** 
-* Checks all args are well defined
-* @param {string[]} args - arguments received from the command-line
-* @return {boolean} returns true if all arguments are well defined. False else.
-*/
-function check_args(args: string[]): boolean {
-    let result: boolean = true;
-    for (let i = 0; i < 4; i++ ) {
-        result = result && (args[i] !== undefined);
+async function triggerSQUARANalysis(inputs: Inputs): Promise<EvaluateReturn> {
+    core.debug("Triggering SQUAR processing");
+    core.debug(JSON.stringify(inputs));
+
+    // Trigger SQUAR evaluate_pr endpoint
+    const result: EvaluateReturn = await triggerSquarEvaluate(inputs);
+    if (!result.success) {
+        const errorMessage = result.message ? result.message : "Error Tgriggering SQUAR report";
+        core.setFailed(errorMessage);
     }
+    core.debug(JSON.stringify(result));
     return result;
+}
+
+async function fetchSQUARReport(triggerResult: EvaluateReturn, inputs: Inputs): Promise<Report | undefined> {
+    core.debug("Fetching SQUAR report");
+
+    // If repository_id is defined then retry fetchReport until we get it
+    if ((triggerResult.repositoryId !== undefined) && (process.env.FETCH_REPORT_RETRY_MILLISEC !== undefined)) {
+        const reportInputs: FetchReportInput = {
+            userToken: inputs.userToken,
+        };
+        // tslint:disable-next-line: max-line-length
+        const reportResult: Report = await triggerSquarReport(reportInputs, triggerResult.repositoryId, parseInt(process.env.FETCH_REPORT_RETRY_MILLISEC, 10));
+        return reportResult;
+    } else {
+        const errorMessage: string = "No Repository Id";
+        core.setFailed(errorMessage);
+        return undefined;
+    }
+
 }
 
 /** 
@@ -25,34 +53,27 @@ function check_args(args: string[]): boolean {
 * @param {string[]} args - arguments received from the command-line
 * @return {void} 
 */
-function main(args: string[]): void {
+async function run(): Promise<void> {
 
-    const inputs: Inputs = JSON.parse(args[0]);
+    try {
 
-    log.debug(inputs);
+        const inputs: Inputs = processInputs();
 
-    if (process.env.FETCH_REPORT_RETRY_MILLISEC !== undefined) {
-        // Trigger SQUAR evaluate_pr endpoint
-        triggerSquarEvaluate(inputs).then((result: EvaluateReturn) => {
-            log.debug(result);
-            const reportInputs: FetchReportInput = {
-                userToken: inputs.userToken,
-            };
+        const triggerResult: EvaluateReturn = await triggerSQUARANalysis(inputs);
 
-            // If repository_id is defined then retry fetchReport until we get it
-            if ((result.repositoryId !== undefined) && (process.env.FETCH_REPORT_RETRY_MILLISEC !== undefined)) {
-                // tslint:disable-next-line: max-line-length
-                triggerSquarReport(reportInputs, result.repositoryId, parseInt(process.env.FETCH_REPORT_RETRY_MILLISEC, 10)).then((reportResult: Report) => {
-                    log.debug(reportResult);
-                });
-            } else {
-                log.error("No Repository Id");
-            }
-        }).catch((result: EvaluateReturn) => {
-            log.debug(result);
-        });
+        const report: Report | undefined = await fetchSQUARReport(triggerResult, inputs);
+
+        void generatePRComment(createAlertsMessage(report?.suggestionsOnImpactedFiles, inputs.repoURL, inputs.branch));
+
+        const reportComment = await createFullReportMessage(report, inputs.repoURL, inputs.branch);
+        void generatePRComment(reportComment);
+
+    } catch (e) {
+        const error = e as Error;
+        core.debug(error.toString());
+        core.setFailed(error.message);
     }
 
 }
 
-main(process.argv.slice(2));
+void run();

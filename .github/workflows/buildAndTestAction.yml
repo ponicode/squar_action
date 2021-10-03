@@ -1,0 +1,23 @@
+name: "build-test"
+on: [pull_request] # rebuild any PRs and main branch changes
+
+jobs:
+  # make sure build/ci work properly
+  build_and_test:
+    runs-on: ubuntu-latest
+    env:
+      SQUAR_API_URL: "https://849a-93-2-157-33.ngrok.io"
+      FETCH_REPORT_RETRY_MILLISEC: 5000
+    steps:
+    - uses: actions/checkout@v1
+    - run: |
+        npm ci
+        npm run build
+    - uses: ./
+      with:
+        repoURL: "bbouffaut/lumber"
+        impactedFiles: "[\"services/key-generator.js\",\"services/event-sender.js\",\"services/spinners.js\",\"services/analyzer/database-analyzer.js\"]"
+        branch: "ponicode/test-quality-gate"
+        ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
+        githubToken: ${{ secrets.GITHUB_TOKEN }}
+
