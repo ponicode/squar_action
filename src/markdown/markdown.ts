@@ -30,7 +30,7 @@ function appendMessageWithAlerts(suggestionsOnImpactedFiles: TestAlert[] | undef
         // Third column: the criticity of the alert.
         message += `| ${alert.criticity}`;
          // 4th column: the link to go directly to the file.
-         message += `| [Open the function](${GITHUB_URL}/${repoURL}/blob/${branch}/${alert.file_path}#L${alert.line}})`;
+         message += `| [Bring me there](${GITHUB_URL}/${repoURL}/blob/${branch}/${alert.file_path}#L${alert.line}})`;
         message += "| \n";
     });
 
