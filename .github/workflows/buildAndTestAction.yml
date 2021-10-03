@@ -28,11 +28,12 @@ jobs:
       continue-on-error: true
       with:
         format: 'json'
+    - uses: nelonoel/branch-name@v1
     - uses: ./
       with:
         repoURL: ${{github.repository}}
         impactedFiles: ${{ steps.get_changed_files_simple.outputs.added_modified }}
-        branch: ${GITHUB_REF##*/}
+        branch: ${BRANCH_NAME}
         ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
         githubToken: ${{ secrets.GITHUB_TOKEN }}
 

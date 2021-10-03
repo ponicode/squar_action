@@ -37,7 +37,7 @@ function createAlertsMessage(suggestionsOnImpactedFiles: TestAlert[] | undefined
 
     let message: string = "## GREAT Job! There is no alert on the files updated in the PR\n";
 
-    if (suggestionsOnImpactedFiles) {
+    if ((suggestionsOnImpactedFiles) && (suggestionsOnImpactedFiles.length > 0)) {
 
         message = "## List of alerts identified by Ponicode SQUAR in the files of your PR\n";
 
@@ -52,7 +52,7 @@ function createAlertsMessage(suggestionsOnImpactedFiles: TestAlert[] | undefined
 function addAlertsToFullReportComment(fileName: string, report: Report, repoURL: string, branch: string): string {
     let message = readFileSync(fileName, "utf-8");
 
-    message += `## List of alerts identified by Ponicode SQUAR in your Project ${report.fullReport.repoName}\n`;
+    message += `## List of alerts identified by Ponicode SQUAR in your Project __*${report.fullReport.repoName}*__\n`;
     message += initMarkdownTable();
 
     message = appendMessageWithAlerts(report.fullReport.suggestions, message, repoURL, branch);
