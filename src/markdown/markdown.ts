@@ -16,7 +16,7 @@ function initMarkdownTable(): string {
 }
 
 function appendMessageWithAlerts(suggestionsOnImpactedFiles: TestAlert[] | undefined, 
-                                 initialMessage: string, repo: any, branch: string): string {
+                                 initialMessage: string, repoURL: string, branch: string): string {
 
     let message: string = initialMessage;
 
@@ -30,7 +30,7 @@ function appendMessageWithAlerts(suggestionsOnImpactedFiles: TestAlert[] | undef
         // Third column: the criticity of the alert.
         message += `| ${alert.criticity}`;
          // 4th column: the link to go directly to the file.
-         message += `| [Open the function](${GITHUB_URL}/${repo.owner}/${repo.repo}/blob/${branch}/${alert.file_path}#L${alert.line}})`;
+         message += `| [Open the function](${GITHUB_URL}/${repoURL}/blob/${branch}/${alert.file_path}#L${alert.line}})`;
         message += "| \n";
     });
 
@@ -56,13 +56,13 @@ function createAlertsMessage(suggestionsOnImpactedFiles: TestAlert[] | undefined
     return message;
 }
 
-function addAlertsToFullReportComment(fileName: string, report: Report, repo: any, branch: string): string {
+function addAlertsToFullReportComment(fileName: string, report: Report, repoURL: string, branch: string): string {
     let message = readFileSync(fileName, "utf-8");
 
     message += `## List of alerts identified by Ponicode SQUAR in your Project ${report.fullReport.repoName}\n`;
     message += initMarkdownTable();
 
-    message = appendMessageWithAlerts(report.fullReport.suggestions, message, repo, branch);
+    message = appendMessageWithAlerts(report.fullReport.suggestions, message, repoURL, branch);
 
     return message;
 }
@@ -83,7 +83,7 @@ async function generateMessageFromMDFile(file: string, report: FullReport, branc
 
 }
 
-async function createFullReportMessage(report: Report | undefined, repo: any, branch: string): Promise<string | undefined> {
+async function createFullReportMessage(report: Report | undefined, repoURL: string, branch: string): Promise<string | undefined> {
 
     if (report?.fullReport) {
 
@@ -91,7 +91,7 @@ async function createFullReportMessage(report: Report | undefined, repo: any, br
 
         await generateMessageFromMDFile(fileName, report?.fullReport, branch);
 
-        const message = addAlertsToFullReportComment(fileName, report, repo, branch);
+        const message = addAlertsToFullReportComment(fileName, report, repoURL, branch);
 
         return message;
 
