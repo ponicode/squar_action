@@ -1,0 +1,23 @@
+name: "build-test"
+on: [push] # rebuild any PRs and main branch changes
+
+jobs:
+  # make sure build/ci work properly
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - run: |
+        npm ci
+        npm run build
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: ./
+      with:
+        repoURL": "bbouffaut/lumber"
+        userToken": "8ddfba2c-a956-4527-a5b9-150440b10184"
+        impactedFiles": "[services/key-generator.js,services/event-sender.js,services/spinners.js,services/analyzer/database-analyzer.js]"
+        branch: "ponicode/test-quality-gate"
