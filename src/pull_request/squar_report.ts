@@ -23,7 +23,6 @@ async function generatePR(message: string | undefined ): Promise<void> {
   // get the inputs of the action. The "token" input
   // is not defined so far - we will come to it later.
   const githubToken = core.getInput("githubToken");
-  core.debug(githubToken);
 
   // the context does for example also include information
   // in the pull request or repository we are issued from
@@ -31,7 +30,7 @@ async function generatePR(message: string | undefined ): Promise<void> {
   const repo = context.repo;
   const pullRequestNumber = context.payload.pull_request?.number;
 
-  core.debug(`${pullRequestNumber}`);
+  core.debug(`Pull Request id: ${pullRequestNumber}`);
 
   // The Octokit is a helper, to interact with
   // the github REST interface.
@@ -44,7 +43,17 @@ async function generatePR(message: string | undefined ): Promise<void> {
 
         const octokit = github.getOctokit(githubToken);
 
-        const result = await octokit.rest.issues.createComment({
+        // Get all comments we currently have...
+        // (this is an asynchronous function)
+        const { data: comments } = await octokit.rest.issues.listComments({
+            owner: "Ponicode SQUAR",
+            repo: repo.repo,
+            issue_number: pullRequestNumber,
+        });
+
+        core.debug(JSON.stringify(comments));
+
+        await octokit.rest.issues.createComment({
             owner: "Ponicode SQUAR",
             repo: repo.repo,
             issue_number: pullRequestNumber,
@@ -53,7 +62,6 @@ async function generatePR(message: string | undefined ): Promise<void> {
 
     } catch(e) {
         const error = e as Error;
-        core.debug(error.message);
         core.setFailed(error.message);
     }
   }
