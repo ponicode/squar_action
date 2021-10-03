@@ -37,6 +37,7 @@
     "@octokit/types": "^6.31.3",
     "@types/axios": "^0.14.0",
     "axios": "^0.22.0",
+    "replace-in-file": "^6.2.0",
     "tslog": "^3.2.2"
   }
 }

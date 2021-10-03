@@ -2,6 +2,7 @@ import * as core from "@actions/core";
 import { readFileSync } from 'fs';
 import { FullReport, Report, TestAlert } from "../types";
 
+const replace = require("replace-in-file");
 
 function initMarkdownTable(): string {
     let message = "";
@@ -40,31 +41,37 @@ function createAlertsMessage(suggestionsOnImpactedFiles: TestAlert[] | undefined
     return message;
 }
 
-function generateMessageFromMDFile(message: string, report: FullReport): string {
-    const result: string = message;
-    result.replace("\%\{repo_name\}\%", report.repoName);
-    result.replace("\%\{grade\}\%", report.ponicodeScore);
-    result.replace("\%\{missing_test_suites\}\%", report.missingTestSuite ? `${report.missingTestSuite}` : "0");
-    result.replace("\%\{missing_test_cases\}\%", report.missingTestCases ? `${report.missingTestCases}` : "0");
-    result.replace("\%\{missing_edge_cases\}\%", report.missingEdgeCases ? `${report.missingEdgeCases}` : "0");
+async function generateMessageFromMDFile(file: string, report: FullReport) {
+    const options = {
+        files: file,
+        from: [/%repo_name%/g, /%grade%/g, /%missing_test_suites%/g, /%missing_test_cases%/g, /%missing_edge_cases%/g ],
+        to: [report.repoName, report.ponicodeScore,
+            report.missingTestSuite ? `${report.missingTestSuite}` : "0",
+            report.missingTestCases ? `${report.missingTestCases}` : "0",
+            report.missingEdgeCases ? `${report.missingEdgeCases}` : "0"],
+    };
 
-    return result;
+    const results = await replace(options);
+    core.debug(results);
+
 }
 
-function createFullReportMessage(report: Report | undefined): string | undefined {
-
-    let message: string | undefined;
+async function createFullReportMessage(report: Report | undefined): Promise<string | undefined> {
 
     if (report?.fullReport) {
 
-        const messageTemplate = readFileSync(__dirname + "/full_report.md", "utf-8");
-        core.debug(messageTemplate);
+        const fileName = __dirname + "/full_report.md";
 
-        message = generateMessageFromMDFile(messageTemplate, report?.fullReport);
+        await generateMessageFromMDFile(fileName, report?.fullReport);
 
+        const message = readFileSync(fileName, "utf-8");
+        core.debug(message);
+
+        return message;
+
+    } else {
+        return undefined;
     }
-
-    return message;
 
 }
 

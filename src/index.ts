@@ -65,7 +65,8 @@ async function run(): Promise<void> {
 
         void generatePRComment(createAlertsMessage(report?.suggestionsOnImpactedFiles));
 
-        void generatePRComment(createFullReportMessage(report));
+        const reportComment = await createFullReportMessage(report);
+        void generatePRComment(reportComment);
 
     } catch (e) {
         const error = e as Error;
