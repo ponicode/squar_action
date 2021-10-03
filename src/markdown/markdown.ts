@@ -14,6 +14,26 @@ function initMarkdownTable(): string {
     return message;
 }
 
+function appendMessageWithAlerts(suggestionsOnImpactedFiles: TestAlert[] | undefined, initialMessage: string): string {
+
+    let message: string = initialMessage;
+
+    suggestionsOnImpactedFiles?.forEach((alert: TestAlert) => {
+        // First Column: The file
+        // Please note the ` instead of ". This is TypeScripts
+        // format string. Everything in ${ } will be replaced.
+        message += `| ${alert.file_path}`;
+        // Second column: the line number
+        message += `| ${alert.line}`;
+        // Third column: the criticity of the alert.
+        message += `| ${alert.criticity}`;
+        message += "| \n";
+    });
+
+    return message;
+
+}
+
 // Create a markdown message from the two JSON.
 function createAlertsMessage(suggestionsOnImpactedFiles: TestAlert[] | undefined): string | undefined {
 
@@ -25,18 +45,18 @@ function createAlertsMessage(suggestionsOnImpactedFiles: TestAlert[] | undefined
 
         message += initMarkdownTable();
 
-        suggestionsOnImpactedFiles.forEach((alert: TestAlert) => {
-            // First Column: The file
-            // Please note the ` instead of ". This is TypeScripts
-            // format string. Everything in ${ } will be replaced.
-            message += `| ${alert.file_path}`;
-            // Second column: the line number
-            message += `| ${alert.line}`;
-            // Third column: the criticity of the alert.
-            message += `| ${alert.criticity}`;
-            message += "| \n";
-        });
+        message = appendMessageWithAlerts(suggestionsOnImpactedFiles, message);
     }
+
+    return message;
+}
+
+function addAlertsToFullReportComment(fileName: string, report: Report): string {
+    let message = readFileSync(fileName, "utf-8");
+
+    message += `## List of alerts identified by Ponicode SQUAR in your Project ${report.fullReport.repoName}\n`;
+
+    message = appendMessageWithAlerts(report.fullReport.suggestions, message);
 
     return message;
 }
@@ -64,7 +84,7 @@ async function createFullReportMessage(report: Report | undefined): Promise<stri
 
         await generateMessageFromMDFile(fileName, report?.fullReport);
 
-        const message = readFileSync(fileName, "utf-8");
+        const message = addAlertsToFullReportComment(fileName, report);
 
         return message;
 
