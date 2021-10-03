@@ -30,27 +30,38 @@ function check_args(args: string[]): boolean {
 */
 async function run(): Promise<void> {
 
-    core.debug(`Parsing inputs`);
-    const inputs = parseInputs(core.getInput);
+    try {
 
-    log.debug(inputs);
+        core.debug(`Parsing inputs`);
+        const inputs = parseInputs(core.getInput);
+        log.debug(inputs);
 
-    if (process.env.FETCH_REPORT_RETRY_MILLISEC !== undefined) {
-        // Trigger SQUAR evaluate_pr endpoint
-        const result: EvaluateReturn = await triggerSquarEvaluate(inputs);
-        log.debug(result);
-        const reportInputs: FetchReportInput = {
-            userToken: inputs.userToken,
-        };
+        core.debug("Triggering SQUAR processing");
 
-        // If repository_id is defined then retry fetchReport until we get it
-        if ((result.repositoryId !== undefined) && (process.env.FETCH_REPORT_RETRY_MILLISEC !== undefined)) {
-            // tslint:disable-next-line: max-line-length
-            const reportResult: Report = await triggerSquarReport(reportInputs, result.repositoryId, parseInt(process.env.FETCH_REPORT_RETRY_MILLISEC, 10));
-            log.debug(reportResult);
-        } else {
-            log.error("No Repository Id");
+        if (process.env.FETCH_REPORT_RETRY_MILLISEC !== undefined) {
+            // Trigger SQUAR evaluate_pr endpoint
+            const result: EvaluateReturn = await triggerSquarEvaluate(inputs);
+            log.debug(result);
+            const reportInputs: FetchReportInput = {
+                userToken: inputs.userToken,
+            };
+
+            core.debug("Fetching SQUAR report");
+
+            // If repository_id is defined then retry fetchReport until we get it
+            if ((result.repositoryId !== undefined) && (process.env.FETCH_REPORT_RETRY_MILLISEC !== undefined)) {
+                // tslint:disable-next-line: max-line-length
+                const reportResult: Report = await triggerSquarReport(reportInputs, result.repositoryId, parseInt(process.env.FETCH_REPORT_RETRY_MILLISEC, 10));
+                log.debug(reportResult);
+            } else {
+                log.error("No Repository Id");
+            }
         }
+
+    } catch (e) {
+        const error = e as Error;
+        core.debug(error.toString());
+        core.setFailed(error.message);
     }
 
 }
