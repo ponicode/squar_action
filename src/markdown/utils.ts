@@ -3,7 +3,7 @@ import { AlertKind, Criticity } from "../types";
 function initMarkdownTable(): string {
     let message = "";
     // Table Title
-    message += "| File | Line Number | Type of alert | Criticity of your function | Go to |\n";
+    message += "| File | Line Number | Type of alert | Criticity of the function | Go to |\n";
     // Table Column Definitions
     message += "| :--- | :---: | :---: | :---: | :---: |\n";
 
