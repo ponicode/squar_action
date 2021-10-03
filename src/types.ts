@@ -56,4 +56,4 @@ interface Report {
     suggestionsOnImpactedFiles: TestAlert[];
 }
 
-export { Inputs, EvaluateReturn, FetchReportInput, Report, TestAlert };
+export { Inputs, EvaluateReturn, FetchReportInput, Report, TestAlert, FullReport };

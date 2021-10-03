@@ -10,6 +10,9 @@ inputs:
   user_token:
     description: 'String: Ponicode SQUAR user token from Github Secrets'
     required: true
+  github_token:
+    description: 'GitHub token to generate some comments into the PR'
+    required: true
   impacted_files:
     description: 'String[]: List of the files updated in the PR'
     required: true
