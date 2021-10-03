@@ -46,7 +46,7 @@ async function generatePR(message: string | undefined ): Promise<void> {
         // Get all comments we currently have...
         // (this is an asynchronous function)
         const { data: comments } = await octokit.rest.issues.listComments({
-            owner: "Ponicode SQUAR",
+            owner: repo.owner,
             repo: repo.repo,
             issue_number: pullRequestNumber,
         });
@@ -54,7 +54,7 @@ async function generatePR(message: string | undefined ): Promise<void> {
         core.debug(JSON.stringify(comments));
 
         await octokit.rest.issues.createComment({
-            owner: "Ponicode SQUAR",
+            owner: repo.owner,
             repo: repo.repo,
             issue_number: pullRequestNumber,
             body: message,
