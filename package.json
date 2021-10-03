@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "nodemon -r dotenv/config src/index.ts",
-    "build": "rimraf ./build && tsc -p .",
+    "build": "rimraf ./dist && tsc -p . && cp ./src/markdown/*.md ./dist/markdown/",
     "start": "node -r dotenv/config dist/index.js"
   },
   "repository": {
