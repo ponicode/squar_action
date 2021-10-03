@@ -67,14 +67,15 @@ function addAlertsToFullReportComment(fileName: string, report: Report, repo: an
     return message;
 }
 
-async function generateMessageFromMDFile(file: string, report: FullReport) {
+async function generateMessageFromMDFile(file: string, report: FullReport, branch: string) {
     const options = {
         files: file,
-        from: [/%repo_name%/g, /%grade%/g, /%missing_test_suites%/g, /%missing_test_cases%/g, /%missing_edge_cases%/g ],
+        from: [/%repo_name%/g, /%grade%/g, /%missing_test_suites%/g, /%missing_test_cases%/g, /%missing_edge_cases%/g, /%branch%/g ],
         to: [report.repoName, report.ponicodeScore,
             report.missingTestSuite ? `${report.missingTestSuite}` : "0",
             report.missingTestCases ? `${report.missingTestCases}` : "0",
-            report.missingEdgeCases ? `${report.missingEdgeCases}` : "0"],
+            report.missingEdgeCases ? `${report.missingEdgeCases}` : "0",
+            branch ],
     };
 
     const results = await replace(options);
@@ -88,7 +89,7 @@ async function createFullReportMessage(report: Report | undefined, repo: any, br
 
         const fileName = __dirname + "/full_report.md";
 
-        await generateMessageFromMDFile(fileName, report?.fullReport);
+        await generateMessageFromMDFile(fileName, report?.fullReport, branch);
 
         const message = addAlertsToFullReportComment(fileName, report, repo, branch);
 
