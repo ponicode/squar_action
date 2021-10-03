@@ -30,8 +30,6 @@ async function generatePR(message: string | undefined ): Promise<void> {
   const repo = context.repo;
   const pullRequestNumber = context.payload.pull_request?.number;
 
-  core.debug(`Pull Request id: ${pullRequestNumber}`);
-
   // The Octokit is a helper, to interact with
   // the github REST interface.
   // You can look up the REST interface

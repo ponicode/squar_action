@@ -1,6 +1,7 @@
-import { FullReport, Report, TestAlert } from "../types";
+import * as core from "@actions/core";
 import { readFileSync } from 'fs';
-import { MessageChannel } from "worker_threads";
+import { FullReport, Report, TestAlert } from "../types";
+
 
 function initMarkdownTable(): string {
     let message = "";
@@ -56,8 +57,10 @@ function createFullReportMessage(report: Report | undefined): string | undefined
 
     if (report?.fullReport) {
 
-        message = readFileSync(__dirname + "/full_report.md", "utf-8");
-        message = generateMessageFromMDFile(message, report?.fullReport);
+        const messageTemplate = readFileSync(__dirname + "/full_report.md", "utf-8");
+        core.debug(messageTemplate);
+
+        message = generateMessageFromMDFile(messageTemplate, report?.fullReport);
 
     }
 
