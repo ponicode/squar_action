@@ -1,9 +1,6 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
-import { assert } from "console";
-import { Logger } from "tslog";
+import axios, { AxiosResponse } from "axios";
 import { EvaluateReturn, FetchReportInput, Inputs, Report } from "./types";
 
-const log: Logger = new Logger();
 /** 
 * Triggers SQUAR evaluate_pr endpoint
 * @param {Inputs} inputs - contains the inputs required for the endpoint
