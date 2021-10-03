@@ -51,14 +51,37 @@ async function generatePR(message: string | undefined ): Promise<void> {
             issue_number: pullRequestNumber,
         });
 
-        core.debug(JSON.stringify(comments));
-
-        await octokit.rest.issues.createComment({
-            owner: repo.owner,
-            repo: repo.repo,
-            issue_number: pullRequestNumber,
-            body: message,
+        // ... and check if there is already a comment by us
+        const comment = comments.find((comment) => {
+            if ((comment) && (comment.user) && (comment.body)) {
+                return (
+                    comment.user.login === "github-actions[bot]" &&
+                    comment.body.startsWith("## Result of Benchmark Tests\n")
+                );
+            }
         });
+
+        core.debug(JSON.stringify(comment));
+
+        // If yes, update that
+        if (comment) {
+            await octokit.rest.issues.updateComment({
+                owner: repo.owner,
+                repo: repo.repo,
+                comment_id: comment.id,
+                body: message,
+            });
+        // if not, create a new comment
+        } else {
+
+            await octokit.rest.issues.createComment({
+                owner: repo.owner,
+                repo: repo.repo,
+                issue_number: pullRequestNumber,
+                body: message,
+            });
+
+        }
 
     } catch(e) {
         const error = e as Error;
