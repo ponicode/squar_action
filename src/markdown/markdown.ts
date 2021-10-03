@@ -1,51 +1,10 @@
 import * as core from "@actions/core";
 import { readFileSync } from 'fs';
 import { AlertKind, Criticity, FullReport, Report, TestAlert } from "../types";
+import { initMarkdownTable, translateAlertType, translateCriticity } from "./utils";
 
 const replace = require("replace-in-file");
 const GITHUB_URL = "https://github.com";
-
-function initMarkdownTable(): string {
-    let message = "";
-    // Table Title
-    message += "| File | Line Number | Type of alert | Criticity of your function | Go to |\n";
-    // Table Column Definitions
-    message += "| :--- | :---: | :---: | :---: |\n";
-
-    return message;
-}
-
-function translateAlertType(alertKind: AlertKind | undefined): string | undefined {
-
-    const alertTable: {[key: string]: string} = {
-        edge_case: "Missing Edge Cases",
-        test_case: "Missing Test cases",
-        test_suite: "Misssing Tests",
-    };
-
-    if (alertKind) {
-        return alertTable[alertKind.toString()];
-    } else {
-        return undefined;
-    }
-
-}
-
-function translateCriticity(criticity: Criticity | undefined): string | undefined {
-
-    const criticityTable: {[key: string]: string} = {
-        orange: "Critical",
-        green: "Not Critical",
-        red: "Highly Critical",
-    };
-
-    if (criticity) {
-        return criticityTable[criticity.toString()];
-    } else {
-        return undefined;
-    }
-
-}
 
 function appendMessageWithAlerts(suggestionsOnImpactedFiles: TestAlert[] | undefined, 
                                  initialMessage: string, repoURL: string, branch: string): string {
