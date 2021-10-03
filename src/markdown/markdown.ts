@@ -56,7 +56,7 @@ function createFullReportMessage(report: Report | undefined): string | undefined
 
     if (report?.fullReport) {
 
-        message = readFileSync("./full_report.md", "utf-8");
+        message = readFileSync(__dirname + "markdown/full_report.md", "utf-8");
         message = generateMessageFromMDFile(message, report?.fullReport);
 
     }
