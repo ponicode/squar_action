@@ -3,18 +3,20 @@ import { readFileSync } from 'fs';
 import { FullReport, Report, TestAlert } from "../types";
 
 const replace = require("replace-in-file");
+const GITHUB_URL = "https://github.com/";
 
 function initMarkdownTable(): string {
     let message = "";
     // Table Title
-    message += "| File | Line Number | Type of alert |\n";
+    message += "| File | Line Number | Type of alert | Go to link |\n";
     // Table Column Definitions
-    message += "| :--- | :---: | :---: |\n";
+    message += "| :--- | :---: | :---: | :---: |\n";
 
     return message;
 }
 
-function appendMessageWithAlerts(suggestionsOnImpactedFiles: TestAlert[] | undefined, initialMessage: string): string {
+function appendMessageWithAlerts(suggestionsOnImpactedFiles: TestAlert[] | undefined, 
+                                 initialMessage: string, repo: any, branch: string): string {
 
     let message: string = initialMessage;
 
@@ -27,6 +29,8 @@ function appendMessageWithAlerts(suggestionsOnImpactedFiles: TestAlert[] | undef
         message += `| ${alert.line}`;
         // Third column: the criticity of the alert.
         message += `| ${alert.criticity}`;
+         // 4th column: the link to go directly to the file.
+         message += `| [Open the function](${GITHUB_URL}/${repo.owner}/${repo.repo}/blob/${branch}/${alert.file_path}#L${alert.line}})`;
         message += "| \n";
     });
 
@@ -35,7 +39,8 @@ function appendMessageWithAlerts(suggestionsOnImpactedFiles: TestAlert[] | undef
 }
 
 // Create a markdown message from the two JSON.
-function createAlertsMessage(suggestionsOnImpactedFiles: TestAlert[] | undefined): string | undefined {
+function createAlertsMessage(suggestionsOnImpactedFiles: TestAlert[] | undefined, 
+                             repo: any, branch: string): string | undefined {
 
     let message: string = "## GREAT Job! There is no alert on the files updated in the PR\n";
 
@@ -45,19 +50,19 @@ function createAlertsMessage(suggestionsOnImpactedFiles: TestAlert[] | undefined
 
         message += initMarkdownTable();
 
-        message = appendMessageWithAlerts(suggestionsOnImpactedFiles, message);
+        message = appendMessageWithAlerts(suggestionsOnImpactedFiles, message, repo, branch);
     }
 
     return message;
 }
 
-function addAlertsToFullReportComment(fileName: string, report: Report): string {
+function addAlertsToFullReportComment(fileName: string, report: Report, repo: any, branch: string): string {
     let message = readFileSync(fileName, "utf-8");
 
     message += `## List of alerts identified by Ponicode SQUAR in your Project ${report.fullReport.repoName}\n`;
     message += initMarkdownTable();
 
-    message = appendMessageWithAlerts(report.fullReport.suggestions, message);
+    message = appendMessageWithAlerts(report.fullReport.suggestions, message, repo, branch);
 
     return message;
 }
@@ -77,7 +82,7 @@ async function generateMessageFromMDFile(file: string, report: FullReport) {
 
 }
 
-async function createFullReportMessage(report: Report | undefined): Promise<string | undefined> {
+async function createFullReportMessage(report: Report | undefined, repo: any, branch: string): Promise<string | undefined> {
 
     if (report?.fullReport) {
 
@@ -85,7 +90,7 @@ async function createFullReportMessage(report: Report | undefined): Promise<stri
 
         await generateMessageFromMDFile(fileName, report?.fullReport);
 
-        const message = addAlertsToFullReportComment(fileName, report);
+        const message = addAlertsToFullReportComment(fileName, report, repo, branch);
 
         return message;
 

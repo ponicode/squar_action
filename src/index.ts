@@ -58,14 +58,18 @@ async function run(): Promise<void> {
     try {
 
         const inputs: Inputs = processInputs();
+        // the context does for example also include information
+        // in the pull request or repository we are issued from
+        const context = github.context;
+        const repo = context.repo;
 
         const triggerResult: EvaluateReturn = await triggerSQUARANalysis(inputs);
 
         const report: Report | undefined = await fetchSQUARReport(triggerResult, inputs);
 
-        void generatePRComment(createAlertsMessage(report?.suggestionsOnImpactedFiles));
+        void generatePRComment(createAlertsMessage(report?.suggestionsOnImpactedFiles, repo, inputs.branch));
 
-        const reportComment = await createFullReportMessage(report);
+        const reportComment = await createFullReportMessage(report, repo, inputs.branch);
         void generatePRComment(reportComment);
 
     } catch (e) {
