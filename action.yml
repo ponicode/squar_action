@@ -17,13 +17,6 @@ inputs:
     description: 'String: branch on which the PR applies'
     required: true
     default: 'master'
-outputs:
-  conclusion:
-    description: "Conclusion of the action. Might be: success, failure, neutral, cancelled, timed_out or action_required"
-  full_report_md_file: #Full report of SQUAR stored into a MD file to be displayed as output_text_description_file in github-checks action
-    description: "SQUAR report on the whole repository with the specified branch"
-  report_on_impacted_files_annotations: #liste of alerts coming from the impacted files to be displayed as annotations in github-checks action
-    description: "SQUAR analysis on the impacted files only"
 runs:
   using: 'node12'
   main: 'dist/index.js'
