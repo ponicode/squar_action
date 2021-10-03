@@ -16,6 +16,7 @@ inputs:
   branch:
     description: 'String: branch on which the PR applies'
     required: true
+    default: 'master'
 outputs:
   conclusion:
     description: "Conclusion of the action. Might be: success, failure, neutral, cancelled, timed_out or action_required"
