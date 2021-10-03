@@ -55,6 +55,7 @@ function addAlertsToFullReportComment(fileName: string, report: Report): string 
     let message = readFileSync(fileName, "utf-8");
 
     message += `## List of alerts identified by Ponicode SQUAR in your Project ${report.fullReport.repoName}\n`;
+    message += initMarkdownTable();
 
     message = appendMessageWithAlerts(report.fullReport.suggestions, message);
 
