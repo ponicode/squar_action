@@ -28,12 +28,14 @@ jobs:
       continue-on-error: true
       with:
         format: 'json'
-    - uses: nelonoel/branch-name@v1
+    - id: extract_branch
+      if: github.event_name == 'pull_request'
+      run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
     - uses: ./
       with:
         repoURL: ${{github.repository}}
         impactedFiles: ${{ steps.get_changed_files_simple.outputs.added_modified }}
-        branch: ${BRANCH_NAME}
+        branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }}
         ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
         githubToken: ${{ secrets.GITHUB_TOKEN }}
 
