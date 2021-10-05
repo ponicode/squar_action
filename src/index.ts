@@ -2,7 +2,7 @@ import * as core from "@actions/core";
 import * as github from "@actions/github";
 import * as dotenv from "dotenv";
 import { parseInputs } from "./inputs";
-import { createAlertsMessage, createFullReportMessage } from "./markdown/markdown";
+import { createAlertsMessage, createFullReportMessage, createSQUARErrorMessage } from "./markdown/markdown";
 import { generatePRComment } from "./pull_request/squar_report";
 import { triggerSquarEvaluate, triggerSquarReport } from "./squar_client";
 import { EvaluateReturn, FetchReportInput, Inputs, Report } from "./types";
@@ -23,7 +23,9 @@ async function triggerSQUARANalysis(inputs: Inputs): Promise<EvaluateReturn> {
     const result: EvaluateReturn = await triggerSquarEvaluate(inputs);
     if (!result.success) {
         const errorMessage = result.message ? result.message : "Error Tgriggering SQUAR report";
-        core.setFailed(errorMessage);
+        //core.setFailed(errorMessage);
+        void generatePRComment(createSQUARErrorMessage(result.message));
+
     }
     core.debug(JSON.stringify(result));
     return result;

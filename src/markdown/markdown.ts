@@ -94,4 +94,14 @@ async function createFullReportMessage(report: Report | undefined, repoURL: stri
 
 }
 
-export { createAlertsMessage, createFullReportMessage };
+function createSQUARErrorMessage(errorMessage: string | undefined): string {
+    const message = `## An error occured while trying to analyse your PR: ${errorMessage}\n
+    # Here are some tips\n
+    - Did you login and get a SQUAR token here? [Ponicode SQUAR](https://squar.ponicode.com)\n
+    - Did you setup the token in your Github Secrets with the right Id ? (PONICODE_SQUAR_TOKEN by default)\n
+    If so, then contact us via our [Community Slack] (https://join.slack.com/t/ponicode-community/shared_invite/zt-fiq4fhkg-DE~a_FkJ7xtiZxW7efyA4Q)`;
+
+    return message;
+}
+
+export { createAlertsMessage, createFullReportMessage, createSQUARErrorMessage };
