@@ -67,7 +67,8 @@ async function run(): Promise<void> {
             const report: Report | undefined = await fetchSQUARReport(triggerResult, inputs);
 
             if (report !== undefined) {
-                void generatePRComment(createAlertsMessage(report.suggestionsOnImpactedFiles, inputs.repoURL, inputs.branch));
+                void generatePRComment(createAlertsMessage(report.suggestionsOnImpactedFiles,
+                inputs.repoURL, inputs.branch));
 
                 const reportComment = await createFullReportMessage(report, inputs.repoURL, inputs.branch);
                 void generatePRComment(reportComment);
