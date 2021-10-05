@@ -1,5 +1,7 @@
 name: "build-test"
-on: [pull_request] # rebuild any PRs and main branch changes
+on:
+  pull_request:
+    types: [ edited, synchronize ]  # rebuild any PRs and main branch changes
 
 jobs:
   # make sure build/ci work properly
