@@ -15,7 +15,7 @@ function processInputs(): Inputs {
     return inputs;
 }
 
-async function triggerSQUARANalysis(inputs: Inputs): Promise<EvaluateReturn> {
+async function triggerSQUARANalysis(inputs: Inputs): Promise<EvaluateReturn | undefined> {
     core.debug("Triggering SQUAR processing");
     core.debug(JSON.stringify(inputs));
 
@@ -24,8 +24,8 @@ async function triggerSQUARANalysis(inputs: Inputs): Promise<EvaluateReturn> {
     if (!result.success) {
         const errorMessage = result.message ? result.message : "Error Tgriggering SQUAR report";
         //core.setFailed(errorMessage);
-        void generatePRComment(createSQUARErrorMessage(result.message));
-
+        void generatePRComment(createSQUARErrorMessage(errorMessage));
+        return ;
     }
     core.debug(JSON.stringify(result));
     return result;
@@ -61,14 +61,20 @@ async function run(): Promise<void> {
 
         const inputs: Inputs = processInputs();
 
-        const triggerResult: EvaluateReturn = await triggerSQUARANalysis(inputs);
+        const triggerResult: EvaluateReturn | undefined = await triggerSQUARANalysis(inputs);
 
-        const report: Report | undefined = await fetchSQUARReport(triggerResult, inputs);
+        if (triggerResult !== undefined) {
+            const report: Report | undefined = await fetchSQUARReport(triggerResult, inputs);
 
-        void generatePRComment(createAlertsMessage(report?.suggestionsOnImpactedFiles, inputs.repoURL, inputs.branch));
+            if (report !== undefined) {
+                void generatePRComment(createAlertsMessage(report.suggestionsOnImpactedFiles, inputs.repoURL, inputs.branch));
 
-        const reportComment = await createFullReportMessage(report, inputs.repoURL, inputs.branch);
-        void generatePRComment(reportComment);
+                const reportComment = await createFullReportMessage(report, inputs.repoURL, inputs.branch);
+                void generatePRComment(reportComment);
+
+            }
+
+        }
 
     } catch (e) {
         const error = e as Error;
