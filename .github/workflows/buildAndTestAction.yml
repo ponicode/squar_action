@@ -19,6 +19,7 @@ jobs:
         npm install -g ponicode
         if [ ! -d $HOME/.config ]; then mkdir $HOME/.config; elif [ ! -d $HOME/.config/ponicode ]; then mkdir $HOME/.config/ponicode; fi
         jq -n --arg token "${{ secrets.PONICODE_TOKEN }}" '{ auth_token: $token }' > $HOME/.config/ponicode/settings.json
+        cat $HOME/.config/ponicode/settings.json
         ponicode login
     #- uses: ./
     #  with:
