@@ -25,15 +25,22 @@ class CLI {
             for (const file of files) {
                 if (file !== undefined) {
                     const testName: string = file.split(".")[0] + "_test." + file.split(".").pop();
-                    const fileContent = fs.readFileSync(testName, "utf-8");
 
-                    if (file) {
-                        const testFile = {
-                            filePath: testName,
-                            content: fileContent,
-                        };
-                        result.push(testFile);
+                    try {
+                        const fileContent = fs.readFileSync(testName, "utf-8");
+
+                        if (file) {
+                            const testFile = {
+                                filePath: testName,
+                                content: fileContent,
+                            };
+                            result.push(testFile);
+                        }
+                    } catch (e) {
+                        const error = e as Error;
+                        core.debug(error.message);
                     }
+
                 }
 
             }
@@ -47,8 +54,6 @@ class CLI {
         const execProcess = exec(command, { 'encoding': 'utf8' }, (error, stdout) => {
             core.debug(`exec stdout: ${stdout} error: ${error}`);
         });
-        core.debug("spawn");
-        core.debug(execProcess.spawnfile);
         execProcess.on("spawn", () => {
             core.debug("spawn on spawn");
         });
