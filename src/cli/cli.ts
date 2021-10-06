@@ -24,7 +24,7 @@ class CLI {
         if (files !== undefined) {
             for (const file of files) {
                 if (file !== undefined) {
-                    const testName: string = file.split(".")[0] + "_test." + file.split(".").pop();
+                    const testName: string = file.split(".")[0] + ".test." + file.split(".").pop();
 
                     try {
                         const fileContent = fs.readFileSync(testName, "utf-8");
