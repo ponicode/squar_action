@@ -1,4 +1,6 @@
-import { AlertKind, Criticity } from "../types";
+import { AlertKind, Criticity, TestAlert } from "../types";
+
+const GITHUB_URL = "https://github.com";
 
 function initMarkdownTable(): string {
     let message = "";
@@ -42,4 +44,14 @@ function translateCriticity(criticity: Criticity | undefined): string | undefine
 
 }
 
-export { initMarkdownTable, translateAlertType, translateCriticity }
+function buildGithubFileURL(alert: TestAlert, repoURL: string, branch: string): string {
+    const message = `[Bring me there](${GITHUB_URL}/${repoURL}/blob/${branch}/${alert.file_path}#L${alert.line}})`;
+    return message;
+}
+
+function buildGithubSecretURL(repoURL: string): string {
+    const message = `[Configure my secret](${GITHUB_URL}/${repoURL}/settings/secrets/actions})`;
+    return message;
+}
+
+export { initMarkdownTable, translateAlertType, translateCriticity, buildGithubFileURL, buildGithubSecretURL };

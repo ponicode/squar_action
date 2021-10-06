@@ -1,10 +1,9 @@
 import * as core from "@actions/core";
 import { readFileSync } from 'fs';
 import { AlertKind, Criticity, FullReport, Report, TestAlert } from "../types";
-import { initMarkdownTable, translateAlertType, translateCriticity } from "./utils";
+import { buildGithubFileURL, buildGithubSecretURL, initMarkdownTable, translateAlertType, translateCriticity } from "./utils";
 
 const replace = require("replace-in-file");
-const GITHUB_URL = "https://github.com";
 
 function appendMessageWithAlerts(suggestionsOnImpactedFiles: TestAlert[] | undefined, 
                                  initialMessage: string, repoURL: string, branch: string): string {
@@ -23,8 +22,8 @@ function appendMessageWithAlerts(suggestionsOnImpactedFiles: TestAlert[] | undef
         // 4th column: the criticity of the function.
         message += `| <span style="color:${alert.criticity}">**${translateCriticity(alert.criticity)}**</span>`;
          // 5th column: the link to go directly to the file.
-         message += `| [Bring me there](${GITHUB_URL}/${repoURL}/blob/${branch}/${alert.file_path}#L${alert.line}})`;
-        message += "| \n";
+        message += `| ${buildGithubFileURL(alert, repoURL, branch)}`;
+        message += "|\n";
     });
 
     return message;
@@ -94,12 +93,13 @@ async function createFullReportMessage(report: Report | undefined, repoURL: stri
 
 }
 
-async function createSQUARErrorMessage(errorMessage: string | undefined): Promise<string> {
+async function createSQUARErrorMessage(errorMessage: string | undefined, repoURL: string): Promise<string> {
     const fileName = __dirname + "/error_message.md";
+    const url = buildGithubSecretURL(repoURL);
     const options = {
         files: fileName,
-        from: [/%errorMessage%/g],
-        to: [errorMessage],
+        from: [/%errorMessage%/g, /%url%/g],
+        to: [errorMessage, url],
     };
 
     await replace(options);
