@@ -9,7 +9,7 @@ function readTestFiles(files: string[]): TestFile[] {
 
     for (const file of files) {
         if (file !== undefined) {
-            const testName: string = file.split(".")[0] + "_test" + file.split(".").pop();
+            const testName: string = file.split(".")[0] + "_test." + file.split(".").pop();
             const fileContent = fs.readFileSync(testName, "utf-8");
 
             if (file) {
