@@ -41,5 +41,5 @@ jobs:
         branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }}
         ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
         githubToken: ${{ secrets.GITHUB_TOKEN }}
-        bootstrap_ut: 'true'
+        bootstrapUT: 'true'
 
