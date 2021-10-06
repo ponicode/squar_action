@@ -26,7 +26,8 @@ async function triggerSQUARANalysis(inputs: Inputs): Promise<EvaluateReturn | un
     if (!result.success) {
         const errorMessage = result.message ? result.message : "Error Tgriggering SQUAR report";
         //core.setFailed(errorMessage);
-        void generatePRComment(createSQUARErrorMessage(errorMessage));
+        const message = await createSQUARErrorMessage(errorMessage);
+        void generatePRComment(message);
         return ;
     }
     core.debug(JSON.stringify(result));
