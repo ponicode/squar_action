@@ -16,6 +16,15 @@ jobs:
         npm ci
         npm run build
         npm install -g ponicode
+        if [ ! -d $HOME/.config ]; then mkdir $HOME/.config; elif [ ! -d $HOME/.config/ponicode ]; then mkdir $HOME/.config/ponicode; fi
+    # Copy Ponicode token in the settings file expected by Ponicode CLI
+    - name: create-json
+      id: create-json
+      uses: jsdaniell/create-json@1.1.2
+      with:
+        name: "settings.json"
+        json: "{ 'auth_token': ${{ secrets.PONICODE_TOKEN }}"
+        dir: '$HOME/.config/ponicode/'
     #- uses: ./
     #  with:
     #    repoURL: "bbouffaut/lumber"
