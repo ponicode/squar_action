@@ -23,6 +23,7 @@ const parseInputs = (getInput: GetInput): Inputs => {
   let impactedFiles = parseJSON<string[]>(getInput, "impactedFiles");
   const branch = getInput("branch", { required: true});
   const githubToken = getInput("githubToken", {required: true});
+  const bootstrapUT = getInput("bootstrapUT", {required: true});
 
   if (!impactedFiles) {
     impactedFiles = [];
@@ -34,6 +35,7 @@ const parseInputs = (getInput: GetInput): Inputs => {
     impactedFiles,
     branch,
     githubToken,
+    bootstrapUT,
   };
 };
 

@@ -79,7 +79,7 @@ async function run(): Promise<void> {
 
                 core.setOutput("impacted_files", impactedFiles);
 
-                if (inputs.bootstrap_ut === "true") {
+                if (inputs.bootstrapUT === "true") {
                     startCLI(impactedFiles);
                 }
 

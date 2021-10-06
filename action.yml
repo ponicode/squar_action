@@ -20,7 +20,7 @@ inputs:
     description: 'String: branch on which the PR applies'
     required: true
     default: 'master'
-  bootstrap_ut:
+  bootstrapUT:
     description: 'Generate unit-Tests bootstrap on files of the PR that have an alert'
     required: true
     default: 'true'
