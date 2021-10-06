@@ -10,13 +10,14 @@ jobs:
     env:
       SQUAR_API_URL: "http://e417-195-68-106-70.ngrok.io"
       FETCH_REPORT_RETRY_MILLISEC: 5000
+      HOME: "/home/runner"
     steps:
     - uses: actions/checkout@v1
     - run: |
         npm ci
         npm run build
         npm install -g ponicode
-        if [ ! -d $HOME/.config ]; then mkdir $HOME/.config; elif [ ! -d $HOME/.config/ponicode ]; then mkdir $HOME/.config/ponicode; fi
+        if [ ! -d ${{ env.HOME }}/.config ]; then mkdir ${{ env.HOME }}/.config; elif [ ! -d ${{ env.HOME }}/.config/ponicode ]; then mkdir ${{ env.HOME }}/.config/ponicode; fi
     # Copy Ponicode token in the settings file expected by Ponicode CLI
     - name: create-json
       id: create-json
@@ -24,7 +25,7 @@ jobs:
       with:
         name: "settings.json"
         json: "{ 'auth_token': '${{ secrets.PONICODE_TOKEN }}'"
-        dir: '$HOME/.config/ponicode/'
+        dir: '${{ env.HOME }}/.config/ponicode/'
     #- uses: ./
     #  with:
     #    repoURL: "bbouffaut/lumber"
