@@ -26,6 +26,7 @@ async function triggerSQUARANalysis(inputs: Inputs): Promise<EvaluateReturn | un
     if (!result.success) {
         const errorMessage = result.message ? result.message : "Error Tgriggering SQUAR report";
         //core.setFailed(errorMessage);
+        // Push an error message in PR comment
         const message = await createSQUARErrorMessage(errorMessage);
         void generatePRComment(message);
         return ;
@@ -47,6 +48,9 @@ async function fetchSQUARReport(triggerResult: EvaluateReturn, inputs: Inputs): 
         return reportResult;
     } else {
         const errorMessage: string = "No Repository Id";
+        // Push an error message in PR comment
+        const message = await createSQUARErrorMessage(errorMessage);
+        void generatePRComment(message);
         core.setFailed(errorMessage);
         return undefined;
     }

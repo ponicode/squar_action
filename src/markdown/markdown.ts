@@ -102,8 +102,10 @@ async function createSQUARErrorMessage(errorMessage: string | undefined): Promis
         to: [errorMessage],
     };
 
-    const result = await replace(options);
-    return result;
+    await replace(options);
+
+    const message = readFileSync(fileName, "utf-8");
+    return message;
 }
 
 export { createAlertsMessage, createFullReportMessage, createSQUARErrorMessage };
