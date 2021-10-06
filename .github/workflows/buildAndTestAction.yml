@@ -15,6 +15,7 @@ jobs:
     - run: |
         npm ci
         npm run build
+        npm run -g install ponicode
     #- uses: ./
     #  with:
     #    repoURL: "bbouffaut/lumber"
