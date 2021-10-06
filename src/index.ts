@@ -1,6 +1,8 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 import * as dotenv from "dotenv";
+import { startCLI } from "./cli/cli";
+import { extractImpactedFilesFromReport } from "./cli/utils";
 import { parseInputs } from "./inputs";
 import { createAlertsMessage, createFullReportMessage, createSQUARErrorMessage } from "./markdown/markdown";
 import { generatePRComment } from "./pull_request/squar_report";
@@ -72,6 +74,14 @@ async function run(): Promise<void> {
 
                 const reportComment = await createFullReportMessage(report, inputs.repoURL, inputs.branch);
                 void generatePRComment(reportComment);
+
+                const impactedFiles = extractImpactedFilesFromReport(report);
+
+                core.setOutput("impacted_files", impactedFiles);
+
+                if (inputs.bootstrap_ut === "true") {
+                    startCLI(impactedFiles);
+                }
 
             }
 

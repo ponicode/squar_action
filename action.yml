@@ -20,6 +20,13 @@ inputs:
     description: 'String: branch on which the PR applies'
     required: true
     default: 'master'
+  bootstrap_ut:
+    description: 'Generate unit-Tests bootstrap on files of the PR that have an alert'
+    required: true
+    default: 'true'
+outputs:
+    impacted_files:
+      description: 'list of files where there is an alert'
 runs:
   using: 'node12'
   main: 'dist/index.js'
