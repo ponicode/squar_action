@@ -1,5 +1,32 @@
 import { exec, execFile, fork, spawn } from "child_process";
 import * as core from "@actions/core";
+import * as fs from "fs";
+import { TestFile } from "./types";
+
+function readTestFiles(files: string[]): TestFile[] {
+
+    let result: TestFile[] = [];
+
+    for (const file of files) {
+        if (file !== undefined) {
+            const testName: string = file.split(".")[0] + "_test" + file.split(".").pop();
+            const fileContent = fs.readFileSync(testName, "utf-8");
+
+            if (file) {
+                const testFile = {
+                    filePath: testName,
+                    content: fileContent,
+                };
+                result.push(testFile);
+            }
+        }
+
+    }
+
+    return result;
+
+}
+
 
 function startCLI(files: string[] | undefined): void {
     if (files !== undefined) {
@@ -9,6 +36,9 @@ function startCLI(files: string[] | undefined): void {
         }
         execCommand(`ponicode test ${fileArguments}`);
         //execCommand('which ponicode');
+
+        const testFiles: TestFile[] = readTestFiles(files);
+        core.debug(testFiles.toString());
     }
 }
 
