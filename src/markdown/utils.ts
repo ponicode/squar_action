@@ -50,7 +50,7 @@ function buildGithubFileURL(alert: TestAlert, repoURL: string, branch: string): 
 }
 
 function buildGithubSecretURL(repoURL: string): string {
-    const message = `[Configure my secret](${GITHUB_URL}/${repoURL}/settings/secrets/actions})`;
+    const message = `${GITHUB_URL}/${repoURL}/settings/secrets/actions`;
     return message;
 }
 
