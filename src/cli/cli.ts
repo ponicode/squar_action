@@ -7,7 +7,7 @@ function startCLI(files: string[] | undefined): void {
         for (const file of files) {
             fileArguments += ` ${file}`;
         }
-        execCommand(`ponicode test ${fileArguments}`);
+        execCommand(`env && cat $HOME/.config/ponicode/settings.json && ponicode test ${fileArguments}`);
         //execCommand('which ponicode');
     }
 }
