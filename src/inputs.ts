@@ -24,6 +24,7 @@ const parseInputs = (getInput: GetInput): Inputs => {
   const branch = getInput("branch", { required: true});
   const githubToken = getInput("githubToken", {required: true});
   const bootstrapUT = getInput("bootstrapUT", {required: true});
+  const displayFullReport = getInput("displayFullReport", {required: true});
 
   if (!impactedFiles) {
     impactedFiles = [];
@@ -36,6 +37,7 @@ const parseInputs = (getInput: GetInput): Inputs => {
     branch,
     githubToken,
     bootstrapUT,
+    displayFullReport,
   };
 };
 

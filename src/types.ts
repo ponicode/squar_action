@@ -6,6 +6,7 @@ interface Inputs {
     branch: string;
     githubToken: string;
     bootstrapUT: string;
+    displayFullReport: string;
 }
 
 // SQUAR evalutaPR endpoint Return type

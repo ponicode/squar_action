@@ -24,6 +24,10 @@ inputs:
     description: 'Generate unit-Tests bootstrap on files of the PR that have an alert'
     required: true
     default: 'true'
+  displayFullReport:
+    description: 'Display Poincode SQUAR report of the full repository in PR (in addition to the report on impacted files only)'
+    required: true
+    default: 'true'
 outputs:
     impacted_files:
       description: 'list of files where there is an alert'

@@ -77,8 +77,10 @@ async function run(): Promise<void> {
                 void generatePRComment(createAlertsMessage(report.suggestionsOnImpactedFiles,
                 inputs.repoURL, inputs.branch));
 
-                const reportComment = await createFullReportMessage(report, inputs.repoURL, inputs.branch);
-                void generatePRComment(reportComment);
+                if (inputs.displayFullReport === "true") {
+                    const reportComment = await createFullReportMessage(report, inputs.repoURL, inputs.branch);
+                    void generatePRComment(reportComment);
+                }
 
                 const impactedFiles = extractImpactedFilesFromReport(report);
 
