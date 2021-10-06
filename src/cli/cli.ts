@@ -66,7 +66,7 @@ class CLI {
         execProcess.on("close", (code: number, args: any[]) => {
             core.debug(`spawn on close code: ${code} args: ${args}`);
             const testFiles: TestFile[] = this.readTestFiles(this.files);
-            core.debug(testFiles.toString());
+            core.debug(JSON.stringify(testFiles));
         });
     }
 
