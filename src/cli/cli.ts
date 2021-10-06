@@ -7,7 +7,7 @@ function startCLI(files: string[] | undefined): void {
         for (const file of files) {
             fileArguments += ` ${file}`;
         }
-        execCommand(`ponicode login && ponicode test ${fileArguments}`);
+        execCommand(`ponicode test ${fileArguments}`);
         //execCommand('which ponicode');
     }
 }
