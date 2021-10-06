@@ -17,9 +17,10 @@ jobs:
         npm ci
         npm run build
         npm install -g ponicode
+        apt install jq
         if [ ! -d $HOME/.config ]; then mkdir $HOME/.config; elif [ ! -d $HOME/.config/ponicode ]; then mkdir $HOME/.config/ponicode; fi
         echo '{ "auth_token": "${{ secrets.PONICODE_TOKEN }}" }' > $HOME/.config/ponicode/settings.json
-        cat $HOME/.config/ponicode/settings.json
+        jq -n --arg token "${{ secrets.PONICODE_TOKEN }}" '{ auth_token: $token }' > $HOME/.config/ponicode/settings.json
     #- uses: ./
     #  with:
     #    repoURL: "bbouffaut/lumber"
