@@ -10,7 +10,7 @@ class CLI {
     private files: string[] | undefined;
 
     public login(inputs: Inputs): void {
-        core.debug("uthenticating Ponicode CLI");
+        core.debug("Authenticating Ponicode CLI");
         Login.setXdgConfigToken(inputs);
 
         core.debug("Loging Ponicode CLI");
