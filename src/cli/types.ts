@@ -3,4 +3,8 @@ interface TestFile {
     content: string;
 }
 
-export { TestFile };
+interface Settings {
+    "auth.token": string | undefined;
+}
+
+export { TestFile, Settings };

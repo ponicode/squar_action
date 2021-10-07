@@ -23,6 +23,21 @@ class Markdown {
         return message;
     }
 
+    static async createUTErrorMessage(errorMessage: string | undefined, repoURL: string): Promise<string> {
+        const fileName = __dirname + "/ut_error_message.md";
+        const url = buildGithubSecretURL(repoURL);
+        const options = {
+            files: fileName,
+            from: [/%errorMessage%/g, /%url%/g],
+            to: [errorMessage, url],
+        };
+
+        await replace(options);
+
+        const message = readFileSync(fileName, "utf-8");
+        return message;
+    }
+
     private branch: string;
     private repoURL: string;
     private report: Report;

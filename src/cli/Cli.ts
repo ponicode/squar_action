@@ -1,11 +1,18 @@
 import * as core from "@actions/core";
 import { exec, execFile, fork, spawn } from "child_process";
 import * as fs from "fs";
+import { Inputs } from "../types";
+import Login from "./Login";
 import { TestFile } from "./types";
 
 class CLI {
 
     private files: string[] | undefined;
+
+    public login(inputs: Inputs): void {
+        Login.setXdgConfigToken(inputs);
+        this.execCommand(`ponicode login`);
+    }
 
     public startCLI(files: string[] | undefined): void {
         if (files !== undefined) {
