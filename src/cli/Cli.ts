@@ -10,7 +10,10 @@ class CLI {
     private files: string[] | undefined;
 
     public login(inputs: Inputs): void {
+        core.debug("uthenticating Ponicode CLI");
         Login.setXdgConfigToken(inputs);
+
+        core.debug("Loging Ponicode CLI");
         this.execCommand(`ponicode login`);
     }
 
@@ -74,7 +77,9 @@ class CLI {
         execProcess.on("close", (code: number, args: any[]) => {
             core.debug(`spawn on close code: ${code} args: ${args}`);
             const testFiles: TestFile[] = this.readTestFiles(this.files);
-            core.debug(JSON.stringify(testFiles));
+            if ((testFiles !== undefined) && (testFiles.length > 0)) {
+                core.debug(JSON.stringify(testFiles));
+            }
         });
     }
 
