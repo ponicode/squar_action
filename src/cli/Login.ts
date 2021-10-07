@@ -22,6 +22,9 @@ class Login {
 
             fs.writeFileSync(configFile, JSON.stringify(settings, null, 4));
 
+            const confContent = fs.readFileSync(configFile, 'utf-8');
+            core.debug(confContent);
+
         } catch (e) {
             const error: Error = e as Error;
             const errorMessage = `Failed to locate settings folder: ${error.message}`;
