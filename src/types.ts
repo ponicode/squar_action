@@ -1,12 +1,13 @@
 // Action Inputs Type definition
 interface Inputs {
     repoURL: string;
-    userToken: string;
+    ponicodeSQUARToken: string;
     impactedFiles: string[];
     branch: string;
     githubToken: string;
     bootstrapUT: string;
     displayFullReport: string;
+    ponicodeUTToken: string;
 }
 
 // SQUAR evalutaPR endpoint Return type

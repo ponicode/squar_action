@@ -41,7 +41,7 @@ async function fetchSQUARReport(triggerResult: EvaluateReturn, inputs: Inputs): 
     // If repository_id is defined then retry fetchReport until we get it
     if ((triggerResult.repositoryId !== undefined) && (process.env.FETCH_REPORT_RETRY_MILLISEC !== undefined)) {
         const reportInputs: FetchReportInput = {
-            userToken: inputs.userToken,
+            userToken: inputs.ponicodeSQUARToken,
         };
         // tslint:disable-next-line: max-line-length
         const reportResult: Report = await SquarClient.triggerSquarReport(reportInputs, triggerResult.repositoryId, parseInt(process.env.FETCH_REPORT_RETRY_MILLISEC, 10));

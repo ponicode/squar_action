@@ -42,6 +42,7 @@ jobs:
         impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }}
         branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }}
         ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
+        ponicodeUtToken: ${{ secrets.PONICODE_TOKEN }}
         githubToken: ${{ secrets.GITHUB_TOKEN }}
         bootstrapUT: 'true'
 

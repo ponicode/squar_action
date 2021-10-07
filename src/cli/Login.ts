@@ -18,7 +18,7 @@ class Login {
             this.configFile = path.join(configDir, "ponicode", "settings.json");
 
             const settings: Settings = {
-                "auth.token": inputs.githubToken,
+                "auth.token": inputs.ponicodeUTToken,
             };
             fs.mkdirSync(path.join(configDir, "ponicode"), { recursive: true, mode: 0o755 });
 
