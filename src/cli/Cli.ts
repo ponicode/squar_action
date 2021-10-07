@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
 import { exec, execFile, fork, spawn } from "child_process";
 import * as fs from "fs";
-import { Inputs } from "../types";
+import { ActionInputs } from "../types";
 import Login from "./Login";
 import { TestFile } from "./types";
 
@@ -9,7 +9,7 @@ class CLI {
 
     private files: string[] | undefined;
 
-    public async login(inputs: Inputs, callback: () => void): Promise<void> {
+    public async login(inputs: ActionInputs, callback: () => void): Promise<void> {
         core.debug("Authenticating Ponicode CLI");
         await Login.setXdgConfigToken(inputs);
 
@@ -26,7 +26,7 @@ class CLI {
         });
     }
 
-    public async startCLI(inputs: Inputs, files: string[] | undefined): Promise<void> {
+    public async startCLI(inputs: ActionInputs, files: string[] | undefined): Promise<void> {
         if (files !== undefined) {
             this.files = files;
             let fileArguments = "";

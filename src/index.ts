@@ -2,17 +2,23 @@ import * as core from "@actions/core";
 import * as dotenv from "dotenv";
 import CLI from "./cli/Cli";
 import { extractImpactedFilesFromReport } from "./cli/utils";
-import { parseInputs } from "./inputs";
+import { parseActionInputs, parseSquarAPIInputs } from "./squar/inputs";
 import { Markdown } from "./markdown/Markdown";
 import PullRequest from "./pull_request/PullRequest";
 import Squar from "./squar/Squar";
-import { EvaluateReturn, Inputs, Report } from "./types";
+import { ActionInputs, EvaluateReturn, Report, SquarAPIInputs } from "./types";
 
 dotenv.config({ path: __dirname + "/.env" });
 
-function processInputs(): Inputs {
+function processSquarAPIInputs(): SquarAPIInputs {
     core.debug(`Parsing inputs`);
-    const inputs = parseInputs(core.getInput);
+    const inputs = parseSquarAPIInputs(core.getInput);
+    return inputs;
+}
+
+function processActionInputs(): ActionInputs {
+    core.debug(`Parsing inputs`);
+    const inputs = parseActionInputs(core.getInput);
     return inputs;
 }
 
@@ -25,18 +31,19 @@ async function run(): Promise<void> {
 
     try {
 
-        const inputs: Inputs = processInputs();
+        const squarAPIInputs: SquarAPIInputs = processSquarAPIInputs();
+        const actionInputs: ActionInputs = processActionInputs();
 
-        const triggerResult: EvaluateReturn | undefined = await Squar.triggerSQUARANalysis(inputs);
+        const triggerResult: EvaluateReturn | undefined = await Squar.triggerSQUARANalysis(squarAPIInputs);
 
         if (triggerResult !== undefined) {
-            const report: Report | undefined = await Squar.fetchSQUARReport(triggerResult, inputs);
+            const report: Report | undefined = await Squar.fetchSQUARReport(triggerResult, squarAPIInputs);
 
             if (report !== undefined) {
-                const markdown = new Markdown(inputs.branch, inputs.repoURL, report);
+                const markdown = new Markdown(squarAPIInputs.branch, squarAPIInputs.repoURL, report);
                 void PullRequest.generatePRComment(markdown.createAlertsMessage(report.suggestionsOnImpactedFiles));
 
-                if (inputs.displayFullReport === "true") {
+                if (actionInputs.displayFullReport === "true") {
                     const reportComment = await markdown.createFullReportMessage();
                     void PullRequest.generatePRComment(reportComment);
                 }
@@ -45,8 +52,8 @@ async function run(): Promise<void> {
 
                 core.setOutput("impacted_files", impactedFiles);
 
-                if (inputs.bootstrapUT === "true") {
-                    await CLI.startCLI(inputs, impactedFiles);
+                if (actionInputs.bootstrapUT === "true") {
+                    await CLI.startCLI(actionInputs, impactedFiles);
                 }
 
             }

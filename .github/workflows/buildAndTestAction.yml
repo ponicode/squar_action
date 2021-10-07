@@ -44,4 +44,5 @@ jobs:
         ponicodeUtToken: ${{ secrets.PONICODE_TOKEN }}
         githubToken: ${{ secrets.GITHUB_TOKEN }}
         bootstrapUT: 'true'
+        displayFullReport: 'true'
 

@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import { Markdown } from "../markdown/Markdown";
 import PullRequest from "../pull_request/PullRequest";
-import { Inputs } from "../types";
+import { ActionInputs } from "../types";
 import { Settings } from "./types";
 
 const xdg = require("@folder/xdg");
@@ -12,13 +12,13 @@ class Login {
 
     private configFile: string | undefined;
 
-    async setXdgConfigToken(inputs: Inputs): Promise<void> {
+    async setXdgConfigToken(inputs: ActionInputs): Promise<void> {
         try {
             const configDir = xdg().config as string;
             this.configFile = path.join(configDir, "ponicode", "settings.json");
 
             const settings: Settings = {
-                "auth.token": inputs.ponicodeUTToken,
+                "auth.token": inputs.ponicodeUtToken,
             };
             fs.mkdirSync(path.join(configDir, "ponicode"), { recursive: true, mode: 0o755 });
 

@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { EvaluateReturn, FetchReportInput, Inputs, Report } from "../types";
+import { EvaluateReturn, FetchReportInput, SquarAPIInputs, Report } from "../types";
 
 // Define the Promise executor type for clarity purpose
 type PromiseExecutor = (resolve: (value: Report) => void, reject: (reason?: any) => void) => void;
@@ -41,7 +41,7 @@ class SquarClient {
     * @param {Inputs} inputs - contains the inputs required for the endpoint
     * @return {Promise<EvaluateReturn>} returns a promise with the EvaluateReturn object
     */
-    public triggerSquarEvaluate(inputs: Inputs): Promise<EvaluateReturn> {
+    public triggerSquarEvaluate(inputs: SquarAPIInputs): Promise<EvaluateReturn> {
         return axios({
             method: 'POST',
             data: inputs,

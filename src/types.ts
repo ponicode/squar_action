@@ -1,13 +1,20 @@
 // Action Inputs Type definition
-interface Inputs {
+interface SquarAPIInputs {
     repoURL: string;
-    ponicodeSQUARToken: string;
+    userToken: string;
     impactedFiles: string[];
     branch: string;
+}
+
+interface ActionInputs {
+    repoURL: string;
+    impactedFiles: string[];
+    branch: string;
+    ponicodeSquarToken: string;
+    ponicodeUtToken: string;
     githubToken: string;
     bootstrapUT: string;
     displayFullReport: string;
-    ponicodeUTToken: string;
 }
 
 // SQUAR evalutaPR endpoint Return type
@@ -60,4 +67,4 @@ interface Report {
     suggestionsOnImpactedFiles: TestAlert[];
 }
 
-export { Inputs, EvaluateReturn, FetchReportInput, Report, TestAlert, FullReport, Criticity, AlertKind };
+export { SquarAPIInputs, ActionInputs, EvaluateReturn, FetchReportInput, Report, TestAlert, FullReport, Criticity, AlertKind };
