@@ -35,9 +35,10 @@ class CLI {
             }
 
             this.login(inputs, () => {
+                //DEBUG
+                core.debug(`Start generating Tests for ${files.toString()}`);
+
                 this.execCommand(`ponicode test ${fileArguments}`, () => {
-                    //DEBUG
-                    core.debug(`Start generating Tests for ${files.toString()}`);
 
                     const testFiles: TestFile[] = this.readTestFiles(this.files);
                     if ((testFiles !== undefined) && (testFiles.length > 0)) {
@@ -97,7 +98,11 @@ class CLI {
         });
         execProcess.on("close", (code: number, args: any[]) => {
             core.debug(`spawn on close code: ${code} args: ${args}`);
-            callback();
+            if (code === 0) {
+                callback();
+            } else {
+                core.debug("Command fails");
+            }
         });
     }
 
