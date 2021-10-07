@@ -6,7 +6,7 @@ import { extractImpactedFilesFromReport } from "./cli/utils";
 import { parseInputs } from "./inputs";
 import Markdown from "./markdown/markdown";
 import { generatePRComment } from "./pull_request/squar_report";
-import { triggerSquarEvaluate, triggerSquarReport } from "./squar_client";
+import SquarClient from "./squar_client";
 import { EvaluateReturn, FetchReportInput, Inputs, Report } from "./types";
 
 dotenv.config({ path: __dirname + "/.env" });
@@ -22,7 +22,7 @@ async function triggerSQUARANalysis(inputs: Inputs): Promise<EvaluateReturn | un
     core.debug(JSON.stringify(inputs));
 
     // Trigger SQUAR evaluate_pr endpoint
-    const result: EvaluateReturn = await triggerSquarEvaluate(inputs);
+    const result: EvaluateReturn = await SquarClient.triggerSquarEvaluate(inputs);
     if (!result.success) {
         const errorMessage = result.message ? result.message : "Error Tgriggering SQUAR report";
         //core.setFailed(errorMessage);
@@ -44,7 +44,7 @@ async function fetchSQUARReport(triggerResult: EvaluateReturn, inputs: Inputs): 
             userToken: inputs.userToken,
         };
         // tslint:disable-next-line: max-line-length
-        const reportResult: Report = await triggerSquarReport(reportInputs, triggerResult.repositoryId, parseInt(process.env.FETCH_REPORT_RETRY_MILLISEC, 10));
+        const reportResult: Report = await SquarClient.triggerSquarReport(reportInputs, triggerResult.repositoryId, parseInt(process.env.FETCH_REPORT_RETRY_MILLISEC, 10));
         return reportResult;
     } else {
         const errorMessage: string = "No Repository Id";
