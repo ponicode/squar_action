@@ -1,51 +1,25 @@
 import * as core from "@actions/core";
-import * as github from "@actions/github";
 import * as dotenv from "dotenv";
-import { parseInputs } from "./inputs";
-import { createAlertsMessage, createFullReportMessage } from "./markdown/markdown";
-import { generatePRComment } from "./pull_request/squar_report";
-import { triggerSquarEvaluate, triggerSquarReport } from "./squar_client";
-import { EvaluateReturn, FetchReportInput, Inputs, Report } from "./types";
+import CLI from "./cli/Cli";
+import { extractImpactedFilesFromReport } from "./cli/utils";
+import { parseActionInputs, parseSquarAPIInputs } from "./squar/inputs";
+import { Markdown } from "./markdown/Markdown";
+import PullRequest from "./pull_request/PullRequest";
+import Squar from "./squar/Squar";
+import { ActionInputs, EvaluateReturn, Report, SquarAPIInputs } from "./types";
 
 dotenv.config({ path: __dirname + "/.env" });
 
-function processInputs(): Inputs {
+function processSquarAPIInputs(): SquarAPIInputs {
     core.debug(`Parsing inputs`);
-    const inputs = parseInputs(core.getInput);
+    const inputs = parseSquarAPIInputs(core.getInput);
     return inputs;
 }
 
-async function triggerSQUARANalysis(inputs: Inputs): Promise<EvaluateReturn> {
-    core.debug("Triggering SQUAR processing");
-    core.debug(JSON.stringify(inputs));
-
-    // Trigger SQUAR evaluate_pr endpoint
-    const result: EvaluateReturn = await triggerSquarEvaluate(inputs);
-    if (!result.success) {
-        const errorMessage = result.message ? result.message : "Error Tgriggering SQUAR report";
-        core.setFailed(errorMessage);
-    }
-    core.debug(JSON.stringify(result));
-    return result;
-}
-
-async function fetchSQUARReport(triggerResult: EvaluateReturn, inputs: Inputs): Promise<Report | undefined> {
-    core.debug("Fetching SQUAR report");
-
-    // If repository_id is defined then retry fetchReport until we get it
-    if ((triggerResult.repositoryId !== undefined) && (process.env.FETCH_REPORT_RETRY_MILLISEC !== undefined)) {
-        const reportInputs: FetchReportInput = {
-            userToken: inputs.userToken,
-        };
-        // tslint:disable-next-line: max-line-length
-        const reportResult: Report = await triggerSquarReport(reportInputs, triggerResult.repositoryId, parseInt(process.env.FETCH_REPORT_RETRY_MILLISEC, 10));
-        return reportResult;
-    } else {
-        const errorMessage: string = "No Repository Id";
-        core.setFailed(errorMessage);
-        return undefined;
-    }
-
+function processActionInputs(): ActionInputs {
+    core.debug(`Parsing inputs`);
+    const inputs = parseActionInputs(core.getInput);
+    return inputs;
 }
 
 /** 
@@ -57,16 +31,34 @@ async function run(): Promise<void> {
 
     try {
 
-        const inputs: Inputs = processInputs();
+        const squarAPIInputs: SquarAPIInputs = processSquarAPIInputs();
+        const actionInputs: ActionInputs = processActionInputs();
 
-        const triggerResult: EvaluateReturn = await triggerSQUARANalysis(inputs);
+        const triggerResult: EvaluateReturn | undefined = await Squar.triggerSQUARANalysis(squarAPIInputs);
 
-        const report: Report | undefined = await fetchSQUARReport(triggerResult, inputs);
+        if (triggerResult !== undefined) {
+            const report: Report | undefined = await Squar.fetchSQUARReport(triggerResult, squarAPIInputs);
 
-        void generatePRComment(createAlertsMessage(report?.suggestionsOnImpactedFiles, inputs.repoURL, inputs.branch));
+            if (report !== undefined) {
+                const markdown = new Markdown(squarAPIInputs.branch, squarAPIInputs.repoURL, report);
+                void PullRequest.generatePRComment(markdown.createAlertsMessage(report.suggestionsOnImpactedFiles));
 
-        const reportComment = await createFullReportMessage(report, inputs.repoURL, inputs.branch);
-        void generatePRComment(reportComment);
+                if (actionInputs.displayFullReport === "true") {
+                    const reportComment = await markdown.createFullReportMessage();
+                    void PullRequest.generatePRComment(reportComment);
+                }
+
+                const impactedFiles = extractImpactedFilesFromReport(report);
+
+                core.setOutput("impacted_files", impactedFiles);
+
+                if (actionInputs.bootstrapUT === "true") {
+                    await CLI.startCLI(actionInputs, impactedFiles);
+                }
+
+            }
+
+        }
 
     } catch (e) {
         const error = e as Error;
