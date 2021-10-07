@@ -20,7 +20,7 @@ class CLI {
         }
 
         core.debug("Loging Ponicode CLI");
-        this.execCommand(`ponicode login`, () => {
+        this.execCommand(`PC_VERBOSE=1 ponicode login`, () => {
             core.debug("Ponicoed CLI is well authenticated");
             callback();
         });
