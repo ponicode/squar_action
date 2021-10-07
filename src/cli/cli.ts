@@ -4,6 +4,7 @@ import * as fs from "fs";
 import { TestFile } from "./types";
 
 class CLI {
+
     private files: string[] | undefined;
 
     public startCLI(files: string[] | undefined): void {

@@ -4,7 +4,7 @@ import * as dotenv from "dotenv";
 import CLI from "./cli/cli";
 import { extractImpactedFilesFromReport } from "./cli/utils";
 import { parseInputs } from "./inputs";
-import { createAlertsMessage, createFullReportMessage, createSQUARErrorMessage } from "./markdown/markdown";
+import Markdown from "./markdown/markdown";
 import { generatePRComment } from "./pull_request/squar_report";
 import { triggerSquarEvaluate, triggerSquarReport } from "./squar_client";
 import { EvaluateReturn, FetchReportInput, Inputs, Report } from "./types";
@@ -27,7 +27,7 @@ async function triggerSQUARANalysis(inputs: Inputs): Promise<EvaluateReturn | un
         const errorMessage = result.message ? result.message : "Error Tgriggering SQUAR report";
         //core.setFailed(errorMessage);
         // Push an error message in PR comment
-        const message = await createSQUARErrorMessage(errorMessage, inputs.repoURL);
+        const message = await Markdown.createSQUARErrorMessage(errorMessage, inputs.repoURL);
         void generatePRComment(message);
         return ;
     }
@@ -49,7 +49,7 @@ async function fetchSQUARReport(triggerResult: EvaluateReturn, inputs: Inputs): 
     } else {
         const errorMessage: string = "No Repository Id";
         // Push an error message in PR comment
-        const message = await createSQUARErrorMessage(errorMessage, inputs.repoURL);
+        const message = await Markdown.createSQUARErrorMessage(errorMessage, inputs.repoURL);
         void generatePRComment(message);
         core.setFailed(errorMessage);
         return undefined;
@@ -74,11 +74,11 @@ async function run(): Promise<void> {
             const report: Report | undefined = await fetchSQUARReport(triggerResult, inputs);
 
             if (report !== undefined) {
-                void generatePRComment(createAlertsMessage(report.suggestionsOnImpactedFiles,
+                void generatePRComment(Markdown.createAlertsMessage(report.suggestionsOnImpactedFiles,
                 inputs.repoURL, inputs.branch));
 
                 if (inputs.displayFullReport === "true") {
-                    const reportComment = await createFullReportMessage(report, inputs.repoURL, inputs.branch);
+                    const reportComment = await Markdown.createFullReportMessage(report, inputs.repoURL, inputs.branch);
                     void generatePRComment(reportComment);
                 }
 
