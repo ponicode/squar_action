@@ -13,6 +13,11 @@ class CLI {
         core.debug("Authenticating Ponicode CLI");
         Login.setXdgConfigToken(inputs);
 
+        const confContent: string | undefined = Login.getConfigFileContent();
+        if (confContent) {
+            core.debug(confContent);
+        }
+
         core.debug("Loging Ponicode CLI");
         this.execCommand(`ponicode login`);
     }

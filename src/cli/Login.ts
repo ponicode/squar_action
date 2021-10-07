@@ -10,20 +10,19 @@ const xdg = require("@folder/xdg");
 
 class Login {
 
+    private configFile: string | undefined;
+
     async setXdgConfigToken(inputs: Inputs): Promise<void> {
         try {
             const configDir = xdg().config as string;
-            const configFile = path.join(configDir, "ponicode", "settings.json");
+            this.configFile = path.join(configDir, "ponicode", "settings.json");
 
             const settings: Settings = {
                 "auth.token": inputs.githubToken,
             };
             fs.mkdirSync(path.join(configDir, "ponicode"), { recursive: true, mode: 0o755 });
 
-            fs.writeFileSync(configFile, JSON.stringify(settings, null, 4));
-
-            const confContent = fs.readFileSync(configFile, 'utf-8');
-            core.debug(`${configFile}: ${confContent}`);
+            fs.writeFileSync(this.configFile, JSON.stringify(settings, null, 4));
 
         } catch (e) {
             const error: Error = e as Error;
@@ -32,6 +31,20 @@ class Login {
             const message = await Markdown.createSQUARErrorMessage(errorMessage, inputs.repoURL);
             void PullRequest.generatePRComment(message);
             core.setFailed(errorMessage);
+        }
+
+    }
+
+    public getConfigFile(): string | undefined {
+        return this.configFile;
+    }
+
+    public getConfigFileContent(): string | undefined {
+        if (this.configFile) {
+            const confContent = fs.readFileSync(this.configFile, 'utf-8');
+            return `${this.configFile}: ${confContent}`;
+        } else {
+            return ;
         }
 
     }
