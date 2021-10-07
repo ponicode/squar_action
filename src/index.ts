@@ -1,11 +1,11 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 import * as dotenv from "dotenv";
-import CLI from "./cli/cli";
+import CLI from "./cli/Cli";
 import { extractImpactedFilesFromReport } from "./cli/utils";
 import { parseInputs } from "./inputs";
-import Markdown from "./markdown/markdown";
-import { generatePRComment } from "./pull_request/squar_report";
+import { Markdown } from "./markdown/Markdown";
+import PullRequest from "./pull_request/PullRequest";
 import SquarClient from "./squar_client";
 import { EvaluateReturn, FetchReportInput, Inputs, Report } from "./types";
 
@@ -28,7 +28,7 @@ async function triggerSQUARANalysis(inputs: Inputs): Promise<EvaluateReturn | un
         //core.setFailed(errorMessage);
         // Push an error message in PR comment
         const message = await Markdown.createSQUARErrorMessage(errorMessage, inputs.repoURL);
-        void generatePRComment(message);
+        void PullRequest.generatePRComment(message);
         return ;
     }
     core.debug(JSON.stringify(result));
@@ -50,11 +50,10 @@ async function fetchSQUARReport(triggerResult: EvaluateReturn, inputs: Inputs): 
         const errorMessage: string = "No Repository Id";
         // Push an error message in PR comment
         const message = await Markdown.createSQUARErrorMessage(errorMessage, inputs.repoURL);
-        void generatePRComment(message);
+        void PullRequest.generatePRComment(message);
         core.setFailed(errorMessage);
         return undefined;
     }
-
 }
 
 /** 
@@ -74,12 +73,12 @@ async function run(): Promise<void> {
             const report: Report | undefined = await fetchSQUARReport(triggerResult, inputs);
 
             if (report !== undefined) {
-                void generatePRComment(Markdown.createAlertsMessage(report.suggestionsOnImpactedFiles,
-                inputs.repoURL, inputs.branch));
+                const markdown = new Markdown(inputs.branch, inputs.repoURL, report);
+                void PullRequest.generatePRComment(markdown.createAlertsMessage(report.suggestionsOnImpactedFiles));
 
                 if (inputs.displayFullReport === "true") {
-                    const reportComment = await Markdown.createFullReportMessage(report, inputs.repoURL, inputs.branch);
-                    void generatePRComment(reportComment);
+                    const reportComment = await markdown.createFullReportMessage();
+                    void PullRequest.generatePRComment(reportComment);
                 }
 
                 const impactedFiles = extractImpactedFilesFromReport(report);

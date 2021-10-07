@@ -8,44 +8,7 @@ const replace = require("replace-in-file");
 
 class Markdown {
 
-    // Create a markdown message from the two JSON.
-    public createAlertsMessage(suggestionsOnImpactedFiles: TestAlert[] | undefined, 
-                               repo: any, branch: string): string | undefined {
-
-        let message: string = "## GREAT Job! There is no alert on the files updated in the PR\n";
-
-        if ((suggestionsOnImpactedFiles) && (suggestionsOnImpactedFiles.length > 0)) {
-
-        message = "## List of alerts identified by Ponicode SQUAR in the files of your PR\n";
-
-        message += initMarkdownTable();
-
-        message = this.appendMessageWithAlerts(suggestionsOnImpactedFiles, message, repo, branch);
-        }
-
-        return message;
-    }
-
-    public async createFullReportMessage(report: Report | undefined, repoURL: string, branch: string):
-    Promise<string | undefined> {
-
-        if (report?.fullReport) {
-
-            const fileName = __dirname + "/full_report.md";
-
-            await this.generateMessageFromMDFile(fileName, report?.fullReport, branch);
-
-            const message = this.addAlertsToFullReportComment(fileName, report, repoURL, branch);
-
-            return message;
-
-        } else {
-            return undefined;
-        }
-
-    }
-
-    public async createSQUARErrorMessage(errorMessage: string | undefined, repoURL: string): Promise<string> {
+    static async createSQUARErrorMessage(errorMessage: string | undefined, repoURL: string): Promise<string> {
         const fileName = __dirname + "/error_message.md";
         const url = buildGithubSecretURL(repoURL);
         const options = {
@@ -60,8 +23,54 @@ class Markdown {
         return message;
     }
 
-    private appendMessageWithAlerts(suggestionsOnImpactedFiles: TestAlert[] | undefined, 
-                                    initialMessage: string, repoURL: string, branch: string): string {
+    private branch: string;
+    private repoURL: string;
+    private report: Report;
+
+    constructor(branch: string, repoURL: string, report: Report) {
+        this.branch = branch;
+        this.repoURL = repoURL;
+        this.report = report;
+    }
+
+    // Create a markdown message from the two JSON.
+    public createAlertsMessage(suggestionsOnImpactedFiles: TestAlert[] | undefined): string | undefined {
+
+        let message: string = "## GREAT Job! There is no alert on the files updated in the PR\n";
+
+        if ((suggestionsOnImpactedFiles) && (suggestionsOnImpactedFiles.length > 0)) {
+
+        message = "## List of alerts identified by Ponicode SQUAR in the files of your PR\n";
+
+        message += initMarkdownTable();
+
+        message = this.appendMessageWithAlerts(suggestionsOnImpactedFiles, message);
+        }
+
+        return message;
+    }
+
+    public async createFullReportMessage():
+    Promise<string | undefined> {
+
+        if (this.report?.fullReport) {
+
+            const fileName = __dirname + "/full_report.md";
+
+            await this.generateMessageFromMDFile(fileName);
+
+            const message = this.addAlertsToFullReportComment(fileName);
+
+            return message;
+
+        } else {
+            return undefined;
+        }
+
+    }
+
+    private appendMessageWithAlerts(suggestionsOnImpactedFiles: TestAlert[] | undefined,
+                                    initialMessage: string): string {
 
         let message: string = initialMessage;
 
@@ -77,7 +86,7 @@ class Markdown {
         // 4th column: the criticity of the function.
         message += `| <span style="color:${alert.criticity}">**${translateCriticity(alert.criticity)}**</span>`;
         // 5th column: the link to go directly to the file.
-        message += `| ${buildGithubFileURL(alert, repoURL, branch)}`;
+        message += `| ${buildGithubFileURL(alert, this.repoURL, this.branch)}`;
         message += "|\n";
         });
 
@@ -85,28 +94,28 @@ class Markdown {
 
     }
 
-    private addAlertsToFullReportComment(fileName: string, report: Report, repoURL: string, branch: string): string {
+    private addAlertsToFullReportComment(fileName: string): string {
         let message = readFileSync(fileName, "utf-8");
 
         message += `## List of alerts identified by Ponicode SQUAR in your Project
-         __*${report.fullReport.repoName}*__\n`;
+         __*${this.report.fullReport.repoName}*__\n`;
         message += initMarkdownTable();
 
-        message = this.appendMessageWithAlerts(report.fullReport.suggestions, message, repoURL, branch);
+        message = this.appendMessageWithAlerts(this.report.fullReport.suggestions, message);
 
         return message;
     }
 
-    private async generateMessageFromMDFile(file: string, report: FullReport, branch: string) {
+    private async generateMessageFromMDFile(file: string) {
         const options = {
         files: file,
         from: [/%repo_name%/g, /%grade%/g, /%missing_test_suites%/g,
             /%missing_test_cases%/g, /%missing_edge_cases%/g, /%branch%/g ],
-        to: [report.repoName, report.ponicodeScore,
-        report.missingTestSuite ? `${report.missingTestSuite}` : "0",
-        report.missingTestCases ? `${report.missingTestCases}` : "0",
-        report.missingEdgeCases ? `${report.missingEdgeCases}` : "0",
-        branch ],
+        to: [this.report.fullReport.repoName, this.report.fullReport.ponicodeScore,
+        this.report.fullReport.missingTestSuite ? `${this.report.fullReport.missingTestSuite}` : "0",
+        this.report.fullReport.missingTestCases ? `${this.report.fullReport.missingTestCases}` : "0",
+        this.report.fullReport.missingEdgeCases ? `${this.report.fullReport.missingEdgeCases}` : "0",
+        this.branch ],
         };
 
         const results = await replace(options);
@@ -116,4 +125,4 @@ class Markdown {
 
 }
 
-export default new Markdown();
+export { Markdown };

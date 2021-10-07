@@ -97,4 +97,4 @@ class SquarClient {
 
 }
 
-export default new SquarClient;
+export default new SquarClient();
