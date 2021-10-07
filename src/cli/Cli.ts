@@ -13,6 +13,12 @@ class CLI {
         core.debug("Authenticating Ponicode CLI");
         await Login.setXdgConfigToken(inputs);
 
+        // DEBUG
+        const confContent: string | undefined = Login.getConfigFileContent();
+        if (confContent) {
+            core.debug(confContent);
+        }
+
         core.debug("Loging Ponicode CLI");
         this.execCommand(`ponicode login`, () => {
             core.debug("Ponicoed CLI is well authenticated");
@@ -26,12 +32,6 @@ class CLI {
             let fileArguments = "";
             for (const file of files) {
                 fileArguments += ` ${file}`;
-            }
-
-            // DEBUG
-            const confContent: string | undefined = Login.getConfigFileContent();
-            if (confContent) {
-                core.debug(confContent);
             }
 
             await this.login(inputs, () => {
