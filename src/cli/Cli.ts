@@ -9,9 +9,9 @@ class CLI {
 
     private files: string[] | undefined;
 
-    public login(inputs: Inputs, callback: () => void): void {
+    public async login(inputs: Inputs, callback: () => void): Promise<void> {
         core.debug("Authenticating Ponicode CLI");
-        Login.setXdgConfigToken(inputs);
+        await Login.setXdgConfigToken(inputs);
 
         core.debug("Loging Ponicode CLI");
         this.execCommand(`ponicode login`, () => {
@@ -20,7 +20,7 @@ class CLI {
         });
     }
 
-    public startCLI(inputs: Inputs, files: string[] | undefined): void {
+    public async startCLI(inputs: Inputs, files: string[] | undefined): Promise<void> {
         if (files !== undefined) {
             this.files = files;
             let fileArguments = "";
@@ -34,7 +34,7 @@ class CLI {
                 core.debug(confContent);
             }
 
-            this.login(inputs, () => {
+            await this.login(inputs, () => {
                 //DEBUG
                 core.debug(`Start generating Tests for ${files.toString()}`);
 
