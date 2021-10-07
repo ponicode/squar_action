@@ -9,21 +9,18 @@ class CLI {
 
     private files: string[] | undefined;
 
-    public login(inputs: Inputs): void {
+    public login(inputs: Inputs, callback: () => void): void {
         core.debug("Authenticating Ponicode CLI");
         Login.setXdgConfigToken(inputs);
 
-        // DEBUG
-        const confContent: string | undefined = Login.getConfigFileContent();
-        if (confContent) {
-            core.debug(confContent);
-        }
-
         core.debug("Loging Ponicode CLI");
-        this.execCommand(`ponicode login`);
+        this.execCommand(`ponicode login`, () => {
+            core.debug("Ponicoed CLI is well authenticated");
+            callback();
+        });
     }
 
-    public startCLI(files: string[] | undefined): void {
+    public startCLI(inputs: Inputs, files: string[] | undefined): void {
         if (files !== undefined) {
             this.files = files;
             let fileArguments = "";
@@ -37,13 +34,21 @@ class CLI {
                 core.debug(confContent);
             }
 
-            this.execCommand(`ponicode test ${fileArguments}`);
+            this.login(inputs, () => {
+                this.execCommand(`ponicode test ${fileArguments}`, () => {
+                    const testFiles: TestFile[] = this.readTestFiles(this.files);
+                    if ((testFiles !== undefined) && (testFiles.length > 0)) {
+                        core.debug(JSON.stringify(testFiles));
+                    }
+                });
+            });
+
         }
     }
 
     private readTestFiles(files: string[] | undefined): TestFile[] {
 
-        let result: TestFile[] = [];
+        const result: TestFile[] = [];
 
         if (files !== undefined) {
             for (const file of files) {
@@ -74,7 +79,7 @@ class CLI {
 
     }
 
-    private execCommand(command: string, ...args: string[]) {
+    private execCommand(command: string, callback: () => void) {
         const execProcess = exec(command, { 'encoding': 'utf8' }, (error, stdout) => {
             core.debug(`exec stdout: ${stdout} error: ${error}`);
         });
@@ -89,10 +94,7 @@ class CLI {
         });
         execProcess.on("close", (code: number, args: any[]) => {
             core.debug(`spawn on close code: ${code} args: ${args}`);
-            const testFiles: TestFile[] = this.readTestFiles(this.files);
-            if ((testFiles !== undefined) && (testFiles.length > 0)) {
-                core.debug(JSON.stringify(testFiles));
-            }
+            
         });
     }
 
