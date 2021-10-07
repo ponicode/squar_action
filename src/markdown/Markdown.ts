@@ -112,7 +112,7 @@ class Markdown {
     private addAlertsToFullReportComment(fileName: string): string {
         let message = readFileSync(fileName, "utf-8");
 
-        message += `## List of alerts identified by Ponicode SQUAR in your Project
+        message += `## List of alerts identified by Ponicode SQUAR in your Project \
          __*${this.report.fullReport.repoName}*__\n`;
         message += initMarkdownTable();
 
