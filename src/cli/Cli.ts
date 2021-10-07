@@ -13,6 +13,7 @@ class CLI {
         core.debug("Authenticating Ponicode CLI");
         Login.setXdgConfigToken(inputs);
 
+        // DEBUG
         const confContent: string | undefined = Login.getConfigFileContent();
         if (confContent) {
             core.debug(confContent);
@@ -29,6 +30,13 @@ class CLI {
             for (const file of files) {
                 fileArguments += ` ${file}`;
             }
+
+            // DEBUG
+            const confContent: string | undefined = Login.getConfigFileContent();
+            if (confContent) {
+                core.debug(confContent);
+            }
+
             this.execCommand(`ponicode test ${fileArguments}`);
         }
     }
