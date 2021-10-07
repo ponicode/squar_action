@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { EvaluateReturn, FetchReportInput, Inputs, Report } from "./types";
+import { EvaluateReturn, FetchReportInput, Inputs, Report } from "../types";
 
 // Define the Promise executor type for clarity purpose
 type PromiseExecutor = (resolve: (value: Report) => void, reject: (reason?: any) => void) => void;
