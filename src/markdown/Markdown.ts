@@ -41,7 +41,7 @@ class Markdown {
     }
 
     public static createTestCodeComment(testFiles: TestFile[]): string {
-        let message = `## Overview of Unit-Tests generated for your impacted files`;
+        let message = `## Overview of Unit-Tests generated for your impacted files\n`;
         message += Markdown.appendUTOverviewMessages(testFiles);
         return message;
     }
@@ -50,7 +50,7 @@ class Markdown {
         let message: string = "";
 
         testFiles?.forEach((testFile: TestFile) => {
-            message += `### Unit-Tests proposal for file ${testFile.filePath}`;
+            message += `### Unit-Tests proposal for file ${testFile.filePath}\n`;
             message += Marked.parse(testFile.content);
         });
 
