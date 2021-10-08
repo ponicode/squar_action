@@ -13,7 +13,7 @@ class Squar {
         // Trigger SQUAR evaluate_pr endpoint
         const result: EvaluateReturn = await SquarClient.triggerSquarEvaluate(inputs);
         if (!result.success) {
-            const errorMessage = result.message ? result.message : "Error Tgriggering SQUAR report";
+            const errorMessage = result.message ? result.message : "Error Triggering SQUAR report";
             //core.setFailed(errorMessage);
             // Push an error message in PR comment
             const message = await Markdown.createSQUARErrorMessage(errorMessage, inputs.repoURL);
