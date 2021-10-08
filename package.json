@@ -38,6 +38,7 @@
     "@octokit/core": "^3.5.1",
     "@octokit/openapi-types": "^10.6.4",
     "@octokit/types": "^6.31.3",
+    "@ts-stack/markdown": "^1.4.0",
     "@types/axios": "^0.14.0",
     "axios": "^0.22.0",
     "octokit-plugin-create-pull-request": "^3.9.3",

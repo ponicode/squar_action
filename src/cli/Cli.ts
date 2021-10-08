@@ -1,6 +1,8 @@
 import * as core from "@actions/core";
 import { exec, execFile, fork, spawn } from "child_process";
 import * as fs from "fs";
+import { Markdown } from "../markdown/Markdown";
+import PullRequest from "../pull_request/PullRequest";
 import { ActionInputs } from "../types";
 import Login from "./Login";
 import { TestFile } from "./types";
@@ -46,6 +48,7 @@ class CLI {
                         // TODO implement processing of the test Files=
                         // 1/ Create a PR with those files using https://github.com/gr2m/octokit-plugin-create-pull-request
                         // 2/ Generate a comment with an extract of the generateg UT
+                        PullRequest.generatePRComment(Markdown.createTestCodeComment(testFiles));
                     }
                 });
             });

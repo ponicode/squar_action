@@ -1,8 +1,10 @@
 import * as core from "@actions/core";
 import { readFileSync } from 'fs';
+import { TestFile } from "../cli/types";
 import { AlertKind, Criticity, FullReport, Report, TestAlert } from "../types";
 import { buildGithubFileURL, buildGithubSecretURL, initMarkdownTable, 
     translateAlertType, translateCriticity } from "./utils";
+import { Marked } from '@ts-stack/markdown';
 
 const replace = require("replace-in-file");
 
@@ -37,6 +39,23 @@ class Markdown {
         const message = readFileSync(fileName, "utf-8");
         return message;
     }
+
+    public static createTestCodeComment(testFiles: TestFile[]): string {
+        let message = `## Overview of Unit-Tests generated for your impacted files`;
+        message += Markdown.appendUTOverviewMessages(testFiles);
+        return message;
+    }
+
+    private static appendUTOverviewMessages(testFiles: TestFile[]): string {
+        let message: string = "";
+
+        testFiles?.forEach((testFile: TestFile) => {
+            message += `### Unit-Tests proposal for file ${testFile.filePath}`;
+            message += Marked.parse(testFile.content);
+        });
+
+        return message;
+    };
 
     private branch: string;
     private repoURL: string;
