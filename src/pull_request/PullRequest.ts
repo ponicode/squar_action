@@ -37,6 +37,7 @@ class PullRequest {
       });
 
       const results = data.map((pull) => (pull.head.ref === originBranch) && (pull.base.ref === originBranch));
+      core.debug(`Existing PR check: ${results}`);
 
       return results.includes(true);
 
