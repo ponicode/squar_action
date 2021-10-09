@@ -7,6 +7,7 @@ import PullRequest from "../pull_request/PullRequest";
 import { ActionInputs } from "../types";
 import Login from "./Login";
 import { TestFile } from "./types";
+import { PONICODE_UT_BRANCH } from "../pull_request/types";
 
 class CLI {
 

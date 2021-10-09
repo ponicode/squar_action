@@ -16,3 +16,5 @@ interface GitTree {
 }
 
 const PONICODE_UT_BRANCH = "ponicode-ut-proposal";
+
+export { PONICODE_UT_BRANCH, TestFile4PR, Commit, GitTree };

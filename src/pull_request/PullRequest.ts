@@ -10,6 +10,7 @@ import { connected } from "process";
 import { TestFile } from "../cli/types";
 import { Markdown } from "../markdown/Markdown";
 import { ActionInputs } from "../types";
+import { GitTree, PONICODE_UT_BRANCH, TestFile4PR } from "./types";
 
 // get the inputs of the action. The "token" input
   // is not defined so far - we will come to it later.
