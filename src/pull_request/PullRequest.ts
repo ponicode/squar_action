@@ -153,10 +153,9 @@ class PullRequest {
   }
   private generatePRBody(testFiles: TestFile[]): string  {
     let body: string = "";
-    body += `This PR contains some proposal of Unit-Tests by Ponicode based on Ponicode SQUAR outputs.\
-    It concerns the following files: `;
+    body += `This PR contains some proposal of Unit-Tests by Ponicode based on Ponicode SQUAR outputs.`;
 
-    body += this.listUTFile(testFiles);
+    //body += this.listUTFile(testFiles);
 
     return body;
 
