@@ -132,12 +132,14 @@ class PullRequest {
 
   }
 
-  public async createCommit(testFiles: TestFile[]): Promise<void> {
+  public async createCommit(testFiles: TestFile[], pullRequestNumber: number): Promise<void> {
     const octo = new OctokitRest({
       auth: githubToken,
     });
 
     await this.uploadToRepo(octo, testFiles, repo.owner, repo.repo, PONICODE_UT_BRANCH);
+    await this.generatePRComment("## The POnicode UT bootstrap Pull-Request as been updated\n");
+    // TODO: update the message with more sophisitcated MD content
 
   }
 
