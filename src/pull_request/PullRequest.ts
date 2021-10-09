@@ -138,7 +138,7 @@ class PullRequest {
     });
 
     await this.uploadToRepo(octo, testFiles, repo.owner, repo.repo, PONICODE_UT_BRANCH);
-    await this.generatePRComment("## The POnicode UT bootstrap Pull-Request as been updated\n");
+    await this.generatePRComment("## The Ponicode UT bootstrap Pull-Request as been updated\n");
     // TODO: update the message with more sophisitcated MD content
 
   }
