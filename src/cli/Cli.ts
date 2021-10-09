@@ -42,22 +42,28 @@ class CLI {
                 //DEBUG
                 core.debug(`Start generating Tests for ${files.toString()}`);
 
-                this.execCommand(`ponicode test ${fileArguments}`, () => {
+                this.execCommand(`ponicode test ${fileArguments}`, async () => {
 
                     const testFiles: TestFile[] = this.readTestFiles(this.files);
                     if ((testFiles !== undefined) && (testFiles.length > 0)) {
                         // core.debug(JSON.stringify(testFiles));
 
                         // TODO implement processing of the test Files=
-                        // 1/ Create a PR with those files using https://github.com/gr2m/octokit-plugin-create-pull-request
+                        // 1/ Create a PR with those files using 
+                        //    https://github.com/gr2m/octokit-plugin-create-pull-request
                         // 2/ Generate a comment with an extract of the generateg UT
                         // PullRequest.generatePRComment(Markdown.createTestCodeComment(testFiles));
 
-                        const check = PullRequest.isPRExist(PONICODE_UT_BRANCH, inputs.apiInputs.branch );
+                        const check = await PullRequest.isPRExist(PONICODE_UT_BRANCH, inputs.apiInputs.branch );
+                        if (check) {
+                            PullRequest.createCommit(testFiles, inputs);
+                        } else {
+                            const markdown = new Markdown(inputs.apiInputs.branch, inputs.apiInputs.repoURL, undefined);
+                            PullRequest.createUTPullRequest(testFiles, inputs, markdown);
+                        }
 
-                        /*const markdown = new Markdown(inputs.apiInputs.branch, inputs.apiInputs.repoURL, undefined);
-                        PullRequest.createUTPullRequest(testFiles, inputs, markdown);*/
                     }
+
                 });
             });
 

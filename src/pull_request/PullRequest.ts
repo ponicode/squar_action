@@ -36,9 +36,9 @@ class PullRequest {
         repo: repository,
       });
 
-      data.map((pull) => core.debug(`From ${pull.head.ref} to ${pull.base.ref}`));
+      const results = data.map((pull) => (pull.head.ref === originBranch) && (pull.base.ref === originBranch));
 
-      return true;
+      return results.includes(true);
 
     }
 
