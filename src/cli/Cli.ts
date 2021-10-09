@@ -92,16 +92,17 @@ class CLI {
     }
 
     private commentAllLinesofFile(filePath: string): string {
-        const addPrefix = (str: string) => str[0].split("\n").map((s: string) => `// ${s}`).join("\n");
+        const addPrefix = (str: string) => "// " + str;
         let fileContent: string = "";
 
         const reader = rd.createInterface(fs.createReadStream(filePath));
         reader.on("line", (l: string) => {
+                //DEBUG
+                core.debug(l);
 
-            const prefixedLine = addPrefix(l) + "\n";
-            //DEBUG
-            core.debug(prefixedLine);
-            fileContent += prefixedLine;
+                // const prefixedLine = addPrefix(l) + "\n";
+
+                // fileContent += prefixedLine;
         });
 
         return fileContent;
