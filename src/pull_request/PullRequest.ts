@@ -132,12 +132,12 @@ class PullRequest {
 
   }
 
-  public async createCommit(testFiles: TestFile[], inputs: ActionInputs): Promise<void> {
+  public async createCommit(testFiles: TestFile[]): Promise<void> {
     const octo = new OctokitRest({
       auth: githubToken,
     });
 
-    await this.uploadToRepo(octo, testFiles, repo.owner, repo.repo, inputs.apiInputs.branch);
+    await this.uploadToRepo(octo, testFiles, repo.owner, repo.repo, PONICODE_UT_BRANCH);
 
   }
 

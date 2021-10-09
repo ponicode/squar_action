@@ -57,7 +57,7 @@ class CLI {
                         const check = await PullRequest.isPRExist(PONICODE_UT_BRANCH, inputs.apiInputs.branch );
                         if (check) {
                             core.debug("PR already exists, create a commit");
-                            PullRequest.createCommit(testFiles, inputs);
+                            PullRequest.createCommit(testFiles);
                         } else {
                             core.debug("PR does not exist: create the PR");
                             const markdown = new Markdown(inputs.apiInputs.branch, inputs.apiInputs.repoURL, undefined);
