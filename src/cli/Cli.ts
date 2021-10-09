@@ -44,11 +44,11 @@ class CLI {
 
                     const testFiles: TestFile[] = this.readTestFiles(this.files);
                     if ((testFiles !== undefined) && (testFiles.length > 0)) {
-                        core.debug(JSON.stringify(testFiles));
+                        core.debug(JSON.stringify(testFiles[0]));
                         // TODO implement processing of the test Files=
                         // 1/ Create a PR with those files using https://github.com/gr2m/octokit-plugin-create-pull-request
                         // 2/ Generate a comment with an extract of the generateg UT
-                        PullRequest.generatePRComment(Markdown.createTestCodeComment(testFiles));
+                        //PullRequest.generatePRComment(Markdown.createTestCodeComment(testFiles));
                     }
                 });
             });
@@ -71,7 +71,7 @@ class CLI {
                         if (file) {
                             const testFile = {
                                 filePath: testName,
-                                content: fileContent,
+                                content: this.commentAllLinesofFile(fileContent),
                             };
                             result.push(testFile);
                         }
@@ -86,6 +86,13 @@ class CLI {
         }
 
         return result;
+
+    }
+
+    private commentAllLinesofFile(fileContent: string): string {
+        const addPrefix = (str: string) => str[0].split("\n").map((s: string) => `// ${s}`).join("\n");
+
+        return addPrefix(fileContent);
 
     }
 
