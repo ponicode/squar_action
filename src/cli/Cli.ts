@@ -51,6 +51,7 @@ class CLI {
                         // 1/ Create a PR with those files using https://github.com/gr2m/octokit-plugin-create-pull-request
                         // 2/ Generate a comment with an extract of the generateg UT
                         // PullRequest.generatePRComment(Markdown.createTestCodeComment(testFiles));
+                        PullRequest.createUTPullRequest(testFiles, inputs);
                     }
                 });
             });
@@ -73,7 +74,7 @@ class CLI {
                         if (file) {
                             const testFile = {
                                 filePath: testName,
-                                content: this.commentAllLinesofFile(fileContent),
+                                content: fileContent,
                             };
                             result.push(testFile);
                         }
@@ -85,13 +86,14 @@ class CLI {
                 }
 
             }
+
         }
 
         return result;
 
     }
 
-    private commentAllLinesofFile(filePath: string): string {
+    /*private commentAllLinesofFile(filePath: string): string {
         const addPrefix = (str: string) => "// " + str;
         let fileContent: string = "";
 
@@ -107,7 +109,7 @@ class CLI {
 
         return fileContent;
 
-    }
+    }*/
 
     private execCommand(command: string, callback: () => void) {
         const execProcess = exec(command, { 'encoding': 'utf8' }, (error, stdout) => {
