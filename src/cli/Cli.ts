@@ -4,10 +4,10 @@ import * as fs from "fs";
 import * as rd from "readline";
 import { Markdown } from "../markdown/Markdown";
 import PullRequest from "../pull_request/PullRequest";
+import { PONICODE_UT_BRANCH } from "../pull_request/types";
 import { ActionInputs } from "../types";
 import Login from "./Login";
 import { TestFile } from "./types";
-import { PONICODE_UT_BRANCH } from "../pull_request/types";
 
 class CLI {
 

@@ -36,7 +36,7 @@ class PullRequest {
         repo: repository,
       });
 
-      data.map((pull) => core.debug(`From ${pull.head} to ${pull.base}`));
+      data.map((pull) => core.debug(`From ${JSON.stringify(pull.head)} to ${JSON.stringify(pull.base)}`));
 
       return true;
 
