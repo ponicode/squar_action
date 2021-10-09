@@ -1,6 +1,7 @@
 import * as core from "@actions/core";
 import { exec, execFile, fork, spawn } from "child_process";
 import * as fs from "fs";
+import * as rd from "readline";
 import { Markdown } from "../markdown/Markdown";
 import PullRequest from "../pull_request/PullRequest";
 import { ActionInputs } from "../types";
@@ -89,10 +90,17 @@ class CLI {
 
     }
 
-    private commentAllLinesofFile(fileContent: string): string {
+    private commentAllLinesofFile(filePath: string): string {
         const addPrefix = (str: string) => str[0].split("\n").map((s: string) => `// ${s}`).join("\n");
+        let fileContent: string = "";
 
-        return addPrefix(fileContent);
+        const reader = rd.createInterface(fs.createReadStream(filePath));
+        reader.on("line", (l: string) => {
+            const prefixedLine = addPrefix(l) + "\n";
+            fileContent += prefixedLine;
+        });
+
+        return fileContent;
 
     }
 
