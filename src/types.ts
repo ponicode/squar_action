@@ -7,10 +7,7 @@ interface SquarAPIInputs {
 }
 
 interface ActionInputs {
-    repoURL: string;
-    impactedFiles: string[];
-    branch: string;
-    ponicodeSquarToken: string;
+    apiInputs: SquarAPIInputs;
     ponicodeUtToken: string;
     githubToken: string;
     bootstrapUT: string;

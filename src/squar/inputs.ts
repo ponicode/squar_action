@@ -49,12 +49,16 @@ const parseActionInputs = (getInput: GetInput): ActionInputs => {
     impactedFiles = [];
   }
 
+  const apiInputs: SquarAPIInputs = {
+    repoURL: repoURL,
+    userToken: ponicodeSquarToken,
+    impactedFiles: impactedFiles,
+    branch: branch,
+  }
+
   return {
-    repoURL,
-    ponicodeSquarToken,
+    apiInputs: apiInputs,
     ponicodeUtToken,
-    impactedFiles,
-    branch,
     githubToken,
     bootstrapUT,
     displayFullReport,

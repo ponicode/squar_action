@@ -1,13 +1,15 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 import { Octokit } from "@octokit/core";
-import { SpawnSyncOptionsWithStringEncoding } from "child_process";
+import { Octokit as OctokitRest } from "@octokit/rest";
+import { readFile } from "fs-extra";
+import {globby} from "globby";
 import { createPullRequest } from "octokit-plugin-create-pull-request";
+import path from "path";
 import { connected } from "process";
 import { TestFile } from "../cli/types";
 import { Markdown } from "../markdown/Markdown";
 import { ActionInputs } from "../types";
-import { checkIfCommentALreadyExists, getAllComments } from "./utils";
 
 // get the inputs of the action. The "token" input
   // is not defined so far - we will come to it later.
@@ -17,17 +19,27 @@ const githubToken = core.getInput("githubToken");
 // in the pull request or repository we are issued from
 const context = github.context;
 const repo = context.repo;
-const pullRequestNumber = context.payload.pull_request?.number;
+const pullRequestNumber: number | undefined = context.payload.pull_request?.number;
 
 const octokit = github.getOctokit(githubToken);
 
 const PullRequestOctokit = Octokit.plugin(createPullRequest);
 
-interface TestFile4PR {
-  [path: string]: string;
-}
-
 class PullRequest {
+
+    public async isPRExist(originBranch: string, targetBranch: string): Promise<boolean> {
+      const owner = repo.owner;
+      const repository = repo.repo;
+      const { data } = await octokit.rest.pulls.list({
+        owner: owner,
+        repo: repository,
+      });
+
+      data.map((pull) => core.debug(`From ${pull.head} to ${pull.base}`));
+
+      return true;
+
+    }
 
     public createUTPullRequest(testFiles: TestFile[], inputs: ActionInputs, markdown: Markdown) {
 
@@ -43,8 +55,8 @@ class PullRequest {
           repo: repo.repo,
           title: "Unit-Tests bootstrap by Ponicode",
           body: this.generatePRBody(testFiles),
-          base: inputs.branch /* optional: defaults to default branch */,
-          head: "ponicode-ut-proposal",
+          base: inputs.apiInputs.branch /* optional: defaults to default branch */,
+          head: PONICODE_UT_BRANCH,
           changes: [
             {
               /* optional: if `files` is not passed, an empty commit is created instead */
@@ -54,7 +66,7 @@ class PullRequest {
             },
           ],
         })
-        .then((pr) => { 
+        .then((pr) => {
           core.debug(`PR well created with number: ${pr?.data.number}`);
           this.generatePRComment(markdown.createNewPRComment(pr?.url, testFiles));
         });
@@ -118,6 +130,15 @@ class PullRequest {
 
   }
 
+  public async createCommit(testFiles: TestFile[], inputs: ActionInputs): Promise<void> {
+    const octo = new OctokitRest({
+      auth: githubToken,
+    });
+
+    await this.uploadToRepo(octo, testFiles, repo.owner, repo.repo, inputs.apiInputs.branch);
+
+  }
+
   private listUTFile(testFiles: TestFile[]): string {
     let list: string = "";
 
@@ -168,6 +189,132 @@ class PullRequest {
           body: message,
       });
   }
+
+  /* Methods required to create a commit and push it on a branch */
+  private uploadToRepo = async (
+    octo: OctokitRest,
+    testFiles: TestFile[],
+    org: string,
+    repo: string,
+    branch: string = `master`,
+  ) => {
+    // gets commit's AND its tree's SHA
+    const currentCommit = await this.getCurrentCommit(octo, org, repo, branch);
+    const filesPaths = testFiles.map((file) => file.filePath);
+    const filesBlobs = await Promise.all(filesPaths.map(this.createBlobForFile(octo, org, repo)));
+    const pathsForBlobs = filesPaths;
+    const newTree = await this.createNewTree(
+      octo,
+      org,
+      repo,
+      filesBlobs,
+      pathsForBlobs,
+      currentCommit.treeSha,
+    );
+    const commitMessage = `GitHub Action updates Ponicode UT`;
+    const newCommit = await this.createNewCommit(
+      octo,
+      org,
+      repo,
+      commitMessage,
+      newTree.sha,
+      currentCommit.commitSha,
+    );
+    await this.setBranchToCommit(octo, org, repo, branch, newCommit.sha);
+  }
+
+  private getCurrentCommit = async (
+    octo: OctokitRest,
+    org: string,
+    repo: string,
+    branch: string = "master",
+  ) => {
+    const { data: refData } = await octo.rest.git.getRef({
+      owner: org,
+      repo,
+      ref: `heads/${branch}`,
+    });
+    const commitSha = refData.object.sha;
+    const { data: commitData } = await octo.rest.git.getCommit({
+      owner: org,
+      repo,
+      commit_sha: commitSha,
+    });
+    return {
+      commitSha,
+      treeSha: commitData.tree.sha,
+    };
+  }
+
+  // Notice that readFile's utf8 is typed differently from Github's utf-8
+  private getFileAsUTF8 = (filePath: string) => readFile(filePath, "utf8");
+
+  private createBlobForFile = (octo: OctokitRest, org: string, repo: string) => async (
+    filePath: string,
+  ) => {
+    const content = await this.getFileAsUTF8(filePath);
+    const blobData = await octo.rest.git.createBlob({
+      owner: org,
+      repo,
+      content,
+      encoding: "utf-8",
+    });
+    return blobData.data;
+  }
+
+  private createNewTree = async (
+    octo: OctokitRest,
+    owner: string,
+    repo: string,
+    blobs: any[],
+    paths: string[],
+    parentTreeSha: string
+  ) => {
+    // My custom config. Could be taken as parameters
+    const tree = blobs.map(({ sha }, index) => ({
+      path: paths[index],
+      mode: `100644`,
+      type: `blob`,
+      sha,
+    } as GitTree));
+    const { data } = await octo.rest.git.createTree({
+      owner,
+      repo,
+      tree,
+      base_tree: parentTreeSha,
+    });
+    return data;
+  }
+
+  private createNewCommit = async (
+    octo: OctokitRest,
+    org: string,
+    repo: string,
+    message: string,
+    currentTreeSha: string,
+    currentCommitSha: string,
+  ) =>
+    (await octo.rest.git.createCommit({
+      owner: org,
+      repo,
+      message,
+      tree: currentTreeSha,
+      parents: [currentCommitSha],
+    })).data
+
+  private setBranchToCommit = (
+    octo: OctokitRest,
+    org: string,
+    repo: string,
+    branch: string = `master`,
+    commitSha: string,
+  ) =>
+    octo.rest.git.updateRef({
+      owner: org,
+      repo,
+      ref: `heads/${branch}`,
+      sha: commitSha,
+    })
 
 }
 
