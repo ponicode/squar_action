@@ -38,8 +38,8 @@ class PullRequest {
       // See https://octokit.github.io/rest.js/#octokit-routes-pulls-create
       myOctokit
         .createPullRequest({
-          owner: "user-or-org-login",
-          repo: inputs.repoURL,
+          owner: repo.owner,
+          repo: repo.repo,
           title: "Unit-Tests bootstrap by Ponicode",
           body: this.generatePRBody(testFiles),
           base: inputs.branch /* optional: defaults to default branch */,
