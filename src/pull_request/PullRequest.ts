@@ -132,7 +132,7 @@ class PullRequest {
 
   }
 
-  public async createCommit(testFiles: TestFile[], pullRequestNumber: number): Promise<void> {
+  public async createCommit(testFiles: TestFile[]): Promise<void> {
     const octo = new OctokitRest({
       auth: githubToken,
     });
