@@ -59,9 +59,9 @@ class Markdown {
 
     private branch: string;
     private repoURL: string;
-    private report: Report;
+    private report: Report | undefined;
 
-    constructor(branch: string, repoURL: string, report: Report) {
+    constructor(branch: string, repoURL: string, report: Report | undefined) {
         this.branch = branch;
         this.repoURL = repoURL;
         this.report = report;
@@ -103,6 +103,21 @@ class Markdown {
 
     }
 
+    public createNewPRComment(url: string | undefined, testFiles: TestFile[]): string {
+        let message: string = "";
+
+        if (url !== undefined) {
+            message += "## Ponicode UT bootstrap Pull-Request\n";
+            message += `### [Ponicode UT Bootstrap Pull-Request](${url})`;
+            message += "The PR contains unit-Test bootstrap for the following files:\n";
+            testFiles.forEach((file: TestFile) => {
+                message += `- ${file.filePath}`;
+            });
+        }
+
+        return message;
+    }
+
     private appendMessageWithAlerts(suggestionsOnImpactedFiles: TestAlert[] | undefined,
                                     initialMessage: string): string {
 
@@ -132,10 +147,10 @@ class Markdown {
         let message = readFileSync(fileName, "utf-8");
 
         message += `## List of alerts identified by Ponicode SQUAR in your Project \
-         __*${this.report.fullReport.repoName}*__\n`;
+         __*${this.report?.fullReport.repoName}*__\n`;
         message += initMarkdownTable();
 
-        message = this.appendMessageWithAlerts(this.report.fullReport.suggestions, message);
+        message = this.appendMessageWithAlerts(this.report?.fullReport.suggestions, message);
 
         return message;
     }
@@ -145,10 +160,10 @@ class Markdown {
         files: file,
         from: [/%repo_name%/g, /%grade%/g, /%missing_test_suites%/g,
             /%missing_test_cases%/g, /%missing_edge_cases%/g, /%branch%/g ],
-        to: [this.report.fullReport.repoName, this.report.fullReport.ponicodeScore,
-        this.report.fullReport.missingTestSuite ? `${this.report.fullReport.missingTestSuite}` : "0",
-        this.report.fullReport.missingTestCases ? `${this.report.fullReport.missingTestCases}` : "0",
-        this.report.fullReport.missingEdgeCases ? `${this.report.fullReport.missingEdgeCases}` : "0",
+        to: [this.report?.fullReport.repoName, this.report?.fullReport.ponicodeScore,
+        this.report?.fullReport.missingTestSuite ? `${this.report?.fullReport.missingTestSuite}` : "0",
+        this.report?.fullReport.missingTestCases ? `${this.report?.fullReport.missingTestCases}` : "0",
+        this.report?.fullReport.missingEdgeCases ? `${this.report?.fullReport.missingEdgeCases}` : "0",
         this.branch ],
         };
 

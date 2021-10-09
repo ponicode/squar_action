@@ -5,6 +5,7 @@ import { SpawnSyncOptionsWithStringEncoding } from "child_process";
 import { createPullRequest } from "octokit-plugin-create-pull-request";
 import { connected } from "process";
 import { TestFile } from "../cli/types";
+import { Markdown } from "../markdown/Markdown";
 import { ActionInputs } from "../types";
 import { checkIfCommentALreadyExists, getAllComments } from "./utils";
 
@@ -28,7 +29,7 @@ interface TestFile4PR {
 
 class PullRequest {
 
-    public createUTPullRequest(testFiles: TestFile[], inputs: ActionInputs) {
+    public createUTPullRequest(testFiles: TestFile[], inputs: ActionInputs, markdown: Markdown) {
 
       const myOctokit = new PullRequestOctokit({
         auth: inputs.githubToken,
@@ -53,7 +54,10 @@ class PullRequest {
             },
           ],
         })
-        .then((pr) => core.debug(`PR well created with number: ${pr?.data.number}`));
+        .then((pr) => { 
+          core.debug(`PR well created with number: ${pr?.data.number}`);
+          this.generatePRComment(markdown.createNewPRComment(pr?.url, testFiles));
+        });
 
     }
 
@@ -128,7 +132,7 @@ class PullRequest {
   private generatePRBody(testFiles: TestFile[]): string  {
     let body: string = "";
     body += `This PR contains some proposal of Unit-Tests by Ponicode based on Ponicode SQUAR outputs.\
-    It concerns the following files:`;
+    It concerns the following files: `;
 
     body += this.listUTFile(testFiles);
 
