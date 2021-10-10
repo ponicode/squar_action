@@ -29,7 +29,7 @@ const PullRequestOctokit = Octokit.plugin(createPullRequest);
 
 class PullRequest {
 
-    public async isPRExist(originBranch: string, targetBranch: string): Promise<boolean> {
+    public async isPRExist(originBranch: string, targetBranch: string): Promise<number | undefined> {
       const owner = repo.owner;
       const repository = repo.repo;
       const { data } = await octokit.rest.pulls.list({
@@ -37,10 +37,16 @@ class PullRequest {
         repo: repository,
       });
 
-      const results = data.map((pull) => (pull.head.ref === originBranch) && (pull.base.ref === targetBranch));
+      const results = data.map((pull) => {
+        if ((pull.head.ref === originBranch) && (pull.base.ref === targetBranch)) {
+          return pull.id;
+        } else {
+          return ;
+        }
+      });
       core.debug(`Existing PR check: ${results}`);
 
-      return results.includes(true);
+      return results.find((pullId) => pullId !== undefined );
 
     }
 
@@ -72,7 +78,7 @@ class PullRequest {
         .then((pr) => {
           core.debug(`PR well created with number: ${pr?.data.number}`);
           const url = buildGithubPRURL(repo.repo, repo.owner, pr?.data.number);
-          this.generatePRComment(markdown.createNewPRComment(url, testFiles));
+          this.generatePRComment(markdown.createUTPRComment(url, testFiles, false));
         });
 
     }
@@ -134,7 +140,7 @@ class PullRequest {
 
   }
 
-  public async createCommit(testFiles: TestFile[]): Promise<void> {
+  public async createCommit(testFiles: TestFile[], prNumber: number, markdown: Markdown): Promise<void> {
     const octo = new OctokitRest({
       auth: githubToken,
     });
@@ -142,6 +148,8 @@ class PullRequest {
     await this.uploadToRepo(octo, testFiles, repo.owner, repo.repo, PONICODE_UT_BRANCH);
     await this.generatePRComment("## The Ponicode UT bootstrap Pull-Request as been updated\n");
     // TODO: update the message with more sophisitcated MD content
+    const url = buildGithubPRURL(repo.repo, repo.owner, prNumber);
+    this.generatePRComment(markdown.createUTPRComment(url, testFiles, false));
 
   }
 

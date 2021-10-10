@@ -103,7 +103,7 @@ class Markdown {
 
     }
 
-    public createNewPRComment(url: string | undefined, testFiles: TestFile[]): string {
+    public createUTPRComment(url: string | undefined, testFiles: TestFile[], isUpdate: boolean): string {
         let message: string = "";
 
         if (url !== undefined) {
@@ -111,7 +111,11 @@ class Markdown {
             if (url !== undefined) {
                 message += `### [Ponicode UT Bootstrap Pull-Request](${url})\n`;
             }
-            message += "The PR contains the following unit-Test bootstrap files:\n";
+            if (!isUpdate) {
+                message += "The PR contains the following unit-Test bootstrap files:\n";
+            } else {
+                message += "The PR has been updated for the following unit-Test bootstrap files:\n";
+            }
             testFiles.forEach((file: TestFile) => {
                 message += `- ${file.filePath}\n`;
             });
