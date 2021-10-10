@@ -9,6 +9,7 @@ import path from "path";
 import { connected } from "process";
 import { TestFile } from "../cli/types";
 import { Markdown } from "../markdown/Markdown";
+import { buildGithubPRURL } from "../markdown/utils";
 import { ActionInputs } from "../types";
 import { GitTree, PONICODE_UT_BRANCH, TestFile4PR } from "./types";
 
@@ -70,7 +71,8 @@ class PullRequest {
         })
         .then((pr) => {
           core.debug(`PR well created with number: ${pr?.data.number}`);
-          this.generatePRComment(markdown.createNewPRComment(pr?.url, testFiles));
+          const url = buildGithubPRURL(repo.repo, pr?.data.number);
+          this.generatePRComment(markdown.createNewPRComment(url, testFiles));
         });
 
     }
@@ -170,6 +172,8 @@ class PullRequest {
     testFiles.forEach((test: TestFile) => {
       result[test.filePath] = test.content;
     });
+
+    // TODO: add a workflow YAML to test if project build in the CI
 
     return result;
   }

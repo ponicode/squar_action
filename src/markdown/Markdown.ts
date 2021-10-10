@@ -108,12 +108,13 @@ class Markdown {
 
         if (url !== undefined) {
             message += "## Ponicode UT bootstrap Pull-Request\n";
-            message += `### [Ponicode UT Bootstrap Pull-Request](${url})\n`;
+            if (url !== undefined) {
+                message += `### [Ponicode UT Bootstrap Pull-Request](${url})\n`;
+            }
             message += "The PR contains unit-Test bootstrap for the following files:\n";
             testFiles.forEach((file: TestFile) => {
                 message += `- ${file.filePath}`;
             });
-            // TODO: fix the URL of the PR: it uses the API endpoint
         }
 
         return message;

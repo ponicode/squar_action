@@ -54,4 +54,14 @@ function buildGithubSecretURL(repoURL: string): string {
     return message;
 }
 
-export { initMarkdownTable, translateAlertType, translateCriticity, buildGithubFileURL, buildGithubSecretURL };
+function buildGithubPRURL(repoURL: string, pullId: number | undefined): string | undefined {
+    if (pullId !== undefined) {
+        const message = `${GITHUB_URL}/${repoURL}/pulls/${pullId}`;
+        return message;
+    } else {
+        return ;
+    }
+}
+
+export { initMarkdownTable, translateAlertType, translateCriticity,
+    buildGithubFileURL, buildGithubSecretURL, buildGithubPRURL };
