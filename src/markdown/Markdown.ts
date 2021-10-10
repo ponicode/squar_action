@@ -111,7 +111,7 @@ class Markdown {
             if (url !== undefined) {
                 message += `### [Ponicode UT Bootstrap Pull-Request](${url})\n`;
             }
-            message += "The PR contains unit-Test bootstrap for the following files:\n";
+            message += "The PR contains the following unit-Test bootstrap files:\n";
             testFiles.forEach((file: TestFile) => {
                 message += `- ${file.filePath}\n`;
             });
