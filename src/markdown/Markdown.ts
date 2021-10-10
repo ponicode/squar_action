@@ -113,7 +113,7 @@ class Markdown {
             }
             message += "The PR contains unit-Test bootstrap for the following files:\n";
             testFiles.forEach((file: TestFile) => {
-                message += `- ${file.filePath}`;
+                message += `- ${file.filePath}\n`;
             });
         }
 

@@ -71,7 +71,7 @@ class PullRequest {
         })
         .then((pr) => {
           core.debug(`PR well created with number: ${pr?.data.number}`);
-          const url = buildGithubPRURL(repo.repo, pr?.data.number);
+          const url = buildGithubPRURL(repo.repo, repo.owner, pr?.data.number);
           this.generatePRComment(markdown.createNewPRComment(url, testFiles));
         });
 

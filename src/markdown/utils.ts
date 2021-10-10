@@ -54,7 +54,7 @@ function buildGithubSecretURL(repoURL: string): string {
     return message;
 }
 
-function buildGithubPRURL(repoURL: string, pullId: number | undefined): string | undefined {
+function buildGithubPRURL(repoURL: string, repoOwner: string, pullId: number | undefined): string | undefined {
     if (pullId !== undefined) {
         const message = `${GITHUB_URL}/${repoURL}/pulls/${pullId}`;
         return message;
