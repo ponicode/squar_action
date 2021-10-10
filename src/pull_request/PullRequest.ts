@@ -146,8 +146,7 @@ class PullRequest {
     });
 
     await this.uploadToRepo(octo, testFiles, repo.owner, repo.repo, PONICODE_UT_BRANCH);
-    await this.generatePRComment("## The Ponicode UT bootstrap Pull-Request as been updated\n");
-    // TODO: update the message with more sophisitcated MD content
+    // update the message with more sophisitcated MD content
     const url = buildGithubPRURL(repo.repo, repo.owner, prNumber);
     this.generatePRComment(markdown.createUTPRComment(url, testFiles, false));
 

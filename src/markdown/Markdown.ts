@@ -107,7 +107,11 @@ class Markdown {
         let message: string = "";
 
         if (url !== undefined) {
-            message += "## Ponicode UT bootstrap Pull-Request\n";
+            if (!isUpdate) {
+                message += "## Ponicode UT bootstrap Pull-Request\n";
+            } else {
+                message += "## Ponicode UT bootstrap Pull-Request has been updated\n";
+            }
             if (url !== undefined) {
                 message += `### [Ponicode UT Bootstrap Pull-Request](${url})\n`;
             }
