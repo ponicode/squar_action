@@ -39,7 +39,7 @@ class PullRequest {
 
       const results = data.map((pull) => {
         if ((pull.head.ref === originBranch) && (pull.base.ref === targetBranch)) {
-          return pull.id;
+          return pull.number;
         } else {
           return ;
         }
@@ -148,7 +148,7 @@ class PullRequest {
     await this.uploadToRepo(octo, testFiles, repo.owner, repo.repo, PONICODE_UT_BRANCH);
     // update the message with more sophisitcated MD content
     const url = buildGithubPRURL(repo.repo, repo.owner, prNumber);
-    this.generatePRComment(markdown.createUTPRComment(url, testFiles, false));
+    this.generatePRComment(markdown.createUTPRComment(url, testFiles, true));
 
   }
 
