@@ -28,7 +28,7 @@ class Login {
             const error: Error = e as Error;
             const errorMessage = `Failed to locate settings folder: ${error.message}`;
             // Push an error message in PR comment
-            const message = await Markdown.createSQUARErrorMessage(errorMessage, inputs.repoURL);
+            const message = await Markdown.createSQUARErrorMessage(errorMessage, inputs.apiInputs.repoURL);
             void PullRequest.generatePRComment(message);
             core.setFailed(errorMessage);
         }

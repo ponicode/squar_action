@@ -1,6 +1,10 @@
 import * as core from "@actions/core";
 import { exec, execFile, fork, spawn } from "child_process";
 import * as fs from "fs";
+import * as rd from "readline";
+import { Markdown } from "../markdown/Markdown";
+import PullRequest from "../pull_request/PullRequest";
+import { PONICODE_UT_BRANCH } from "../pull_request/types";
 import { ActionInputs } from "../types";
 import Login from "./Login";
 import { TestFile } from "./types";
@@ -38,15 +42,32 @@ class CLI {
                 //DEBUG
                 core.debug(`Start generating Tests for ${files.toString()}`);
 
-                this.execCommand(`ponicode test ${fileArguments}`, () => {
+                this.execCommand(`ponicode test ${fileArguments}`, async () => {
 
                     const testFiles: TestFile[] = this.readTestFiles(this.files);
                     if ((testFiles !== undefined) && (testFiles.length > 0)) {
-                        core.debug(JSON.stringify(testFiles));
-                        // TODO implement processing of the test Files=
-                        // 1/ Create a PR with those files using https://github.com/gr2m/octokit-plugin-create-pull-request
+                        // core.debug(JSON.stringify(testFiles));
+
+                        // Implement processing of the test Files=
+                        // 1/ Create a PR with those files using 
+                        //    https://github.com/gr2m/octokit-plugin-create-pull-request
                         // 2/ Generate a comment with an extract of the generateg UT
+                        // PullRequest.generatePRComment(Markdown.createTestCodeComment(testFiles));
+
+                        const check: number | undefined =
+                            await PullRequest.isPRExist(PONICODE_UT_BRANCH, inputs.apiInputs.branch );
+                        const markdown = new Markdown(inputs.apiInputs.branch, inputs.apiInputs.repoURL, undefined);
+
+                        if (check !== undefined) {
+                            core.debug("PR already exists, create a commit");
+                            PullRequest.createCommit(testFiles, check, markdown);
+                        } else {
+                            core.debug("PR does not exist: create the PR");
+                            PullRequest.createUTPullRequest(testFiles, inputs, markdown);
+                        }
+
                     }
+
                 });
             });
 
@@ -80,11 +101,30 @@ class CLI {
                 }
 
             }
+
         }
 
         return result;
 
     }
+
+    /*private commentAllLinesofFile(filePath: string): string {
+        const addPrefix = (str: string) => "// " + str;
+        let fileContent: string = "";
+
+        const reader = rd.createInterface(fs.createReadStream(filePath));
+        reader.on("line", (l: string) => {
+                //DEBUG
+                core.debug(l);
+
+                // const prefixedLine = addPrefix(l) + "\n";
+
+                // fileContent += prefixedLine;
+        });
+
+        return fileContent;
+
+    }*/
 
     private execCommand(command: string, callback: () => void) {
         const execProcess = exec(command, { 'encoding': 'utf8' }, (error, stdout) => {
