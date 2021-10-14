@@ -103,7 +103,7 @@ class Markdown {
         // 5th column: the link to go directly to the file.
         message += `| ${buildGithubFileURL(alert, this.repoURL, this.branch)}`;
         //6th column: testable by Ponicode
-        message += `| <p align="center"><img src="https://uploads-ssl.webflow.com/5f85a5ab7da846bd78f988af/5fb398a89699fb39f6afeb4b_1.%20Mark.svg" max-width="15" max-height="15"></p>`;
+        message += `| <p align="center"><img src="https://ponicodefilesstorage.blob.core.windows.net/cli/logo-without-text-50x50.png"></p>`;
         message += "|\n";
         });
 
