@@ -102,6 +102,8 @@ class Markdown {
         message += `| <span style="color:${alert.criticity}">**${translateCriticity(alert.criticity)}**</span>`;
         // 5th column: the link to go directly to the file.
         message += `| ${buildGithubFileURL(alert, this.repoURL, this.branch)}`;
+        //6th column: testable by Ponicode
+        message += `| <p align="center"><img src="https://uploads-ssl.webflow.com/5f85a5ab7da846bd78f988af/5fb398a89699fb39f6afeb4b_1.%20Mark.svg" max-width="50" max-height="50"></p>`;
         message += "|\n";
         });
 
