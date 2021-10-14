@@ -1,4 +1,10 @@
 import { AlertKind, Criticity, TestAlert } from "../types";
+import { readFileSync } from 'fs';
+import { Marked } from '@ts-stack/markdown';
+import { TestFile } from "../cli/types";
+import { Markdown } from "./Markdown";
+
+const replace = require("replace-in-file");
 
 const GITHUB_URL = "https://github.com";
 
@@ -63,5 +69,57 @@ function buildGithubPRURL(repoURL: string, repoOwner: string, pullId: number | u
     }
 }
 
+function generateCriticityLegend(fileName: string): string {
+    const message = readFileSync(fileName, "utf-8");
+    return message;
+}
+
+async function createSQUARErrorMessage(errorMessage: string | undefined, repoURL: string): Promise<string> {
+    const fileName = __dirname + "/error_message.md";
+    const url = buildGithubSecretURL(repoURL);
+    const options = {
+        files: fileName,
+        from: [/%errorMessage%/g, /%url%/g],
+        to: [errorMessage, url],
+    };
+
+    await replace(options);
+
+    const message = readFileSync(fileName, "utf-8");
+    return message;
+}
+
+async function createUTErrorMessage(errorMessage: string | undefined, repoURL: string): Promise<string> {
+    const fileName = __dirname + "/ut_error_message.md";
+    const url = buildGithubSecretURL(repoURL);
+    const options = {
+        files: fileName,
+        from: [/%errorMessage%/g, /%url%/g],
+        to: [errorMessage, url],
+    };
+
+    await replace(options);
+
+    const message = readFileSync(fileName, "utf-8");
+    return message;
+}
+
+function createTestCodeComment(testFiles: TestFile[]): string {
+    let message = `## Overview of Unit-Tests generated for your impacted files\n`;
+    message += appendUTOverviewMessages(testFiles);
+    return message;
+}
+
+function appendUTOverviewMessages(testFiles: TestFile[]): string {
+    let message: string = "";
+
+    testFiles?.forEach((testFile: TestFile) => {
+        message += `### Unit-Tests proposal for file ${testFile.filePath}\n`;
+        message += Marked.parse(testFile.content);
+    });
+
+    return message;
+};
+
 export { initMarkdownTable, translateAlertType, translateCriticity,
-    buildGithubFileURL, buildGithubSecretURL, buildGithubPRURL };
+    buildGithubFileURL, buildGithubSecretURL, buildGithubPRURL, generateCriticityLegend, createSQUARErrorMessage };

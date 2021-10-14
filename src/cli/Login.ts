@@ -2,6 +2,7 @@ import * as core from "@actions/core";
 import fs from "fs";
 import path from "path";
 import { Markdown } from "../markdown/Markdown";
+import { createSQUARErrorMessage } from "../markdown/utils";
 import PullRequest from "../pull_request/PullRequest";
 import { ActionInputs } from "../types";
 import { Settings } from "./types";
@@ -28,7 +29,7 @@ class Login {
             const error: Error = e as Error;
             const errorMessage = `Failed to locate settings folder: ${error.message}`;
             // Push an error message in PR comment
-            const message = await Markdown.createSQUARErrorMessage(errorMessage, inputs.apiInputs.repoURL);
+            const message = await createSQUARErrorMessage(errorMessage, inputs.apiInputs.repoURL);
             void PullRequest.generatePRComment(message);
             core.setFailed(errorMessage);
         }

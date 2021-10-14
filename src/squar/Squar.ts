@@ -1,5 +1,6 @@
 import * as core from "@actions/core";
 import { Markdown } from "../markdown/Markdown";
+import { createSQUARErrorMessage } from "../markdown/utils";
 import PullRequest from "../pull_request/PullRequest";
 import { EvaluateReturn, FetchReportInput, SquarAPIInputs, Report } from "../types";
 import SquarClient from "./squar_client";
@@ -16,7 +17,7 @@ class Squar {
             const errorMessage = result.message ? result.message : "Error Triggering SQUAR report";
             //core.setFailed(errorMessage);
             // Push an error message in PR comment
-            const message = await Markdown.createSQUARErrorMessage(errorMessage, inputs.repoURL);
+            const message = await createSQUARErrorMessage(errorMessage, inputs.repoURL);
             void PullRequest.generatePRComment(message);
             return ;
         }
@@ -38,7 +39,7 @@ class Squar {
         } else {
             const errorMessage: string = "No Repository Id";
             // Push an error message in PR comment
-            const message = await Markdown.createSQUARErrorMessage(errorMessage, inputs.repoURL);
+            const message = await createSQUARErrorMessage(errorMessage, inputs.repoURL);
             void PullRequest.generatePRComment(message);
             core.setFailed(errorMessage);
             return undefined;

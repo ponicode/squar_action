@@ -2,60 +2,12 @@ import * as core from "@actions/core";
 import { readFileSync } from 'fs';
 import { TestFile } from "../cli/types";
 import { Report, TestAlert } from "../types";
-import { buildGithubFileURL, buildGithubSecretURL, initMarkdownTable, 
+import { buildGithubFileURL, buildGithubSecretURL, generateCriticityLegend, initMarkdownTable, 
     translateAlertType, translateCriticity } from "./utils";
-import { Marked } from '@ts-stack/markdown';
 
 const replace = require("replace-in-file");
 
 class Markdown {
-
-    static async createSQUARErrorMessage(errorMessage: string | undefined, repoURL: string): Promise<string> {
-        const fileName = __dirname + "/error_message.md";
-        const url = buildGithubSecretURL(repoURL);
-        const options = {
-            files: fileName,
-            from: [/%errorMessage%/g, /%url%/g],
-            to: [errorMessage, url],
-        };
-
-        await replace(options);
-
-        const message = readFileSync(fileName, "utf-8");
-        return message;
-    }
-
-    static async createUTErrorMessage(errorMessage: string | undefined, repoURL: string): Promise<string> {
-        const fileName = __dirname + "/ut_error_message.md";
-        const url = buildGithubSecretURL(repoURL);
-        const options = {
-            files: fileName,
-            from: [/%errorMessage%/g, /%url%/g],
-            to: [errorMessage, url],
-        };
-
-        await replace(options);
-
-        const message = readFileSync(fileName, "utf-8");
-        return message;
-    }
-
-    public static createTestCodeComment(testFiles: TestFile[]): string {
-        let message = `## Overview of Unit-Tests generated for your impacted files\n`;
-        message += Markdown.appendUTOverviewMessages(testFiles);
-        return message;
-    }
-
-    private static appendUTOverviewMessages(testFiles: TestFile[]): string {
-        let message: string = "";
-
-        testFiles?.forEach((testFile: TestFile) => {
-            message += `### Unit-Tests proposal for file ${testFile.filePath}\n`;
-            message += Marked.parse(testFile.content);
-        });
-
-        return message;
-    };
 
     private branch: string;
     private repoURL: string;
@@ -74,11 +26,11 @@ class Markdown {
 
         if ((suggestionsOnImpactedFiles) && (suggestionsOnImpactedFiles.length > 0)) {
 
-        message = "## List of alerts identified by Ponicode SQUAR in the files of your PR\n";
+            message = "## List of alerts identified by Ponicode SQUAR in the files of your PR\n";
 
-        message += initMarkdownTable();
+            message += initMarkdownTable();
 
-        message = this.appendMessageWithAlerts(suggestionsOnImpactedFiles, message);
+            message = this.appendMessageWithAlerts(suggestionsOnImpactedFiles, message);
         }
 
         return message;
@@ -149,6 +101,9 @@ class Markdown {
         message += "|\n";
         });
 
+        message += "\n\n";
+        message += generateCriticityLegend( __dirname + "/criticity_legends.md");
+
         return message;
 
     }
@@ -165,7 +120,7 @@ class Markdown {
         return message;
     }
 
-    private async generateMessageFromMDFile(file: string) {
+    private async generateMessageFromMDFile(file: string): Promise<void> {
         const options = {
         files: file,
         from: [/%repo_name%/g, /%grade%/g, /%missing_test_suites%/g,
