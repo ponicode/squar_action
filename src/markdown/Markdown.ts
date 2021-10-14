@@ -31,6 +31,8 @@ class Markdown {
             message += initMarkdownTable();
 
             message = this.appendMessageWithAlerts(suggestionsOnImpactedFiles, message);
+
+            message += generateCriticityLegend( __dirname + "/criticity_legends.md");
         }
 
         return message;
@@ -45,7 +47,9 @@ class Markdown {
 
             await this.generateMessageFromMDFile(fileName);
 
-            const message = this.addAlertsToFullReportComment(fileName);
+            let message = this.addAlertsToFullReportComment(fileName);
+
+            message += generateCriticityLegend( __dirname + "/criticity_legends.md");
 
             return message;
 
@@ -100,9 +104,6 @@ class Markdown {
         message += `| ${buildGithubFileURL(alert, this.repoURL, this.branch)}`;
         message += "|\n";
         });
-
-        message += "\n\n\n";
-        message += generateCriticityLegend( __dirname + "/criticity_legends.md");
 
         return message;
 
