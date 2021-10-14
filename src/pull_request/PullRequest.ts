@@ -79,6 +79,9 @@ class PullRequest {
           core.debug(`PR well created with number: ${pr?.data.number}`);
           const url = buildGithubPRURL(repo.repo, repo.owner, pr?.data.number);
           this.generatePRComment(markdown.createUTPRComment(url, testFiles, false));
+        }).catch((e) => {
+          const error = e as Error;
+          core.debug(`ERROR While creating the PR ${error.message}`);
         });
 
     }
