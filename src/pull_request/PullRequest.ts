@@ -40,13 +40,13 @@ class PullRequest {
       const results = data.map((pull) => {
         if ((pull.head.ref === originBranch) && (pull.base.ref === targetBranch)) {
           return pull.number;
-        } else {
-          return ;
         }
       });
       core.debug(`Existing PR check: ${results}`);
+      const check = results.find((pullId) => pullId !== undefined );
+      core.debug(`Existing PullId = ${check}`);
 
-      return results.find((pullId) => pullId !== undefined );
+      return check;
 
     }
 
@@ -81,7 +81,7 @@ class PullRequest {
           this.generatePRComment(markdown.createUTPRComment(url, testFiles, false));
         }).catch((e) => {
           const error = e as Error;
-          core.debug(`ERROR While creating the PR ${error.message}`);
+          core.debug(`ERROR While creating the PR: ${error.message}`);
         });
 
     }
