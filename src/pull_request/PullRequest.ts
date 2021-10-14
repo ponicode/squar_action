@@ -11,7 +11,7 @@ import { TestFile } from "../cli/types";
 import { Markdown } from "../markdown/Markdown";
 import { buildGithubPRURL, createSQUARErrorMessage } from "../markdown/utils";
 import { ActionInputs } from "../types";
-import { GitTree, PONICODE_UT_BRANCH, TestFile4PR } from "./types";
+import { GitTree, TestFile4PR } from "./types";
 import { getPRBranchName } from "./utils";
 
 // get the inputs of the action. The "token" input
@@ -150,12 +150,13 @@ class PullRequest {
 
   }
 
-  public async createCommit(testFiles: TestFile[], prNumber: number, markdown: Markdown): Promise<void> {
+  public async createCommit(testFiles: TestFile[], inputs: ActionInputs,
+                            prNumber: number, markdown: Markdown): Promise<void> {
     const octo = new OctokitRest({
       auth: githubToken,
     });
 
-    await this.uploadToRepo(octo, testFiles, repo.owner, repo.repo, PONICODE_UT_BRANCH);
+    await this.uploadToRepo(octo, testFiles, repo.owner, repo.repo, getPRBranchName(inputs));
     // update the message with more sophisitcated MD content
     const url = buildGithubPRURL(repo.repo, repo.owner, prNumber);
     this.generatePRComment(markdown.createUTPRComment(url, testFiles, true));

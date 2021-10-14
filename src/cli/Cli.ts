@@ -4,7 +4,6 @@ import * as fs from "fs";
 import * as rd from "readline";
 import { Markdown } from "../markdown/Markdown";
 import PullRequest from "../pull_request/PullRequest";
-import { PONICODE_UT_BRANCH } from "../pull_request/types";
 import { getPRBranchName } from "../pull_request/utils";
 import { ActionInputs } from "../types";
 import Login from "./Login";
@@ -61,7 +60,7 @@ class CLI {
 
                         if (check !== undefined) {
                             core.debug("PR already exists, create a commit");
-                            PullRequest.createCommit(testFiles, check, markdown);
+                            PullRequest.createCommit(testFiles, inputs, check, markdown);
                         } else {
                             core.debug("PR does not exist: create the PR");
                             PullRequest.createUTPullRequest(testFiles, inputs, markdown);
