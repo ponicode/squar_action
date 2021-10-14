@@ -101,7 +101,7 @@ class Markdown {
         message += "|\n";
         });
 
-        message += "\n\n";
+        message += "\n\n\n";
         message += generateCriticityLegend( __dirname + "/criticity_legends.md");
 
         return message;
