@@ -5,6 +5,6 @@
 
 | Criticity | Meaning |
 | :---: | :---: |
-| Hightly Critical | |
-| Critical | |
-| Not Critical | | 
+| Hightly Critical | The functions is highly complex to repair and / or is widely used in the codebase |
+| Critical | The function is complex to repair and / or is used in quite some places in the codebase |
+| Not Critical | the function is not complex to repair and is not so used in the codebase | 
