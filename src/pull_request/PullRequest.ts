@@ -37,6 +37,9 @@ class PullRequest {
         repo: repository,
       });
 
+      // DEBUG
+      core.debug(`${originBranch} => ${targetBranch}`);
+
       const results = data.map((pull) => {
         // DEBUG
         core.debug(`${pull.head.ref} / ${pull.base.ref} / ${pull.state} / ${pull.number}`);
