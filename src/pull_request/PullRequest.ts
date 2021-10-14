@@ -44,7 +44,6 @@ class PullRequest {
           return pull.number;
         }
       });
-      core.debug(`Existing PR check: ${results}`);
       const check = results.find((pullId) => pullId !== undefined );
       core.debug(`Existing PullId = ${check}`);
 
