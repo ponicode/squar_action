@@ -38,6 +38,9 @@ class PullRequest {
       });
 
       const results = data.map((pull) => {
+        // DEBUG
+        core.debug(JSON.stringify(pull));
+
         if ((pull.head.ref === originBranch) && (pull.base.ref === targetBranch)) {
           return pull.number;
         }
