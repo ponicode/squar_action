@@ -39,9 +39,9 @@ class PullRequest {
 
       const results = data.map((pull) => {
         // DEBUG
-        core.debug(JSON.stringify(pull));
+        core.debug(`${pull.head.ref} / ${pull.base.ref} / ${pull.state} / ${pull.number}`);
 
-        if ((pull.head.ref === originBranch) && (pull.base.ref === targetBranch)) {
+        if ((pull.head.ref === originBranch) && (pull.base.ref === targetBranch) && (pull.state === "open")) {
           return pull.number;
         }
       });
