@@ -5,6 +5,7 @@ import * as rd from "readline";
 import { Markdown } from "../markdown/Markdown";
 import PullRequest from "../pull_request/PullRequest";
 import { PONICODE_UT_BRANCH } from "../pull_request/types";
+import { getPRBranchName } from "../pull_request/utils";
 import { ActionInputs } from "../types";
 import Login from "./Login";
 import { TestFile } from "./types";
@@ -55,7 +56,7 @@ class CLI {
                         // PullRequest.generatePRComment(Markdown.createTestCodeComment(testFiles));
 
                         const check: number | undefined =
-                            await PullRequest.isPRExist(PONICODE_UT_BRANCH, inputs.apiInputs.branch );
+                            await PullRequest.isPRExist(getPRBranchName(inputs), inputs.apiInputs.branch );
                         const markdown = new Markdown(inputs.apiInputs.branch, inputs.apiInputs.repoURL, undefined);
 
                         if (check !== undefined) {

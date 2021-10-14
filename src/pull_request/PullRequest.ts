@@ -9,9 +9,10 @@ import path from "path";
 import { connected } from "process";
 import { TestFile } from "../cli/types";
 import { Markdown } from "../markdown/Markdown";
-import { buildGithubPRURL } from "../markdown/utils";
+import { buildGithubPRURL, createSQUARErrorMessage } from "../markdown/utils";
 import { ActionInputs } from "../types";
 import { GitTree, PONICODE_UT_BRANCH, TestFile4PR } from "./types";
+import { getPRBranchName } from "./utils";
 
 // get the inputs of the action. The "token" input
   // is not defined so far - we will come to it later.
@@ -37,14 +38,9 @@ class PullRequest {
         repo: repository,
       });
 
-      // DEBUG
-      core.debug(`${originBranch} => ${targetBranch}`);
-
       const results = data.map((pull) => {
-        // DEBUG
-        core.debug(`${pull.head.ref} / ${pull.base.ref} / ${pull.state} / ${pull.number}`);
 
-        if ((pull.head.ref === originBranch) && (pull.base.ref === targetBranch) && (pull.state === "open")) {
+        if ((pull.head.ref === originBranch) && (pull.base.ref === targetBranch)) {
           return pull.number;
         }
       });
@@ -71,7 +67,7 @@ class PullRequest {
           title: "Unit-Tests bootstrap by Ponicode",
           body: this.generatePRBody(testFiles),
           base: inputs.apiInputs.branch /* optional: defaults to default branch */,
-          head: PONICODE_UT_BRANCH,
+          head: getPRBranchName(inputs),
           changes: [
             {
               /* optional: if `files` is not passed, an empty commit is created instead */
@@ -85,9 +81,15 @@ class PullRequest {
           core.debug(`PR well created with number: ${pr?.data.number}`);
           const url = buildGithubPRURL(repo.repo, repo.owner, pr?.data.number);
           this.generatePRComment(markdown.createUTPRComment(url, testFiles, false));
-        }).catch((e) => {
+        }).catch(async (e) => {
           const error = e as Error;
           core.debug(`ERROR While creating the PR: ${error.message}`);
+          // Push an error message in PR comment
+          const errorMessage = `Fails creating the branch ${getPRBranchName(inputs)}.
+            It seems that there is already a branch with the given name.
+            Either delete it, or create a PR on ${inputs.apiInputs.branch}`;
+          const message = await createSQUARErrorMessage(errorMessage, inputs.apiInputs.repoURL);
+          void this.generatePRComment(message);
         });
 
     }
