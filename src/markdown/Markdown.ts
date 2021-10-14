@@ -9,6 +9,10 @@ const replace = require("replace-in-file");
 
 class Markdown {
 
+    public static generateCriticityLegend(): string {
+        return generateCriticityLegend();
+    }
+
     private branch: string;
     private repoURL: string;
     private report: Report | undefined;
@@ -32,7 +36,6 @@ class Markdown {
 
             message = this.appendMessageWithAlerts(suggestionsOnImpactedFiles, message);
 
-            message += generateCriticityLegend( __dirname + "/criticity_legends.md");
         }
 
         return message;
@@ -47,9 +50,7 @@ class Markdown {
 
             await this.generateMessageFromMDFile(fileName);
 
-            let message = this.addAlertsToFullReportComment(fileName);
-
-            message += generateCriticityLegend( __dirname + "/criticity_legends.md");
+            const message = this.addAlertsToFullReportComment(fileName);
 
             return message;
 

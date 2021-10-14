@@ -69,7 +69,8 @@ function buildGithubPRURL(repoURL: string, repoOwner: string, pullId: number | u
     }
 }
 
-function generateCriticityLegend(fileName: string): string {
+function generateCriticityLegend(): string {
+    const fileName = __dirname + "/criticity_legends.md";
     const message = readFileSync(fileName, "utf-8");
     return message;
 }
