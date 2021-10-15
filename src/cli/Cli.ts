@@ -138,6 +138,9 @@ class CLI {
 
                 fileContent += prefixedLine;
         });
+        reader.on("close", () => {
+            core.debug("Done parsing the test file for commenting");
+        });
 
         fs.writeFileSync(filePath, fileContent);
 
