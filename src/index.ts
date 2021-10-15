@@ -22,6 +22,11 @@ function processActionInputs(): ActionInputs {
     return inputs;
 }
 
+function removeDuplicateInImpactedFiles(impactedFiles: string[] | undefined): string[] {
+    const result = [...Array.from(new Set(impactedFiles))];
+    return result;
+}
+
 /** 
 * Main entry point.
 * @param {string[]} args - arguments received from the command-line
@@ -58,8 +63,9 @@ async function run(): Promise<void> {
                 void PullRequest.generatePRComment(definitionsComment);
 
                 if (actionInputs.bootstrapUT === "true") {
-                     // Extract PR impacted files 
-                    const impactedFiles = extractImpactedFilesFromReport(report);
+                     // Extract PR impacted files
+                    const impactedFiles = removeDuplicateInImpactedFiles(extractImpactedFilesFromReport(report));
+
 
                     // Start Ponicode CLI on the impacted files only
                     core.setOutput("impacted_files", impactedFiles);

@@ -1,5 +1,5 @@
 import * as core from "@actions/core";
-import { exec, execFile, fork, spawn } from "child_process";
+import { exec } from "child_process";
 import * as fs from "fs";
 import * as rd from "readline";
 import { Markdown } from "../markdown/Markdown";
@@ -8,8 +8,6 @@ import { getPRBranchName } from "../pull_request/utils";
 import { ActionInputs } from "../types";
 import Login from "./Login";
 import { TestFile } from "./types";
-
-import lineReader from "line-reader";
 
 class CLI {
 
@@ -132,39 +130,10 @@ class CLI {
         // print all lines
         lines.forEach((l) => {
             const prefixedLine = addPrefix(l) + "\n";
-            // DEBUG
-            core.debug(prefixedLine);
-
             fileContent += prefixedLine;
         });
-
-    /*    lineReader.eachLine(filePath, (line) => {
-            // DEBUG
-            core.debug(line);
-
-            const prefixedLine = addPrefix(line) + "\n";
-
-            fileContent += prefixedLine;
-        });
-    */
-     /*   const reader = rd.createInterface(fs.createReadStream(filePath, "utf-8"));
-        reader.on("line", (l: string) => {
-
-                const prefixedLine = addPrefix(l) + "\n";
-                // DEBUG
-                core.debug(prefixedLine);
-
-                fileContent += prefixedLine;
-        });
-        reader.on("close", () => {
-            core.debug("Done parsing the test file for commenting");
-        });
-*/
 
         fs.writeFileSync(filePath, fileContent);
-
-        // DEBUG
-        core.debug(fileContent);
 
     }
 
