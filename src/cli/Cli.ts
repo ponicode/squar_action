@@ -44,7 +44,7 @@ class CLI {
                 //DEBUG
                 core.debug(`Start generating Tests for ${files.toString()}`);
 
-                this.execCommand(`ponicode test ${fileArguments}`, async () => {
+                this.execCommand(`ponicode test ${fileArguments} > /dev/null`, async () => {
 
                     const testFiles: TestFile[] = this.readTestFiles(this.files);
                     if ((testFiles !== undefined) && (testFiles.length > 0)) {
