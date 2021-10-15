@@ -1,5 +1,5 @@
 import * as core from "@actions/core";
-import { exec, execFile, fork, spawn } from "child_process";
+import { exec } from "child_process";
 import * as fs from "fs";
 import * as rd from "readline";
 import { Markdown } from "../markdown/Markdown";
@@ -132,6 +132,7 @@ class CLI {
         // print all lines
         lines.forEach((l) => {
             const prefixedLine = addPrefix(l) + "\n";
+<<<<<<< HEAD
             // DEBUG
             core.debug(prefixedLine);
 
@@ -158,14 +159,20 @@ class CLI {
         });
         reader.on("close", () => {
             core.debug("Done parsing the test file for commenting");
+=======
+            fileContent += prefixedLine;
+>>>>>>> feature/implement-feddbacks
         });
 */
 
         fs.writeFileSync(filePath, fileContent);
 
+<<<<<<< HEAD
         // DEBUG
         core.debug(fileContent);
 
+=======
+>>>>>>> feature/implement-feddbacks
     }
 
     private execCommand(command: string, callback: () => void) {
