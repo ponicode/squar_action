@@ -119,6 +119,8 @@ class CLI {
 
         // DEBUG
         core.debug(`Read file ${filePath} for appending comments`);
+        const content = fs.readFileSync(filePath, "utf-8");
+        core.debug(content);
 
     /*    lineReader.eachLine(filePath, (line) => {
             // DEBUG
@@ -129,7 +131,7 @@ class CLI {
             fileContent += prefixedLine;
         });
     */
-        const reader = rd.createInterface(fs.createReadStream(filePath));
+        const reader = rd.createInterface(fs.createReadStream(filePath, "utf-8"));
         reader.on("line", (l: string) => {
                 // DEBUG
                 core.debug(l);
