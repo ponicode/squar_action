@@ -119,6 +119,18 @@ class CLI {
 
         // DEBUG
         core.debug(`Read file ${filePath} for appending comments`);
+        const data = fs.readFileSync(filePath, "utf-8");
+        // split the contents by new line
+        const lines = data.split(/\r?\n/);
+
+        // print all lines
+        lines.forEach((l) => {
+            const prefixedLine = addPrefix(l) + "\n";
+            // DEBUG
+            core.debug(prefixedLine);
+
+            fileContent += prefixedLine;
+        });
 
     /*    lineReader.eachLine(filePath, (line) => {
             // DEBUG
@@ -129,7 +141,7 @@ class CLI {
             fileContent += prefixedLine;
         });
     */
-        const reader = rd.createInterface(fs.createReadStream(filePath, "utf-8"));
+     /*   const reader = rd.createInterface(fs.createReadStream(filePath, "utf-8"));
         reader.on("line", (l: string) => {
 
                 const prefixedLine = addPrefix(l) + "\n";
@@ -141,6 +153,7 @@ class CLI {
         reader.on("close", () => {
             core.debug("Done parsing the test file for commenting");
         });
+*/
 
         fs.writeFileSync(filePath, fileContent);
 
