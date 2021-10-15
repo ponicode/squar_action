@@ -115,12 +115,15 @@ class CLI {
         const addPrefix = (str: string) => "// " + str;
         let fileContent: string = "";
 
+        // DEBUG
+        core.debug(`Read file ${filePath} for appending comments`);
+
         const reader = rd.createInterface(fs.createReadStream(filePath));
         reader.on("line", (l: string) => {
                 //DEBUG
                 core.debug(l);
 
-                const prefixedLine = addPrefix(l);
+                const prefixedLine = addPrefix(l) + "\n";
 
                 fileContent += prefixedLine;
         });
