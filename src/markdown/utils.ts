@@ -11,9 +11,9 @@ const GITHUB_URL = "https://github.com";
 function initMarkdownTable(): string {
     let message = "";
     // Table Title
-    message += "| File | Line Number | Type of alert | Criticity of the function | Go to |\n";
+    message += "| File | Line Number | Type of alert | Criticity of the function | Go to | Testable by Ponicode |\n";
     // Table Column Definitions
-    message += "| :--- | :---: | :---: | :---: | :---: |\n";
+    message += "| :--- | :---: | :---: | :---: | :---: | :---: |\n";
 
     return message;
 }
@@ -69,7 +69,8 @@ function buildGithubPRURL(repoURL: string, repoOwner: string, pullId: number | u
     }
 }
 
-function generateCriticityLegend(fileName: string): string {
+function generateCriticityLegend(): string {
+    const fileName = __dirname + "/criticity_legends.md";
     const message = readFileSync(fileName, "utf-8");
     return message;
 }

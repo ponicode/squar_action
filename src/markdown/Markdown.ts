@@ -9,6 +9,10 @@ const replace = require("replace-in-file");
 
 class Markdown {
 
+    public static generateCriticityLegend(): string {
+        return generateCriticityLegend();
+    }
+
     private branch: string;
     private repoURL: string;
     private report: Report | undefined;
@@ -31,6 +35,7 @@ class Markdown {
             message += initMarkdownTable();
 
             message = this.appendMessageWithAlerts(suggestionsOnImpactedFiles, message);
+
         }
 
         return message;
@@ -98,11 +103,10 @@ class Markdown {
         message += `| <span style="color:${alert.criticity}">**${translateCriticity(alert.criticity)}**</span>`;
         // 5th column: the link to go directly to the file.
         message += `| ${buildGithubFileURL(alert, this.repoURL, this.branch)}`;
+        //6th column: testable by Ponicode
+        message += `| <p align="center"><img src="https://ponicodefilesstorage.blob.core.windows.net/cli/logo-without-text-30x30.png"></p>`;
         message += "|\n";
         });
-
-        message += "\n\n";
-        message += generateCriticityLegend( __dirname + "/criticity_legends.md");
 
         return message;
 

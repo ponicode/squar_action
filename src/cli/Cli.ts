@@ -4,10 +4,12 @@ import * as fs from "fs";
 import * as rd from "readline";
 import { Markdown } from "../markdown/Markdown";
 import PullRequest from "../pull_request/PullRequest";
-import { PONICODE_UT_BRANCH } from "../pull_request/types";
+import { getPRBranchName } from "../pull_request/utils";
 import { ActionInputs } from "../types";
 import Login from "./Login";
 import { TestFile } from "./types";
+
+import lineReader from "line-reader";
 
 class CLI {
 
@@ -42,7 +44,7 @@ class CLI {
                 //DEBUG
                 core.debug(`Start generating Tests for ${files.toString()}`);
 
-                this.execCommand(`ponicode test ${fileArguments}`, async () => {
+                this.execCommand(`ponicode test ${fileArguments} > /dev/null`, async () => {
 
                     const testFiles: TestFile[] = this.readTestFiles(this.files);
                     if ((testFiles !== undefined) && (testFiles.length > 0)) {
@@ -55,17 +57,21 @@ class CLI {
                         // PullRequest.generatePRComment(Markdown.createTestCodeComment(testFiles));
 
                         const check: number | undefined =
-                            await PullRequest.isPRExist(PONICODE_UT_BRANCH, inputs.apiInputs.branch );
+                            await PullRequest.isPRExist(getPRBranchName(inputs), inputs.apiInputs.branch );
                         const markdown = new Markdown(inputs.apiInputs.branch, inputs.apiInputs.repoURL, undefined);
 
                         if (check !== undefined) {
                             core.debug("PR already exists, create a commit");
-                            PullRequest.createCommit(testFiles, check, markdown);
+                            PullRequest.createCommit(testFiles, inputs, check, markdown);
                         } else {
                             core.debug("PR does not exist: create the PR");
                             PullRequest.createUTPullRequest(testFiles, inputs, markdown);
                         }
 
+                    } else {
+                        core.debug("Command fails");
+                        PullRequest.generatePRComment("Sorry, we couldn't generate the Unit-Tests for your files...\
+                            Please try later");
                     }
 
                 });
@@ -83,19 +89,24 @@ class CLI {
                 if (file !== undefined) {
                     const testName: string = file.split(".")[0] + ".test." + file.split(".").pop();
 
-                    try {
-                        const fileContent = fs.readFileSync(testName, "utf-8");
+                    if (fs.existsSync(testName)) {
+                        // Comment all lines of the test file
+                        this.commentAllLinesofFile(testName);
 
-                        if (file) {
-                            const testFile = {
-                                filePath: testName,
-                                content: fileContent,
-                            };
-                            result.push(testFile);
+                        try {
+                            const fileContent = fs.readFileSync(testName, "utf-8");
+
+                            if (file) {
+                                const testFile = {
+                                    filePath: testName,
+                                    content: fileContent,
+                                };
+                                result.push(testFile);
+                            }
+                        } catch (e) {
+                            const error = e as Error;
+                            core.debug(error.message);
                         }
-                    } catch (e) {
-                        const error = e as Error;
-                        core.debug(error.message);
                     }
 
                 }
@@ -108,23 +119,54 @@ class CLI {
 
     }
 
-    /*private commentAllLinesofFile(filePath: string): string {
+    private commentAllLinesofFile(filePath: string): void {
         const addPrefix = (str: string) => "// " + str;
         let fileContent: string = "";
 
-        const reader = rd.createInterface(fs.createReadStream(filePath));
-        reader.on("line", (l: string) => {
-                //DEBUG
-                core.debug(l);
+        // DEBUG
+        core.debug(`Read file ${filePath} for appending comments`);
+        const data = fs.readFileSync(filePath, "utf-8");
+        // split the contents by new line
+        const lines = data.split(/\r?\n/);
 
-                // const prefixedLine = addPrefix(l) + "\n";
+        // print all lines
+        lines.forEach((l) => {
+            const prefixedLine = addPrefix(l) + "\n";
+            // DEBUG
+            core.debug(prefixedLine);
 
-                // fileContent += prefixedLine;
+            fileContent += prefixedLine;
         });
 
-        return fileContent;
+    /*    lineReader.eachLine(filePath, (line) => {
+            // DEBUG
+            core.debug(line);
 
-    }*/
+            const prefixedLine = addPrefix(line) + "\n";
+
+            fileContent += prefixedLine;
+        });
+    */
+     /*   const reader = rd.createInterface(fs.createReadStream(filePath, "utf-8"));
+        reader.on("line", (l: string) => {
+
+                const prefixedLine = addPrefix(l) + "\n";
+                // DEBUG
+                core.debug(prefixedLine);
+
+                fileContent += prefixedLine;
+        });
+        reader.on("close", () => {
+            core.debug("Done parsing the test file for commenting");
+        });
+*/
+
+        fs.writeFileSync(filePath, fileContent);
+
+        // DEBUG
+        core.debug(fileContent);
+
+    }
 
     private execCommand(command: string, callback: () => void) {
         const execProcess = exec(command, { 'encoding': 'utf8' }, (error, stdout) => {
@@ -145,6 +187,8 @@ class CLI {
                 callback();
             } else {
                 core.debug("Command fails");
+                PullRequest.generatePRComment("Sorry, we couldn't generate the Unit-Tests for your files...\
+                    Please try later");
             }
         });
     }

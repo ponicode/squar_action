@@ -1,5 +1,7 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
+import { ActionInputs } from "../types";
+import { PONICODE_UT_BRANCH } from "./types";
 
 async function getAllComments(repo: { owner: any; repo: any; }, issue_number: number): Promise<any[]> {
     // get the inputs of the action. The "token" input
@@ -36,4 +38,8 @@ async function checkIfCommentALreadyExists(comments: any[], message: string): Pr
 
 }
 
-export { getAllComments, checkIfCommentALreadyExists };
+function getPRBranchName(inputs: ActionInputs): string {
+    return PONICODE_UT_BRANCH + `-4-${inputs.apiInputs.branch}`;
+}
+
+export { getAllComments, checkIfCommentALreadyExists, getPRBranchName };

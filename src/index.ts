@@ -31,28 +31,38 @@ async function run(): Promise<void> {
 
     try {
 
+        // Get the inputs from the CI
         const squarAPIInputs: SquarAPIInputs = processSquarAPIInputs();
         const actionInputs: ActionInputs = processActionInputs();
 
+        // Trigger SQUAR API to generate the reports
         const triggerResult: EvaluateReturn | undefined = await Squar.triggerSQUARANalysis(squarAPIInputs);
 
         if (triggerResult !== undefined) {
+            // Get SQUAR report
             const report: Report | undefined = await Squar.fetchSQUARReport(triggerResult, squarAPIInputs);
 
             if (report !== undefined) {
                 const markdown = new Markdown(squarAPIInputs.branch, squarAPIInputs.repoURL, report);
+                // Write a comment with the alerts in the files of the PR
                 void PullRequest.generatePRComment(markdown.createAlertsMessage(report.suggestionsOnImpactedFiles));
 
                 if (actionInputs.displayFullReport === "true") {
+                    // Generate and write in a comment the Full SQUAR report
                     const reportComment = await markdown.createFullReportMessage();
                     void PullRequest.generatePRComment(reportComment);
                 }
 
-                const impactedFiles = extractImpactedFilesFromReport(report);
-
-                core.setOutput("impacted_files", impactedFiles);
+                // Generate and write in a comment the definitions of SQUAR vocabulary
+                const definitionsComment = Markdown.generateCriticityLegend();
+                void PullRequest.generatePRComment(definitionsComment);
 
                 if (actionInputs.bootstrapUT === "true") {
+                     // Extract PR impacted files 
+                    const impactedFiles = extractImpactedFilesFromReport(report);
+
+                    // Start Ponicode CLI on the impacted files only
+                    core.setOutput("impacted_files", impactedFiles);
                     await CLI.startCLI(actionInputs, impactedFiles);
                 }
 
