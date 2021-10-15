@@ -9,6 +9,8 @@ import { ActionInputs } from "../types";
 import Login from "./Login";
 import { TestFile } from "./types";
 
+import lineReader from "line-reader";
+
 class CLI {
 
     private files: string[] | undefined;
@@ -118,15 +120,24 @@ class CLI {
         // DEBUG
         core.debug(`Read file ${filePath} for appending comments`);
 
-        const reader = rd.createInterface(fs.createReadStream(filePath));
+        lineReader.eachLine(filePath, (line) => {
+            // DEBUG
+            core.debug(line);
+
+            const prefixedLine = addPrefix(line) + "\n";
+
+            fileContent += prefixedLine;
+        });
+
+        /*const reader = rd.createInterface(fs.createReadStream(filePath));
         reader.on("line", (l: string) => {
-                //DEBUG
+                // DEBUG
                 core.debug(l);
 
                 const prefixedLine = addPrefix(l) + "\n";
 
                 fileContent += prefixedLine;
-        });
+        });*/
 
         fs.writeFileSync(filePath, fileContent);
 
