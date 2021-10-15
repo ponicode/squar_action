@@ -90,6 +90,8 @@ class CLI {
 
                     try {
                         const fileContent = fs.readFileSync(testName, "utf-8");
+                        //DEBUG
+                        core.debug(fileContent);
 
                         if (file) {
                             const testFile = {
