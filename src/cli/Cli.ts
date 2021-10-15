@@ -86,12 +86,10 @@ class CLI {
                     const testName: string = file.split(".")[0] + ".test." + file.split(".").pop();
 
                     // Comment all lines of the test file
-                    //this.commentAllLinesofFile(testName);
+                    this.commentAllLinesofFile(testName);
 
                     try {
                         const fileContent = fs.readFileSync(testName, "utf-8");
-                        //DEBUG
-                        core.debug(fileContent);
 
                         if (file) {
                             const testFile = {
@@ -122,7 +120,7 @@ class CLI {
         // DEBUG
         core.debug(`Read file ${filePath} for appending comments`);
 
-        lineReader.eachLine(filePath, (line) => {
+    /*    lineReader.eachLine(filePath, (line) => {
             // DEBUG
             core.debug(line);
 
@@ -130,8 +128,8 @@ class CLI {
 
             fileContent += prefixedLine;
         });
-
-        /*const reader = rd.createInterface(fs.createReadStream(filePath));
+    */
+        const reader = rd.createInterface(fs.createReadStream(filePath));
         reader.on("line", (l: string) => {
                 // DEBUG
                 core.debug(l);
@@ -139,7 +137,7 @@ class CLI {
                 const prefixedLine = addPrefix(l) + "\n";
 
                 fileContent += prefixedLine;
-        });*/
+        });
 
         fs.writeFileSync(filePath, fileContent);
 
