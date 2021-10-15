@@ -68,6 +68,10 @@ class CLI {
                             PullRequest.createUTPullRequest(testFiles, inputs, markdown);
                         }
 
+                    } else {
+                        core.debug("Command fails");
+                        PullRequest.generatePRComment("Sorry, we couldn't generate the Unit-Tests for your files...\
+                            Please try later");
                     }
 
                 });
@@ -85,22 +89,24 @@ class CLI {
                 if (file !== undefined) {
                     const testName: string = file.split(".")[0] + ".test." + file.split(".").pop();
 
-                    // Comment all lines of the test file
-                    this.commentAllLinesofFile(testName);
+                    if (fs.existsSync(testName)) {
+                        // Comment all lines of the test file
+                        this.commentAllLinesofFile(testName);
 
-                    try {
-                        const fileContent = fs.readFileSync(testName, "utf-8");
+                        try {
+                            const fileContent = fs.readFileSync(testName, "utf-8");
 
-                        if (file) {
-                            const testFile = {
-                                filePath: testName,
-                                content: fileContent,
-                            };
-                            result.push(testFile);
+                            if (file) {
+                                const testFile = {
+                                    filePath: testName,
+                                    content: fileContent,
+                                };
+                                result.push(testFile);
+                            }
+                        } catch (e) {
+                            const error = e as Error;
+                            core.debug(error.message);
                         }
-                    } catch (e) {
-                        const error = e as Error;
-                        core.debug(error.message);
                     }
 
                 }
