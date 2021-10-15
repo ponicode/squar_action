@@ -86,7 +86,7 @@ class CLI {
                     const testName: string = file.split(".")[0] + ".test." + file.split(".").pop();
 
                     // Comment all lines of the test file
-                    this.commentAllLinesofFile(testName);
+                    //this.commentAllLinesofFile(testName);
 
                     try {
                         const fileContent = fs.readFileSync(testName, "utf-8");
