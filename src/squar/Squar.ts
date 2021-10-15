@@ -44,6 +44,7 @@ class Squar {
             core.setFailed(errorMessage);
             return undefined;
         }
+
     }
 
 }
