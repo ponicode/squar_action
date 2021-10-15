@@ -181,6 +181,8 @@ class CLI {
                 callback();
             } else {
                 core.debug("Command fails");
+                PullRequest.generatePRComment("Sorry, we couldn't generate the Unit-Tests for your files...\
+                    Please try later");
             }
         });
     }
