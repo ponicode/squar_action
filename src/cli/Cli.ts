@@ -83,6 +83,9 @@ class CLI {
                 if (file !== undefined) {
                     const testName: string = file.split(".")[0] + ".test." + file.split(".").pop();
 
+                    // Comment all lines of the test file
+                    this.commentAllLinesofFile(file);
+
                     try {
                         const fileContent = fs.readFileSync(testName, "utf-8");
 
@@ -108,7 +111,7 @@ class CLI {
 
     }
 
-    /*private commentAllLinesofFile(filePath: string): string {
+    private commentAllLinesofFile(filePath: string): void {
         const addPrefix = (str: string) => "// " + str;
         let fileContent: string = "";
 
@@ -117,14 +120,17 @@ class CLI {
                 //DEBUG
                 core.debug(l);
 
-                // const prefixedLine = addPrefix(l) + "\n";
+                const prefixedLine = addPrefix(l);
 
-                // fileContent += prefixedLine;
+                fileContent += prefixedLine;
         });
 
-        return fileContent;
+        fs.writeFileSync(filePath, fileContent);
 
-    }*/
+        // DEBUG
+        core.debug(fileContent);
+
+    }
 
     private execCommand(command: string, callback: () => void) {
         const execProcess = exec(command, { 'encoding': 'utf8' }, (error, stdout) => {
