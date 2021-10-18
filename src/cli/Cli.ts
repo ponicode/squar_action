@@ -66,7 +66,9 @@ class CLI {
                         }
 
                     } else {
-                        core.debug("Command fails");
+
+                        core.debug("No generated Tests files");
+
                         PullRequest.generatePRComment("Sorry, we couldn't generate the Unit-Tests for your files...\
                             Please try later");
                     }
