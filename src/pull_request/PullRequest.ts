@@ -67,6 +67,7 @@ class PullRequest {
           body: this.generatePRBody(testFiles),
           base: inputs.apiInputs.branch /* optional: defaults to default branch */,
           head: getPRBranchName(inputs),
+          draft: true,
           changes: [
             {
               /* optional: if `files` is not passed, an empty commit is created instead */

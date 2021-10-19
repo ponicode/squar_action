@@ -66,9 +66,12 @@ async function run(): Promise<void> {
                      // Extract PR impacted files
                     const impactedFiles = removeDuplicateInImpactedFiles(extractImpactedFilesFromReport(report));
 
-                    // Start Ponicode CLI on the impacted files only
-                    core.setOutput("impacted_files", impactedFiles);
-                    await CLI.startCLI(actionInputs, impactedFiles);
+                    if ((impactedFiles !== undefined) && (impactedFiles.length > 0)) {
+                        // Start Ponicode CLI on the impacted files only
+                        core.setOutput("impacted_files", impactedFiles);
+                        await CLI.startCLI(actionInputs, impactedFiles);
+                    }
+
                 }
 
             }
