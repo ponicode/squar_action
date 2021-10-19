@@ -1,5 +1,5 @@
 name: 'Ponicode SQUAR'
-description: 'Check if the files updated in the PR are well tested'
+description: 'Keep your critical code at a high level of coverage, and avoid bugs in Production thanks to Ponicode SQUAR Action that identifies and automatically remediate weaknesses in your Test-Suite.'
 branding:
   icon: 'align-justify'  
   color: 'orange'

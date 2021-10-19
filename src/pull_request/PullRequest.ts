@@ -3,16 +3,13 @@ import * as github from "@actions/github";
 import { Octokit } from "@octokit/core";
 import { Octokit as OctokitRest } from "@octokit/rest";
 import { readFile } from "fs-extra";
-import {globby} from "globby";
 import { createPullRequest } from "octokit-plugin-create-pull-request";
-import path from "path";
-import { connected } from "process";
 import { TestFile } from "../cli/types";
 import { Markdown } from "../markdown/Markdown";
 import { buildGithubPRURL, createSQUARErrorMessage } from "../markdown/utils";
 import { ActionInputs } from "../types";
 import { GitTree, TestFile4PR } from "./types";
-import { getPRBranchName } from "./utils";
+import { checkIfCommentALreadyExists, getAllComments, getPRBranchName } from "./utils";
 
 // get the inputs of the action. The "token" input
   // is not defined so far - we will come to it later.
@@ -125,22 +122,22 @@ class PullRequest {
           /* un comment this if you want to keep only one Ponicode SQUAR report in the 
           * comments of the PR, and it is updated in case there is alreayd one
           */
-        /*
           const comments = await getAllComments(repo, pullRequestNumber);
 
           const comment = await checkIfCommentALreadyExists(comments, message);
 
           // If yes, update that
           if (comment) {
-              core.debug("There is already one comment that matches, then update it.");
-              await updateComment(comment, message);
+              core.debug("There is already one comment that matches, then delete it.");
+              // await updateComment(comment, message);
+              await this.deleteComment(comment);
           // if not, create a new comment
-          } else {
+          } /*else {
               core.debug("No comment matches, then create it.");
               await createComment(repo, pullRequestNumber, message);
-          }
-          */
+          }*/
 
+        // Create the comment in the PR
           await this.createComment(repo, pullRequestNumber, message);
 
       } catch (e) {
@@ -207,14 +204,22 @@ class PullRequest {
 
     }
 
-  private async updateComment(comment: any, message: string): Promise<void> {
+  /*private async updateComment(comment: any, message: string): Promise<void> {
       await octokit.rest.issues.updateComment({
           owner: repo.owner,
           repo: repo.repo,
           comment_id: comment.id,
           body: message,
       });
-  }
+  }*/
+
+  private async deleteComment(comment: any): Promise<void> {
+    await octokit.rest.issues.deleteComment({
+        owner: repo.owner,
+        repo: repo.repo,
+        comment_id: comment.id,
+    });
+}
 
   /* Methods required to create a commit and push it on a branch */
   private uploadToRepo = async (
