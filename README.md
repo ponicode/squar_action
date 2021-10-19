@@ -66,8 +66,8 @@ jobs:
 |------|-------------|----------|---------|
 | ``bootstrapUT`` | Boolean: Set if missing Unit-Tests shall be automatically bootstraped by Ponicode (True) or not (False) | Yes | ``true`` |
 | ``displayFullReport`` | Boolean: set if Ponicode SQUAR report on the whole project shall be displayed as for information in the PR comment (True), or not (False) | Yes |``true`` |
-| ``ponicodeSquarToken`` | Secret token to be retrieved on [Ponicode SQUAR app](https://squar.ponicode.com) | Yes | No default. This parameter must be set-up in your GITHUB SECRETS (see below on how to do that) |
-| ``ponicodeUtToken`` | Secret token to be retrieved on [Ponicode UT Generation App](https:/:app.ponicode.com) | Yes if ``bootstrapUT`` is set to ``true``, No if not | No default. This parameter must be set-up in your GITHUB SECRETS (see below on how to do that) |
+| ``ponicodeSquarToken`` | Secret token to be retrieved on [Ponicode SQUAR app](https://squar.ponicode.com). This token has to be configured as ``PONICODE_SQUAR_TOKEN`` in Repository Github Secrets. | Yes | No default. This parameter must be set-up in your GITHUB SECRETS (see below on how to do that) |
+| ``ponicodeUtToken`` | Secret token to be retrieved on [Ponicode UT Generation App](https:/:app.ponicode.com). This token has to be configured as ``PONICODE_TOKEN`` in Repository Github Secrets. | Yes if ``bootstrapUT`` is set to ``true``, No if not | No default. This parameter must be set-up in your GITHUB SECRETS (see below on how to do that) |
 
 **NB: all the other parameters must be let un-changed, since they are automatically filled-in from previous steps in the workflow**
 - ``repoURL``
@@ -161,6 +161,5 @@ By using this action, you will have to register on [Ponicode UT generation app](
 
 # Contact us
 We would love to have your feedbacks! Tell us what you love and what you want us to improve about this action at ping@ponicode.com. <br />
-We also have a slack community, where people can give feedbacks, ask for help if they encounter problems with our products and where we keep you informed about our latest releases.<br />
-Join us here: https://ponicode-community.slack.com/join/shared_invite/zt-fiq4fhkg-DE~a_FkJ7xtiZxW7efyA4Q#/<br />
+We also have a slack community, where people can give feedbacks, ask for help if they encounter problems with our products and where we keep you informed about our latest releases. Join us here: https://ponicode-community.slack.com/join/shared_invite/zt-fiq4fhkg-DE~a_FkJ7xtiZxW7efyA4Q#/<br />
 If you want to know more about Ponicode and the different services we propose, you can check our website https://ponicode.com 🦄<br />
