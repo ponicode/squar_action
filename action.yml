@@ -1,5 +1,5 @@
 name: 'Ponicode SQUAR'
-description: 'Keep your critical code at a high level of coverage, and avoid bugs in Production thanks to Ponicode SQUAR Action that identifies and automatically remediate weaknesses in your Test-Suite.'
+description: 'Keep your critical code at a high level of coverage, and avoid bugs in Production with automatic Unit-Tests generation.'
 branding:
   icon: 'align-justify'  
   color: 'orange'
