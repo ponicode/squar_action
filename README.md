@@ -66,8 +66,8 @@ jobs:
 |------|-------------|----------|---------|
 | ``bootstrapUT`` | Boolean: Set if missing Unit-Tests shall be automatically bootstraped by Ponicode (True) or not (False) | Yes | ``true`` |
 | ``displayFullReport`` | Boolean: set if Ponicode SQUAR report on the whole project shall be displayed as for information in the PR comment (True), or not (False) | Yes |``true`` |
-| ``ponicodeSquarToken`` | Secret token to be retrieved on [Ponicode SQUAR app](https://squar.ponicode.com) | Yes | No default. This parameter must be set-up in your GITHUB SECRETS (see below on how to do that) |
-| ``ponicodeUtToken`` | Secret token to be retrieved on [Ponicode UT Generation App](https:/:app.ponicode.com) | Yes if ``bootstrapUT`` is set to ``true``, No if not | No default. This parameter must be set-up in your GITHUB SECRETS (see below on how to do that) |
+| ``ponicodeSquarToken`` | Secret token to be retrieved on [Ponicode SQUAR app](https://squar.ponicode.com). This token has to be configured as ``PONICODE_SQUAR_TOKEN`` in Repository Github Secrets. | Yes | No default. This parameter must be set-up in your GITHUB SECRETS (see below on how to do that) |
+| ``ponicodeUtToken`` | Secret token to be retrieved on [Ponicode UT Generation App](https:/:app.ponicode.com). This token has to be configured as ``PONICODE_TOKEN`` in Repository Github Secrets. | Yes if ``bootstrapUT`` is set to ``true``, No if not | No default. This parameter must be set-up in your GITHUB SECRETS (see below on how to do that) |
 
 **NB: all the other parameters must be let un-changed, since they are automatically filled-in from previous steps in the workflow**
 - ``repoURL``
