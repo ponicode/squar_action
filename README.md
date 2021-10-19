@@ -161,6 +161,5 @@ By using this action, you will have to register on [Ponicode UT generation app](
 
 # Contact us
 We would love to have your feedbacks! Tell us what you love and what you want us to improve about this action at ping@ponicode.com. <br />
-We also have a slack community, where people can give feedbacks, ask for help if they encounter problems with our products and where we keep you informed about our latest releases.<br />
-Join us here: https://ponicode-community.slack.com/join/shared_invite/zt-fiq4fhkg-DE~a_FkJ7xtiZxW7efyA4Q#/<br />
+We also have a slack community, where people can give feedbacks, ask for help if they encounter problems with our products and where we keep you informed about our latest releases. Join us here: https://ponicode-community.slack.com/join/shared_invite/zt-fiq4fhkg-DE~a_FkJ7xtiZxW7efyA4Q#/<br />
 If you want to know more about Ponicode and the different services we propose, you can check our website https://ponicode.com 🦄<br />
