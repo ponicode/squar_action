@@ -1,4 +1,4 @@
-name: 'Ponicode Squar'
+name: 'Ponicode SQUAR'
 description: 'Check if the files updated in the PR are well tested'
 branding:
   icon: 'align-justify'  
@@ -37,3 +37,4 @@ outputs:
 runs:
   using: 'node12'
   main: 'dist/index.js'
+  
