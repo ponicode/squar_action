@@ -14,7 +14,8 @@ jobs:
     - uses: actions/checkout@v1
     - run: |
         npm ci
-        npm run build
+        npm install -g @vercel/ncc
+        npm run release
         npm install -g ponicode
     - id: get_changed_files
       uses: jitterbit/get-changed-files@v1
