@@ -10,7 +10,6 @@ Ponicode has developed a secret sauce to evaluate the criticity of a piece of co
 - __Complexity of Repair__: Measure of how difficult a function is to intuitively understand and modify. This measure is between 0 and 1
 - __Impact of a function on the code-base__: A measure between 0 and 1 that measures how much the function is used in the project
 
-
 # How to setup this action
 
 ## If not exist, create a yaml workflow file in your project
@@ -45,9 +44,9 @@ jobs:
   - id: extract_branch
     if: github.event_name == 'pull_request'
     run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
-  - uses: ponicode/ponicode-squar-action@master
+  - uses: ponicode/squar_action@master
     with:
-      repoURL: ${{github.repository} # DO NOT MODIFY
+      repoURL: ${{github.repository}} # DO NOT MODIFY
       impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
       branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }} # DO NOT MODIFY
       githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
@@ -84,7 +83,7 @@ Here are some examples of ```.github/workflows/ponicode.yml``` file to setup Pon
 name: "ponicode-ci"
 on:
   pull_request:
-    types: [ edited, synchronize ]  # rebuild any PRs and main branch changes
+    types: [ opened, edited, synchronize ]  # rebuild any PRs and main branch changes
 
 jobs:
   ponicode:
@@ -104,9 +103,9 @@ jobs:
   - id: extract_branch
     if: github.event_name == 'pull_request'
     run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
-  - uses: ponicode/ponicode-squar-action@master
+  - uses: ponicode/squar_action@master
     with:
-      repoURL: ${{github.repository} # DO NOT MODIFY
+      repoURL: ${{github.repository}} # DO NOT MODIFY
       impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
       branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }} # DO NOT MODIFY
       githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
@@ -120,7 +119,7 @@ jobs:
 name: "ponicode-ci"
 on:
   pull_request:
-    types: [ edited, synchronize ]  # rebuild any PRs and main branch changes
+    types: [ opened, edited, synchronize ]  # rebuild any PRs and main branch changes
 
 jobs:
   ponicode:
@@ -140,9 +139,9 @@ jobs:
   - id: extract_branch
     if: github.event_name == 'pull_request'
     run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
-  - uses: ponicode/ponicode-squar-action@master
+  - uses: ponicode/squar_action@master
     with:
-      repoURL: ${{github.repository} # DO NOT MODIFY
+      repoURL: ${{github.repository}} # DO NOT MODIFY
       impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
       branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }} # DO NOT MODIFY
       githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
@@ -155,6 +154,9 @@ jobs:
 ![Ponicode SQUAR for Delta](https://ponicodefilesstorage.blob.core.windows.net/githubaction/SQUAR_ACTION_on_delta.png)
 ### Ponicode SQUAR report on the whole project
 ![Ponicode SQUAR Full](https://ponicodefilesstorage.blob.core.windows.net/githubaction/SQUAR_ACTION_full_report.png)
+
+# Functional Scope
+As for today, Ponicode SQUAR action works on Javascript and Typescript languages. It will soon be available on Python and Java.
 
 # Terms of use
 By using this action, you will have to register on [Ponicode UT generation app](https://app.ponicode.com) and [Ponicode SQUAR app](https://squar.ponicode.com). The terms & conditions of both apply when using this Github Action.
