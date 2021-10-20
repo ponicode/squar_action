@@ -45,7 +45,7 @@ jobs:
       with:
         format: 'json'
 
-    # Extract branc name
+    # Extract branch name
     - id: extract_branch
       if: github.event_name == 'pull_request'
       run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
@@ -118,7 +118,7 @@ jobs:
       with:
         format: 'json'
 
-    # Extract branc name
+    # Extract branch name
     - id: extract_branch
       if: github.event_name == 'pull_request'
       run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
@@ -168,7 +168,7 @@ jobs:
       with:
         format: 'json'
 
-    # Extract branc name
+    # Extract branch name
     - id: extract_branch
       if: github.event_name == 'pull_request'
       run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
