@@ -32,28 +32,42 @@ jobs:
     env:
       SQUAR_API_URL: "https://ponicode-glados-prod.azurewebsites.net"
       FETCH_REPORT_RETRY_MILLISEC: 5000
+  
     steps:
     - uses: actions/checkout@v1
     - run: |
         npm install -g ponicode
-  - id: get_changed_files
-    uses: jitterbit/get-changed-files@v1
-    continue-on-error: true
-    with:
-      format: 'json'
-  - id: extract_branch
-    if: github.event_name == 'pull_request'
-    run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
-  - uses: ponicode/squar_action@public/master
-    with:
-      repoURL: ${{github.repository}} # DO NOT MODIFY
-      impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
-      branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }} # DO NOT MODIFY
-      githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
-      ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
-      ponicodeUtToken: ${{ secrets.PONICODE_TOKEN }}
-      bootstrapUT: 'true'
-      displayFullReport: 'true'
+    
+    # Identify which files are impacted by the Push / PR
+    - id: get_changed_files
+      uses: jitterbit/get-changed-files@v1
+      continue-on-error: true
+      with:
+        format: 'json'
+
+    # Extract branc name
+    - id: extract_branch
+      if: github.event_name == 'pull_request'
+      run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
+
+    # Find the latest release of Ponicode SQUAR action
+    - id: find_latest_release
+      uses: oprypin/find-latest-tag@v1
+      with:
+        repository: ponicode/squar_action
+        releases-only: true  # We know that all relevant tags have a GitHub release for them.
+    
+    # Run Ponicode SQUAR action
+    - uses: ponicode/squar_action@${{steps.find_latest_release.outputs.tag}}
+      with:
+        repoURL: ${{github.repository}} # DO NOT MODIFY
+        impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
+        branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }} # DO NOT MODIFY
+        githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
+        ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
+        ponicodeUtToken: ${{ secrets.PONICODE_TOKEN }}
+        bootstrapUT: 'true'
+        displayFullReport: 'true'
 ```
 **As configured, this workflow does:**
 1. grade the code that is contained into the created / update in the current PR, and lists the alerts (=functions introduced / updated in the PR that are not / not-well tested)
@@ -91,28 +105,42 @@ jobs:
     env:
       SQUAR_API_URL: "https://ponicode-glados-prod.azurewebsites.net"
       FETCH_REPORT_RETRY_MILLISEC: 5000
+
     steps:
     - uses: actions/checkout@v1
     - run: |
         npm install -g ponicode
-  - id: get_changed_files
-    uses: jitterbit/get-changed-files@v1
-    continue-on-error: true
-    with:
-      format: 'json'
-  - id: extract_branch
-    if: github.event_name == 'pull_request'
-    run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
-  - uses: ponicode/squar_action@public/master
-    with:
-      repoURL: ${{github.repository}} # DO NOT MODIFY
-      impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
-      branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }} # DO NOT MODIFY
-      githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
-      ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
-      ponicodeUtToken: ${{ secrets.PONICODE_TOKEN }}
-      bootstrapUT: 'true'
-      displayFullReport: 'true'
+    
+    # Identify which files are impacted by the Push / PR
+    - id: get_changed_files
+      uses: jitterbit/get-changed-files@v1
+      continue-on-error: true
+      with:
+        format: 'json'
+
+    # Extract branc name
+    - id: extract_branch
+      if: github.event_name == 'pull_request'
+      run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
+
+    # Find the latest release of Ponicode SQUAR action
+    - id: find_latest_release
+      uses: oprypin/find-latest-tag@v1
+      with:
+        repository: ponicode/squar_action
+        releases-only: true  # We know that all relevant tags have a GitHub release for them.
+    
+    # Run Ponicode SQUAR action
+    - uses: ponicode/squar_action@${{steps.find_latest_release.outputs.tag}}
+      with:
+        repoURL: ${{github.repository}} # DO NOT MODIFY
+        impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
+        branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }} # DO NOT MODIFY
+        githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
+        ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
+        ponicodeUtToken: ${{ secrets.PONICODE_TOKEN }}
+        bootstrapUT: 'true'
+        displayFullReport: 'true'
 ```
 ### 2. Raises Tests Quality alerts on files impacted by the PR, without bootstraping any remediation Unit-Tests. Also do not display Ponicode SQUAR report for the whole project.
 ```yaml
@@ -127,27 +155,41 @@ jobs:
     env:
       SQUAR_API_URL: "https://ponicode-glados-prod.azurewebsites.net"
       FETCH_REPORT_RETRY_MILLISEC: 5000
+
     steps:
     - uses: actions/checkout@v1
     - run: |
         npm install -g ponicode
-  - id: get_changed_files
-    uses: jitterbit/get-changed-files@v1
-    continue-on-error: true
-    with:
-      format: 'json'
-  - id: extract_branch
-    if: github.event_name == 'pull_request'
-    run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
-  - uses: ponicode/squar_action@public/master
-    with:
-      repoURL: ${{github.repository}} # DO NOT MODIFY
-      impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
-      branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }} # DO NOT MODIFY
-      githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
-      ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
-      bootstrapUT: 'false'
-      displayFullReport: 'true'
+    
+    # Identify which files are impacted by the Push / PR
+    - id: get_changed_files
+      uses: jitterbit/get-changed-files@v1
+      continue-on-error: true
+      with:
+        format: 'json'
+
+    # Extract branc name
+    - id: extract_branch
+      if: github.event_name == 'pull_request'
+      run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
+
+    # Find the latest release of Ponicode SQUAR action
+    - id: find_latest_release
+      uses: oprypin/find-latest-tag@v1
+      with:
+        repository: ponicode/squar_action
+        releases-only: true  # We know that all relevant tags have a GitHub release for them.
+    
+    # Run Ponicode SQUAR action
+    - uses: ponicode/squar_action@${{steps.find_latest_release.outputs.tag}}
+      with:
+        repoURL: ${{github.repository}} # DO NOT MODIFY
+        impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
+        branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }} # DO NOT MODIFY
+        githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
+        ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
+        bootstrapUT: 'false'
+        displayFullReport: 'true'
 ```
 # Examples of SQUAR reporting into Pull-Requests
 ### List of Testing Quality alerts on files impacted by a PR
