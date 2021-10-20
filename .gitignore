@@ -1,6 +1,5 @@
 # TS
 node_modules
-dist
 
 # Environments
 .env
