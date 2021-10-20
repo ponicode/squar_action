@@ -44,7 +44,7 @@ jobs:
   - id: extract_branch
     if: github.event_name == 'pull_request'
     run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
-  - uses: ponicode/squar_action@master
+  - uses: ponicode/squar_action@public/master
     with:
       repoURL: ${{github.repository}} # DO NOT MODIFY
       impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
@@ -103,7 +103,7 @@ jobs:
   - id: extract_branch
     if: github.event_name == 'pull_request'
     run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
-  - uses: ponicode/squar_action@master
+  - uses: ponicode/squar_action@public/master
     with:
       repoURL: ${{github.repository}} # DO NOT MODIFY
       impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
@@ -139,7 +139,7 @@ jobs:
   - id: extract_branch
     if: github.event_name == 'pull_request'
     run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
-  - uses: ponicode/squar_action@master
+  - uses: ponicode/squar_action@public/master
     with:
       repoURL: ${{github.repository}} # DO NOT MODIFY
       impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
