@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "nodemon -r dotenv/config src/index.ts",
     "build": "rimraf ./dist && tsc -p . && cp ./src/markdown/*.md ./dist/markdown/",
+    "release": "npm run build && ncc build dist/index.js --minify --out release/ --license licenses.txt",
     "start": "node -r dotenv/config dist/index.js"
   },
   "repository": {
@@ -31,7 +32,7 @@
     "rimraf": "^3.0.2",
     "ts-node": "^10.2.1",
     "tslint": "^5.12.1",
-    "typescript": "^4.2.4"
+    "typescript": "^4.4.4"
   },
   "dependencies": {
     "@actions/core": "^1.6.0",

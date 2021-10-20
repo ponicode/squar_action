@@ -36,5 +36,5 @@ outputs:
       description: 'list of files where there is an alert'
 runs:
   using: 'node12'
-  main: 'dist/index.js'
+  main: 'release/index.js'
   
