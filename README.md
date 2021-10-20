@@ -50,15 +50,8 @@ jobs:
       if: github.event_name == 'pull_request'
       run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
 
-    # Find the latest release of Ponicode SQUAR action
-    - id: find_latest_release
-      uses: oprypin/find-latest-tag@v1
-      with:
-        repository: ponicode/squar_action
-        releases-only: true  # We know that all relevant tags have a GitHub release for them.
-    
     # Run Ponicode SQUAR action
-    - uses: ponicode/squar_action@${{steps.find_latest_release.outputs.tag}}
+    - uses: ponicode/squar_action@public/master
       with:
         repoURL: ${{github.repository}} # DO NOT MODIFY
         impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
@@ -122,16 +115,9 @@ jobs:
     - id: extract_branch
       if: github.event_name == 'pull_request'
       run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
-
-    # Find the latest release of Ponicode SQUAR action
-    - id: find_latest_release
-      uses: oprypin/find-latest-tag@v1
-      with:
-        repository: ponicode/squar_action
-        releases-only: true  # We know that all relevant tags have a GitHub release for them.
     
     # Run Ponicode SQUAR action
-    - uses: ponicode/squar_action@${{steps.find_latest_release.outputs.tag}}
+    - uses: ponicode/squar_action@public/master
       with:
         repoURL: ${{github.repository}} # DO NOT MODIFY
         impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
@@ -172,16 +158,9 @@ jobs:
     - id: extract_branch
       if: github.event_name == 'pull_request'
       run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
-
-    # Find the latest release of Ponicode SQUAR action
-    - id: find_latest_release
-      uses: oprypin/find-latest-tag@v1
-      with:
-        repository: ponicode/squar_action
-        releases-only: true  # We know that all relevant tags have a GitHub release for them.
     
     # Run Ponicode SQUAR action
-    - uses: ponicode/squar_action@${{steps.find_latest_release.outputs.tag}}
+    - uses: ponicode/squar_action@public/master
       with:
         repoURL: ${{github.repository}} # DO NOT MODIFY
         impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
