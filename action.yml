@@ -23,10 +23,6 @@ inputs:
     description: 'String: branch on which the PR applies'
     required: true
     default: 'master'
-  bootstrapUT:
-    description: 'Generate unit-Tests bootstrap on files of the PR that have an alert'
-    required: true
-    default: 'true'
   displayFullReport:
     description: 'Display Poincode SQUAR report of the full repository in PR (in addition to the report on impacted files only)'
     required: true
