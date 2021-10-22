@@ -1,7 +1,6 @@
 import * as core from "@actions/core";
 import { exec } from "child_process";
 import * as fs from "fs";
-import * as rd from "readline";
 import { Markdown } from "../markdown/Markdown";
 import PullRequest from "../pull_request/PullRequest";
 import { getPRBranchName } from "../pull_request/utils";
@@ -67,7 +66,9 @@ class CLI {
                         }
 
                     } else {
+
                         core.debug("No generated Tests files");
+
                         PullRequest.generatePRComment("Sorry, we couldn't generate the Unit-Tests for your files...\
                             Please try later");
                     }
