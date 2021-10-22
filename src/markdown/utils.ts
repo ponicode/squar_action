@@ -1,8 +1,7 @@
 import { AlertKind, Criticity, TestAlert } from "../types";
 import { readFileSync } from 'fs';
 import { Marked } from '@ts-stack/markdown';
-import { TestFile } from "../cli/types";
-import { Markdown } from "./Markdown";
+import { TestFile } from "../types";
 
 const replace = require("replace-in-file");
 

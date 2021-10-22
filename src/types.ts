@@ -64,4 +64,9 @@ interface Report {
     suggestionsOnImpactedFiles: TestAlert[];
 }
 
-export { SquarAPIInputs, ActionInputs, EvaluateReturn, FetchReportInput, Report, TestAlert, FullReport, Criticity, AlertKind };
+interface TestFile {
+    filePath: string;
+    content: string;
+}
+
+export { SquarAPIInputs, ActionInputs, EvaluateReturn, FetchReportInput, Report, TestAlert, FullReport, Criticity, AlertKind, TestFile };

@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
 import { readFileSync } from 'fs';
-import { TestFile } from "../cli/types";
+import { TestFile } from "../types";
 import { Report, TestAlert } from "../types";
 import { buildGithubFileURL, buildGithubSecretURL, generateCriticityLegend, initMarkdownTable, 
     translateAlertType, translateCriticity } from "./utils";

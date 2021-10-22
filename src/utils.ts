@@ -1,4 +1,4 @@
-import { Report, TestAlert } from "../types";
+import { Report, TestAlert } from "./types";
 
 function extractImpactedFilesFromReport(report: Report): string[] | undefined {
     if (report !== undefined) {

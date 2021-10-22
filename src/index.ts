@@ -1,12 +1,11 @@
 import * as core from "@actions/core";
 import * as dotenv from "dotenv";
-import CLI from "./cli/Cli";
-import { extractImpactedFilesFromReport } from "./cli/utils";
-import { parseActionInputs, parseSquarAPIInputs } from "./squar/inputs";
 import { Markdown } from "./markdown/Markdown";
 import PullRequest from "./pull_request/PullRequest";
+import { parseActionInputs, parseSquarAPIInputs } from "./squar/inputs";
 import Squar from "./squar/Squar";
 import { ActionInputs, EvaluateReturn, Report, SquarAPIInputs } from "./types";
+import { extractImpactedFilesFromReport } from "./utils";
 
 dotenv.config({ path: __dirname + "/.env" });
 
@@ -65,12 +64,7 @@ async function run(): Promise<void> {
                 if (actionInputs.bootstrapUT === "true") {
                      // Extract PR impacted files
                     const impactedFiles = removeDuplicateInImpactedFiles(extractImpactedFilesFromReport(report));
-
-                    if ((impactedFiles !== undefined) && (impactedFiles.length > 0)) {
-                        // Start Ponicode CLI on the impacted files only
-                        core.setOutput("impacted_files", impactedFiles);
-                        await CLI.startCLI(actionInputs, impactedFiles);
-                    }
+                    core.setOutput("impacted_files", impactedFiles);
 
                 }
 
