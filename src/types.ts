@@ -8,9 +8,8 @@ interface SquarAPIInputs {
 
 interface ActionInputs {
     apiInputs: SquarAPIInputs;
-    ponicodeUtToken: string;
+    ponicodeSquarToken: string;
     githubToken: string;
-    bootstrapUT: string;
     displayFullReport: string;
 }
 
