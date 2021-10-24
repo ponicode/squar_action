@@ -1,21 +1,23 @@
 <p align="center">
-<img src="https://ponicodefilesstorage.blob.core.windows.net/githubaction/Couv readme SQUAR GA.png">
+<img src="https://ponicodefilesstorage.blob.core.windows.net/githubaction/Couv_readme_SQUAR_GA.png"></p>
 
-# 🦄 Grade your testing suite and automatically improve your code coverage!🦄
-**Ponicode SQUAR GitHub Action** is an action that enables you to  grade your testing suite and improve your code coverage accordingly at every Pull request!
+# 🦄 Grade your testing suite and get an activable improvements roadmap!🦄
+**Ponicode SQUAR GitHub Action** is an action that enables you to  grade your testing suite and provide you with a precise and activable improvements roadmap at every Pull request!
 
 **Ponicode SQUAR GitHub Action** is the newest tool on the Ponicode platform to accelerate developers on their code quality journey
+
+**Combined with [Ponicode Unit-Testing Action](https://github.com/marketplace/actions/ponicode-unit-test)**, you can immedialty implement the SQUAR roadmap and get instantaneous coverage catch-up 
 
 # 💥 Benefits
 Tackle your code quality issues in the right order
 
 - __GAIN VISIBILITY__ - Stop monitoring your code and start getting actionable code quality information
 - __FIND YOUR PRIORITIES__ - Prioritise your code quality efforts
-- __RAISE YOUR CODE QUALITY FAST__ - Accelerate the remediation of your code quality weaknesses on your high risk functions
+- __RAISE YOUR CODE QUALITY FAST__ - Accelerate the remediation of your code quality weaknesses on your high risk functions (When Ponicode SQUAR action is combined with [Ponicode Unit-Testing Action](https://github.com/marketplace/actions/ponicode-unit-test))
 
 # 🔎 How does it work
 - __Step 1__: Ponicode SQUAR GitHub Action generates a report for every PR where you can review the number of poorly tested critical functions and learn how to fix it.
-- __Step 2__: Ponicode SQUAR GitHub Action enables you to accelerate the remediation of these weaknesses by generating missing unit tests, test cases and edge cases on your PR.
+- __Step 2__: Ponicode SQUAR GitHub Action enables you to accelerate the remediation of these weaknesses by generating missing unit tests, test cases and edge cases on your PR (When Ponicode SQUAR action is combined with [Ponicode Unit-Testing Action](https://github.com/marketplace/actions/ponicode-unit-test))
 
 # 😳 Why should I use this GitHub Action
 - Keep your risk sensitive code at a high test coverage
@@ -35,7 +37,7 @@ mkdir -p .github/workflows
 You can also just create a folder named ``.github``, in it create another folder named ``workflows``. You can now create a YAML file named **``ponicode.yml``** and copy one of the following example in it! <br />
 
 ### Existing workflow
-Here is what you must add in your ```.github/workflows/ponicode.yml``` file to activate and use Ponicode Squar Action  to trigger the action.
+Here is what you must add in your ```.github/workflows/ponicode.yml``` file to activate and use Ponicode Squar Action  to trigger the action, including the immediate remediation implementation with [Ponicode Unit-Testing Action](https://github.com/marketplace/actions/ponicode-unit-test).
 
 ```yaml
 jobs:
@@ -44,7 +46,6 @@ jobs:
     env:
       SQUAR_API_URL: "https://ponicode-glados-prod.azurewebsites.net"
       FETCH_REPORT_RETRY_MILLISEC: 5000
-  
     steps:
     - uses: actions/checkout@v1
     - run: |
@@ -61,34 +62,38 @@ jobs:
     - id: extract_branch
       if: github.event_name == 'pull_request'
       run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
-
+    
     # Run Ponicode SQUAR action
     - uses: ponicode/squar_action@public/master
+      id: ponicode_squar
       with:
         repoURL: ${{github.repository}} # DO NOT MODIFY
         impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
         branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }} # DO NOT MODIFY
         githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
-        ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
-        ponicodeUtToken: ${{ secrets.PONICODE_TOKEN }}
-        bootstrapUT: 'true'
+        ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }} # DO NOT MODIFY
         displayFullReport: 'true'
+    - uses: ponicode/unit-testing-action@master
+      with:
+        repoURL: ${{github.repository}} # DO NOT MODIFY
+        branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }} # DO NOT MODIFY
+        githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
+        ponicodeUtToken: ${{ secrets.PONICODE_TOKEN }} # DO NOT MODIFY
+        impactedFiles: ${{ steps.ponicode_squar.outputs.impacted_files }} # DO NOT MODIFY IF YOU WANT TO GENERATE TESTS ON SQUAR OUTCOME ONLY
 ```
 ### Once configured, this workflow:
 
 1. grades the code contained into the created / updated PR, and lists the alerts (= functions introduced / updated in the PR that are not / not-well tested)
 2. optionaly (if displayFullReport parameter is set to true): displays the SQUAR report for the whole project
-3. optionaly (if bootstrapUT parameter is set to true), bootstraps the (missing) unit-tests for the functions included in the PR into a dedicated new PR.
+3. bootstraps the (missing) unit-tests for the functions included in the PR into a dedicated new PR.
 ![SQUAR + Unit-test generation workflow](https://ponicodefilesstorage.blob.core.windows.net/githubaction/ezgif.com-gif-maker.gif)
 
 
 ### Ponicode SQUAR Action parameters
 | Name | Description | Required | Default |
 |------|-------------|----------|---------|
-| ``bootstrapUT`` | Boolean: Set if missing Unit-Tests shall be automatically bootstraped by Ponicode (True) or not (False) | Yes | ``true`` |
 | ``displayFullReport`` | Boolean: set if Ponicode SQUAR report on the whole project shall be displayed as for information in the PR comment (True), or not (False) | Yes |``true`` |
 | ``ponicodeSquarToken`` | This parameter has to be configured as **``PONICODE_SQUAR_TOKEN``** in Repository Github Secrets. The token can be retrieved on [Ponicode SQUAR app](https://squar.ponicode.com). | Yes | No default. This parameter must be set-up in your GITHUB SECRETS (see below on how to do that) |
-| ``ponicodeUtToken`` | This parameter has to be configured as **``PONICODE_TOKEN``** in Repository Github Secrets. The token can be retrieved on [Ponicode UT Generation App](https:/:app.ponicode.com). | Yes if ``bootstrapUT`` is set to ``true``, No if not | No default. This parameter has to be set-up in your GITHUB SECRETS (see below on how to do that) |
 
 **NB: all the other parameters must be let un-changed, since they are automatically filled-in from previous steps in the workflow**
 - ``repoURL``
@@ -97,6 +102,12 @@ jobs:
 - ``githubToken``
 
 **NB2: you can find the procedure on how to setup Github Secrets here**: [Github Secrets setup](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+
+**Ponicode SQUAR Action outputs**
+| Name | Description | Usage |
+|------|-------------|-------|
+| ``impactedFiles`` | Array of files on which Ponicode SQUAR found some testing alerts | the Action output can be used in further Action thant to ```${{ steps.ponicode_squar.outputs.impacted_files }}```. In particular, this can be the input for [Ponicode Unit-Testing Action](https://github.com/marketplace/actions/ponicode-unit-test) |
+
 
 # 👩‍💻 Use-Cases
 Here are some examples of ```.github/workflows/ponicode.yml``` file to setup Ponicode SQUAR Action
@@ -113,7 +124,6 @@ jobs:
     env:
       SQUAR_API_URL: "https://ponicode-glados-prod.azurewebsites.net"
       FETCH_REPORT_RETRY_MILLISEC: 5000
-
     steps:
     - uses: actions/checkout@v1
     - run: |
@@ -133,15 +143,22 @@ jobs:
     
     # Run Ponicode SQUAR action
     - uses: ponicode/squar_action@public/master
+      id: ponicode_squar
       with:
         repoURL: ${{github.repository}} # DO NOT MODIFY
         impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
         branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }} # DO NOT MODIFY
         githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
-        ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
-        ponicodeUtToken: ${{ secrets.PONICODE_TOKEN }}
-        bootstrapUT: 'true'
+        ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }} # DO NOT MODIFY
         displayFullReport: 'true'
+    - uses: ponicode/unit-testing-action@master
+      id: ponicode_unit_testing
+      with:
+        repoURL: ${{github.repository}} # DO NOT MODIFY
+        branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }} # DO NOT MODIFY
+        githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
+        ponicodeUtToken: ${{ secrets.PONICODE_TOKEN }} # DO NOT MODIFY
+        impactedFiles: ${{ steps.ponicode_squar.outputs.impacted_files }} # DO NOT MODIFY IF YOU WANT TO GENERATE TESTS ON SQUAR OUTCOME ONLY
 ```
 #### 2. Raises Tests Quality alerts on files impacted by the PR, without bootstraping any remediation Unit-Tests. Also do not display Ponicode SQUAR report for the whole project.
 ```yaml
@@ -156,7 +173,6 @@ jobs:
     env:
       SQUAR_API_URL: "https://ponicode-glados-prod.azurewebsites.net"
       FETCH_REPORT_RETRY_MILLISEC: 5000
-
     steps:
     - uses: actions/checkout@v1
     - run: |
@@ -176,13 +192,13 @@ jobs:
     
     # Run Ponicode SQUAR action
     - uses: ponicode/squar_action@public/master
+      id: ponicode_squar
       with:
         repoURL: ${{github.repository}} # DO NOT MODIFY
         impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
         branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }} # DO NOT MODIFY
         githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
-        ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
-        bootstrapUT: 'false'
+        ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }} # DO NOT MODIFY
         displayFullReport: 'true'
 ```
 # 🧐 Examples of SQUAR reporting in Pull-Requests
