@@ -40,9 +40,7 @@ const parseActionInputs = (getInput: GetInput): ActionInputs => {
   const ponicodeSquarToken = getInput("ponicodeSquarToken", {required: true});
   let impactedFiles = parseJSON<string[]>(getInput, "impactedFiles");
   const branch = getInput("branch", { required: true});
-  const ponicodeUtToken = getInput("ponicodeUtToken", { required: true});
   const githubToken = getInput("githubToken", { required: true});
-  const bootstrapUT = getInput("bootstrapUT", { required: true});
   const displayFullReport = getInput("displayFullReport", { required: true});
 
   if (!impactedFiles) {
@@ -58,9 +56,7 @@ const parseActionInputs = (getInput: GetInput): ActionInputs => {
 
   return {
     apiInputs: apiInputs,
-    ponicodeUtToken,
     githubToken,
-    bootstrapUT,
     displayFullReport,
   };
 };

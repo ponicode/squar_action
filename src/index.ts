@@ -61,12 +61,9 @@ async function run(): Promise<void> {
                 const definitionsComment = Markdown.generateCriticityLegend();
                 void PullRequest.generatePRComment(definitionsComment);
 
-                if (actionInputs.bootstrapUT === "true") {
-                     // Extract PR impacted files
-                    const impactedFiles = removeDuplicateInImpactedFiles(extractImpactedFilesFromReport(report));
-                    core.setOutput("impacted_files", impactedFiles);
-
-                }
+                // Extract PR impacted files
+                const impactedFiles = removeDuplicateInImpactedFiles(extractImpactedFilesFromReport(report));
+                core.setOutput("impacted_files", impactedFiles);
 
             }
 

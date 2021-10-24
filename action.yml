@@ -10,9 +10,6 @@ inputs:
   ponicodeSquarToken:
     description: 'String: Ponicode SQUAR user token from Github Secrets'
     required: true
-  ponicodeUtToken:
-    description: 'String: Ponicode UT user token from Github Secrets'
-    required: true
   githubToken:
     description: 'GitHub token to generate some comments into the PR'
     required: true
