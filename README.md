@@ -73,6 +73,8 @@ jobs:
         githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
         ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }} # DO NOT MODIFY
         displayFullReport: 'true'
+
+    # Run Ponicode Unit-Testing action
     - uses: ponicode/unit-testing-action@master
       with:
         repoURL: ${{github.repository}} # DO NOT MODIFY
@@ -80,6 +82,7 @@ jobs:
         githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
         ponicodeUtToken: ${{ secrets.PONICODE_TOKEN }} # DO NOT MODIFY
         impactedFiles: ${{ steps.ponicode_squar.outputs.impacted_files }} # DO NOT MODIFY IF YOU WANT TO GENERATE TESTS ON SQUAR OUTCOME ONLY
+        commentUTs: "true"
 ```
 ### Once configured, this workflow:
 
@@ -151,6 +154,8 @@ jobs:
         githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
         ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }} # DO NOT MODIFY
         displayFullReport: 'true'
+
+    # Run Ponicode Unit-Testing action
     - uses: ponicode/unit-testing-action@master
       id: ponicode_unit_testing
       with:
@@ -159,6 +164,7 @@ jobs:
         githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
         ponicodeUtToken: ${{ secrets.PONICODE_TOKEN }} # DO NOT MODIFY
         impactedFiles: ${{ steps.ponicode_squar.outputs.impacted_files }} # DO NOT MODIFY IF YOU WANT TO GENERATE TESTS ON SQUAR OUTCOME ONLY
+        commentUTs: "true"
 ```
 #### 2. Raises Tests Quality alerts on files impacted by the PR, without bootstraping any remediation Unit-Tests. Also do not display Ponicode SQUAR report for the whole project.
 ```yaml
@@ -221,7 +227,7 @@ Ponicode research and development work enables us to fine tune a proprietary for
 
 
 # 📄 Terms of use
-By using this action, you will have to register on the [Ponicode platform](https://app.ponicode.com) and the [Ponicode SQUAR app](https://squar.ponicode.com). The terms & conditions of both apply when using this Github Action.
+By using this action, you will have to register on the [Ponicode SQUAR app](https://squar.ponicode.com) and if you want to use [Ponicode Unit-Testing Action](https://github.com/marketplace/actions/ponicode-unit-test), register on [Ponicode platform](https://app.ponicode.com). The terms & conditions of both apply when using this Github Action.
 
 **highlights to our Terms & Conditions**
 - Ponicode does not store your code
