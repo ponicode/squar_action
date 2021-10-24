@@ -73,6 +73,8 @@ jobs:
         githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
         ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }} # DO NOT MODIFY
         displayFullReport: 'true'
+
+    # Run Ponicode Unit-Testing action
     - uses: ponicode/unit-testing-action@master
       with:
         repoURL: ${{github.repository}} # DO NOT MODIFY
@@ -151,6 +153,8 @@ jobs:
         githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
         ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }} # DO NOT MODIFY
         displayFullReport: 'true'
+
+    # Run Ponicode Unit-Testing action
     - uses: ponicode/unit-testing-action@master
       id: ponicode_unit_testing
       with:
@@ -221,7 +225,7 @@ Ponicode research and development work enables us to fine tune a proprietary for
 
 
 # 📄 Terms of use
-By using this action, you will have to register on the [Ponicode platform](https://app.ponicode.com) and the [Ponicode SQUAR app](https://squar.ponicode.com). The terms & conditions of both apply when using this Github Action.
+By using this action, you will have to register on the [Ponicode SQUAR app](https://squar.ponicode.com) and if you want to use [Ponicode Unit-Testing Action](https://github.com/marketplace/actions/ponicode-unit-test), register on [Ponicode platform](https://app.ponicode.com). The terms & conditions of both apply when using this Github Action.
 
 **highlights to our Terms & Conditions**
 - Ponicode does not store your code
