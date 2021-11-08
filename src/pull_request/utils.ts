@@ -1,9 +1,7 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
-import { ActionInputs } from "../types";
-import { PONICODE_UT_BRANCH } from "./types";
 
-async function getAllComments(repo: { owner: any; repo: any; }, issue_number: number): Promise<any[]> {
+export async function getAllComments(repo: { owner: any; repo: any; }, issue_number: number): Promise<any[]> {
     // get the inputs of the action. The "token" input
     // is not defined so far - we will come to it later.
     const githubToken = core.getInput("githubToken");
@@ -21,7 +19,7 @@ async function getAllComments(repo: { owner: any; repo: any; }, issue_number: nu
     return comments;
 }
 
-async function checkIfCommentALreadyExists(comments: any[], message: string): Promise<any> {
+export async function checkIfCommentALreadyExists(comments: any[], message: string): Promise<any> {
 
     const startOfMessage = message.slice(0, 50);
     // ... and check if there is already a comment by us
@@ -37,9 +35,3 @@ async function checkIfCommentALreadyExists(comments: any[], message: string): Pr
     return comment;
 
 }
-
-function getPRBranchName(inputs: ActionInputs): string {
-    return PONICODE_UT_BRANCH + `-4-${inputs.apiInputs.branch}`;
-}
-
-export { getAllComments, checkIfCommentALreadyExists, getPRBranchName };

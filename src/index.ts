@@ -58,8 +58,10 @@ async function run(): Promise<void> {
                 }
 
                 // Generate and write in a comment the definitions of SQUAR vocabulary
-                const definitionsComment = Markdown.generateCriticityLegend();
-                void PullRequest.generatePRComment(definitionsComment);
+                if (report.suggestionsOnImpactedFiles.length > 0) {
+                    const definitionsComment = Markdown.generateCriticityLegend();
+                    void PullRequest.generatePRComment(definitionsComment);
+                }
 
                 // Extract PR impacted files
                 const impactedFiles = removeDuplicateInImpactedFiles(extractImpactedFilesFromReport(report));
