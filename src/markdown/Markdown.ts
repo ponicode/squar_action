@@ -26,7 +26,7 @@ class Markdown {
     // Create a markdown message from the two JSON.
     public createAlertsMessage(suggestionsOnImpactedFiles: TestAlert[] | undefined): string | undefined {
 
-        let message: string = "## GREAT Job! There is no alert on the files updated in the PR\n";
+        let message: string = "";
 
         if ((suggestionsOnImpactedFiles) && (suggestionsOnImpactedFiles.length > 0)) {
 
