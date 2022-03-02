@@ -2,22 +2,22 @@
 <img src="https://ponicodefilesstorage.blob.core.windows.net/githubaction/Couv_readme_SQUAR_GA.png"></p>
 
 # 🦄 Grade your testing suite and get an activable improvements roadmap!🦄
-**Ponicode SQUAR GitHub Action** is an action that enables you to  grade your testing suite and provide you with a precise and activable improvements roadmap at every Pull request!
+**Ponicode SQUAR GitHub Action** is an action that enables you to  grade your testing suite and provide you with a precise and actionable improvements roadmap at every Pull request!
 
 **Ponicode SQUAR GitHub Action** is the newest tool on the Ponicode platform to accelerate developers on their code quality journey
 
-**Combined with [Ponicode Unit-Testing Action](https://github.com/marketplace/actions/ponicode-unit-test)**, you can immedialty implement the SQUAR roadmap and get instantaneous coverage catch-up 
+**Combined with [Ponicode Unit Test Action](https://github.com/marketplace/actions/ponicode-unit-test)**, you can immediately implement the SQUAR roadmap and get instantaneous coverage catch-up 
 
 # 💥 Benefits
 Tackle your code quality issues in the right order
 
 - __GAIN VISIBILITY__ - Stop monitoring your code and start getting actionable code quality information
-- __FIND YOUR PRIORITIES__ - Prioritise your code quality efforts
-- __RAISE YOUR CODE QUALITY FAST__ - Accelerate the remediation of your code quality weaknesses on your high risk functions (When Ponicode SQUAR action is combined with [Ponicode Unit-Testing Action](https://github.com/marketplace/actions/ponicode-unit-test))
+- __FIND YOUR PRIORITIES__ - Prioritize your code quality efforts
+- __RAISE YOUR CODE QUALITY FAST__ - Accelerate the remediation of your code quality weaknesses on your high risk functions (When Ponicode SQUAR action is combined with [Ponicode Unit Test Action](https://github.com/marketplace/actions/ponicode-unit-test))
 
 # 🔎 How does it work
 - __Step 1__: Ponicode SQUAR GitHub Action generates a report for every PR where you can review the number of poorly tested critical functions and learn how to fix it.
-- __Step 2__: Ponicode SQUAR GitHub Action enables you to accelerate the remediation of these weaknesses by generating missing unit tests, test cases and edge cases on your PR (When Ponicode SQUAR action is combined with [Ponicode Unit-Testing Action](https://github.com/marketplace/actions/ponicode-unit-test))
+- __Step 2__: Ponicode SQUAR GitHub Action enables you to accelerate the remediation of these weaknesses by generating missing unit tests, test cases and edge cases on your PR (When Ponicode SQUAR action is combined with [Ponicode Unit Test Action](https://github.com/marketplace/actions/ponicode-unit-test))
 
 # 😳 Why should I use this GitHub Action
 - Keep your risk sensitive code at a high test coverage
@@ -34,10 +34,10 @@ Go to the root of your project, and create the path to your workflow file. For e
 ```
 mkdir -p .github/workflows
 ```
-You can also just create a folder named ``.github``, in it create another folder named ``workflows``. You can now create a YAML file named **``ponicode.yml``** and copy one of the following example in it! <br />
+You can also just create a folder named ``.github``, in it create another folder named ``workflows``. You can now create a YAML file named **``ponicode.yml``** and copy one of the following examples in it! <br />
 
 ### Existing workflow
-Here is what you must add in your ```.github/workflows/ponicode.yml``` file to activate and use Ponicode Squar Action  to trigger the action, including the immediate remediation implementation with [Ponicode Unit-Testing Action](https://github.com/marketplace/actions/ponicode-unit-test).
+Here is what you must add in your ```.github/workflows/ponicode.yml``` file to activate and use Ponicode SQUAR Action  to trigger the action, including the immediate remediation implementation with [Ponicode Unit Test Action](https://github.com/marketplace/actions/ponicode-unit-test).
 
 ```yaml
 jobs:
@@ -109,7 +109,7 @@ jobs:
 **Ponicode SQUAR Action outputs**
 | Name | Description | Usage |
 |------|-------------|-------|
-| ``impactedFiles`` | Array of files on which Ponicode SQUAR found some testing alerts | the Action output can be used in further Action thant to ```${{ steps.ponicode_squar.outputs.impacted_files }}```. In particular, this can be the input for [Ponicode Unit-Testing Action](https://github.com/marketplace/actions/ponicode-unit-test) |
+| ``impactedFiles`` | Array of files on which Ponicode SQUAR found some testing alerts | the Action output can be used in further Action thant to ```${{ steps.ponicode_squar.outputs.impacted_files }}```. In particular, this can be the input for [Ponicode Unit Test Action](https://github.com/marketplace/actions/ponicode-unit-test) |
 
 
 # 👩‍💻 Use-Cases
@@ -166,7 +166,7 @@ jobs:
         impactedFiles: ${{ steps.ponicode_squar.outputs.impacted_files }} # DO NOT MODIFY IF YOU WANT TO GENERATE TESTS ON SQUAR OUTCOME ONLY
         commentUTs: "true"
 ```
-#### 2. Raises Tests Quality alerts on files impacted by the PR, without bootstraping any remediation Unit-Tests. Also do not display Ponicode SQUAR report for the whole project.
+#### 2. Raises Tests Quality alerts on files impacted by the PR, without bootstrapping any remediation Unit-Tests. Also do not display Ponicode SQUAR report for the whole project.
 ```yaml
 name: "ponicode-ci"
 on:
@@ -210,7 +210,7 @@ jobs:
 # 🧐 Examples of SQUAR reporting in Pull-Requests
 ### List of Testing Quality alerts on files impacted by a PR
 ![Ponicode SQUAR for Delta](https://ponicodefilesstorage.blob.core.windows.net/githubaction/SQUAR_ACTION_on_delta.png)
-### Ponicode SQUAR report on the whole project
+### Project-wide Ponicode SQUAR report
 ![Ponicode SQUAR Full](https://ponicodefilesstorage.blob.core.windows.net/githubaction/SQUAR_ACTION_full_report.png)
 
 # 🤔 What is a critical piece of code ? 
@@ -220,16 +220,16 @@ Ponicode research and development work enables us to fine tune a proprietary for
 
 
 # ⽭ Supported languages and frameworks
-| Languague | Test Framework |
+| Language | Test Framework |
 |------|-------------|
 | TypeScript | [Jest](https://jestjs.io/) |
 | Javascript | [Jest](https://jestjs.io/) |
 
 
 # 📄 Terms of use
-By using this action, you will have to register on the [Ponicode SQUAR app](https://squar.ponicode.com) and if you want to use [Ponicode Unit-Testing Action](https://github.com/marketplace/actions/ponicode-unit-test), register on [Ponicode platform](https://app.ponicode.com). The terms & conditions of both apply when using this Github Action.
+By using this action, you will have to register on the [Ponicode SQUAR app](https://squar.ponicode.com) and if you want to use [Ponicode Unit Test Action](https://github.com/marketplace/actions/ponicode-unit-test), register on [Ponicode platform](https://app.ponicode.com). The terms & conditions of both apply when using this Github Action.
 
-**highlights to our Terms & Conditions**
+**Highlights to our Terms & Conditions**
 - Ponicode does not store your code
 - Ponicode use anonymous usage data to improve your experience 
 
@@ -239,13 +239,13 @@ Have a bug or a feature request? Please open a new [issue](https://github.com/po
 We would love to have your feedback! Tell us what you love and what you want us to improve about this action!
 
 # 👯‍♀️ Community
-Our slack community is a place where people not only give feedback and get support but also an opportunity to share information and best ractices about code quality. It’s also where you will get premium access to our new products and first hand information about our latest releases. Join us here: https://ponicode-community.slack.com/join/shared_invite/zt-fiq4fhkg-DE~a_FkJ7xtiZxW7efyA4Q#/
+Our slack community is a place where people not only give feedback and get support but also an opportunity to share information and best practices about code quality. It’s also where you will get premium access to our new products and first hand information about our latest releases. Join us here: https://ponicode-community.slack.com/join/shared_invite/zt-fiq4fhkg-DE~a_FkJ7xtiZxW7efyA4Q#/
 
 
 # Learn More
 Want to find out more about our project? All our solutions are available on [ponicode.com](https://ponicode.com)
 
-You can generate a [Ponicode SQUAR](https://squar.ponicode.com) report for any of your GitHub report straight from our platform. Get started on [Ponicode SQUAR Self Assessment](https://www.ponicode.com/squar-self-assessment)
+You can generate a [Ponicode SQUAR](https://squar.ponicode.com) report for any of your GitHub repositories straight from our platform. Get started on [Ponicode SQUAR Self Assessment](https://www.ponicode.com/squar-self-assessment)
 
 We also offer a unique [VS Code Extension](https://marketplace.visualstudio.com/items?itemName=ponicode.ponicode) to accelerate your unit testing efforts. 
 
