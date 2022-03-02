@@ -1,19 +1,21 @@
 <p align="center">
 <img src="https://ponicodefilesstorage.blob.core.windows.net/githubaction/Couv_readme_SQUAR_GA.png"></p>
 
-# 🦄 Grade your testing suite and get an activable improvements roadmap!🦄
-**Ponicode SQUAR GitHub Action** is an action that enables you to  grade your testing suite and provide you with a precise and actionable improvements roadmap at every Pull request!
+# 🦄 Release quality tests. Every Time!🦄
+**Quality Gate** tells you at every analysis whether your is tested enough to be released
 
-**Ponicode SQUAR GitHub Action** is the newest tool on the Ponicode platform to accelerate developers on their code quality journey
+**Ponicode SQUAR GitHub Action** is an action that enables you to grade the test quality of your project and provide you with a precise and activatable improvements roadmap at every Pull request!
+
 
 **Combined with [Ponicode Unit Test Action](https://github.com/marketplace/actions/ponicode-unit-test)**, you can immediately implement the SQUAR roadmap and get instantaneous coverage catch-up 
 
 # 💥 Benefits
-Tackle your code quality issues in the right order
+Tackle your code quality issues in the right order to:
 
-- __GAIN VISIBILITY__ - Stop monitoring your code and start getting actionable code quality information
-- __FIND YOUR PRIORITIES__ - Prioritize your code quality efforts
-- __RAISE YOUR CODE QUALITY FAST__ - Accelerate the remediation of your code quality weaknesses on your high risk functions (When Ponicode SQUAR action is combined with [Ponicode Unit Test Action](https://github.com/marketplace/actions/ponicode-unit-test))
+- __GAIN VISIBILITY__ - Get instant feedback of the quality of your tests everytime you change your code
+- __PRIORITIZED BACKLOG__ - Get a detailed and prioritized list of action you need to take to increase your test quality
+- __RAISE YOUR CODE QUALITY FAST__ - Accelerate the remediation of your code quality weaknesses on your high risk functions (When Ponicode SQUAR action is combined with Ponicode Unit-Testing Action)
+
 
 # 🔎 How does it work
 - __Step 1__: Ponicode SQUAR GitHub Action generates a report for every PR where you can review the number of poorly tested critical functions and learn how to fix it.
@@ -72,17 +74,7 @@ jobs:
         branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }} # DO NOT MODIFY
         githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
         ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }} # DO NOT MODIFY
-        displayFullReport: 'true'
-
-    # Run Ponicode Unit-Testing action
-    - uses: ponicode/unit-testing-action@master
-      with:
-        repoURL: ${{github.repository}} # DO NOT MODIFY
-        branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }} # DO NOT MODIFY
-        githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
-        ponicodeUtToken: ${{ secrets.PONICODE_TOKEN }} # DO NOT MODIFY
-        impactedFiles: ${{ steps.ponicode_squar.outputs.impacted_files }} # DO NOT MODIFY IF YOU WANT TO GENERATE TESTS ON SQUAR OUTCOME ONLY
-        commentUTs: "true"
+        displayFullReport: 'true'   
 ```
 ### Once configured, this workflow:
 
@@ -104,7 +96,15 @@ jobs:
 - ``branch``
 - ``githubToken``
 
-**NB2: you can find the procedure on how to setup Github Secrets here**: [Github Secrets setup](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+**NB2: you can find the procedure on how to setup Github Secrets here**: [Github Secrets setup](https://docs.github.com/en/actions/security-guides/encrypted-secrets). Here is an overview:
+
+To add the Ponicode token to your github secrets follow these steps:
+
+- Open your project on Github
+- Click on Settings
+- Click on Secrets
+- Click on New Secret
+- Name: PONICODE_SQUAR_TOKEN, Value: (Paste the token you got previously)
 
 **Ponicode SQUAR Action outputs**
 | Name | Description | Usage |
