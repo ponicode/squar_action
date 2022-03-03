@@ -88,7 +88,7 @@ jobs:
 | Name | Description | Required | Default |
 |------|-------------|----------|---------|
 | ``displayFullReport`` | Boolean: set if Ponicode SQUAR report on the whole project shall be displayed as for information in the PR comment (True), or not (False) | Yes |``true`` |
-| ``ponicodeSquarToken`` | This parameter has to be configured as **``PONICODE_SQUAR_TOKEN``** in Repository Github Secrets. The token can be retrieved on [Ponicode SQUAR app](https://squar.ponicode.com). | Yes | No default. This parameter must be set-up in your GITHUB SECRETS (see below on how to do that) |
+| ``ponicodeSquarToken`` | This parameter has to be configured as **``PONICODE_SQUAR_TOKEN``** in Repository Github Secrets. The token can be retrieved on [Ponicode SQUAR app](https://app.ponicode.com/home). | Yes | No default. This parameter must be set-up in your GITHUB SECRETS (see below on how to do that) |
 
 **NB: all the other parameters must be let un-changed, since they are automatically filled-in from previous steps in the workflow**
 - ``repoURL``
@@ -245,7 +245,7 @@ Our slack community is a place where people not only give feedback and get suppo
 # Learn More
 Want to find out more about our project? All our solutions are available on [ponicode.com](https://ponicode.com)
 
-You can generate a [Ponicode SQUAR](https://squar.ponicode.com) report for any of your GitHub repositories straight from our platform. Get started on [Ponicode SQUAR Self Assessment](https://www.ponicode.com/squar-self-assessment)
+You can generate a [Ponicode SQUAR](https://app.ponicode.com/home) report for any of your GitHub repositories straight from our platform. Get started on [Ponicode SQUAR Self Assessment](https://www.ponicode.com/squar-self-assessment)
 
 We also offer a unique [VS Code Extension](https://marketplace.visualstudio.com/items?itemName=ponicode.ponicode) to accelerate your unit testing efforts. 
 
