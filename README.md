@@ -1,3 +1,5 @@
+## 🦄 Ponicode has been acquired by CircleCI :rocket: [Read the announcement here](http://www.ponicode.com/blog/circleci-completes-acquisition-of-ponicode)
+
 <p align="center">
 <img src="https://ponicodefilesstorage.blob.core.windows.net/githubaction/Couv_readme_SQUAR_GA.png"></p>
 

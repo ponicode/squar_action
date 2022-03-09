@@ -28,12 +28,10 @@ jobs:
     - id: ponicode_squar
       uses: ./
       with:
-        repoURL: ${{github.repository}}
-        impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }}
-        branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }}
-        ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }}
-        ponicodeUtToken: ${{ secrets.PONICODE_TOKEN }}
-        githubToken: ${{ secrets.GITHUB_TOKEN }}
-        bootstrapUT: 'true'
+        repoURL: ${{github.repository}} # DO NOT MODIFY
+        impactedFiles: ${{ steps.get_changed_files.outputs.added_modified }} # DO NOT MODIFY
+        branch: ${{ steps.extract_branch.outputs.BRANCH_NAME }} # DO NOT MODIFY
+        githubToken: ${{ secrets.GITHUB_TOKEN }} # DO NOT MODIFY
+        ponicodeSquarToken: ${{ secrets.PONICODE_SQUAR_TOKEN }} # DO NOT MODIFY
         displayFullReport: 'true'
 
